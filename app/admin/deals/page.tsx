@@ -268,10 +268,15 @@ export default async function AdminDealsPage({
     ? adminFlashMessages[params.status]
     : null;
   const errorMessage = params?.error;
-  const [countries, deals] = await Promise.all([
-    getCountries(),
-    getAdminDeals(),
-  ]);
+  let countries: Country[] = [];
+  let deals: Deal[] = [];
+  let loadErrorMessage: string | null = null;
+
+  try {
+    [countries, deals] = await Promise.all([getCountries(), getAdminDeals()]);
+  } catch (error) {
+    loadErrorMessage = getActionErrorMessage(error);
+  }
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-6xl px-6 py-10">
@@ -298,9 +303,9 @@ export default async function AdminDealsPage({
         </div>
       )}
 
-      {errorMessage && (
+      {(errorMessage || loadErrorMessage) && (
         <div className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
-          {errorMessage}
+          {errorMessage ?? loadErrorMessage}
         </div>
       )}
 

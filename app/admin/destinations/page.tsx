@@ -19,12 +19,7 @@ type CountryMutationPayload = {
   is_featured: boolean;
 };
 
-type AdminFlash =
-  | 'created'
-  | 'updated'
-  | 'deleted'
-  | 'featured'
-  | 'unfeatured';
+type AdminFlash = 'created' | 'updated' | 'deleted' | 'featured' | 'unfeatured';
 
 const adminFlashMessages: Record<AdminFlash, string> = {
   created: 'Destination ajoutée avec succès.',
@@ -236,7 +231,14 @@ export default async function AdminDestinationsPage({
     ? adminFlashMessages[params.status]
     : null;
   const errorMessage = params?.error;
-  const countries = await getCountries();
+  let countries: Country[] = [];
+  let loadErrorMessage: string | null = null;
+
+  try {
+    countries = await getCountries();
+  } catch (error) {
+    loadErrorMessage = getActionErrorMessage(error);
+  }
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-6xl px-6 py-10">
@@ -249,8 +251,8 @@ export default async function AdminDestinationsPage({
             Gérer les destinations
           </h1>
           <p className="mt-3 max-w-2xl text-muted-foreground">
-            Ajoute ou modifie les pays accessibles avec un passeport marocain,
-            y compris le type de visa, la durée maximale et la source officielle.
+            Ajoute ou modifie les pays accessibles avec un passeport marocain, y
+            compris le type de visa, la durée maximale et la source officielle.
           </p>
         </div>
         <div className="flex flex-wrap gap-3 text-sm font-semibold">
@@ -269,9 +271,9 @@ export default async function AdminDestinationsPage({
         </div>
       )}
 
-      {errorMessage && (
+      {(errorMessage || loadErrorMessage) && (
         <div className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
-          {errorMessage}
+          {errorMessage ?? loadErrorMessage}
         </div>
       )}
 
