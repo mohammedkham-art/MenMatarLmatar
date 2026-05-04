@@ -6,9 +6,9 @@ import { fallbackDestinations } from '@/services/destinations/fallback-destinati
 import { getDestinations } from '@/services/destinations/get-destinations';
 
 export default async function SimulatorPage() {
-  const destinations = await getDestinations().catch(
-    () => fallbackDestinations,
-  );
+  const destinations = (
+    await getDestinations().catch(() => fallbackDestinations)
+  ).filter((destination) => destination.visaType !== 'visa_required');
 
   return (
     <main className="min-h-screen">

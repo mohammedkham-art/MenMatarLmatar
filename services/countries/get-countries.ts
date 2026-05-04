@@ -136,6 +136,7 @@ const countryNameFixes: Record<string, string> = {
 const countryRegionFixes: Record<string, string> = {
   AG: 'Caraïbes',
   AR: 'Amérique du Sud',
+  AU: 'Océanie',
   BB: 'Caraïbes',
   BF: 'Afrique de l’Ouest',
   BI: 'Afrique de l’Est',

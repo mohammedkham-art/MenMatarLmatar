@@ -31,7 +31,9 @@ export default async function DestinationsPage({
   searchParams,
 }: DestinationsPageProps) {
   const params = await searchParams;
-  const countries = await getCountries().catch(() => fallbackCountries);
+  const countries = (
+    await getCountries().catch(() => fallbackCountries)
+  ).filter((country) => country.visaType !== 'visa_required');
   const initialFilter = getInitialVisaFilter(params?.visa);
 
   return (
