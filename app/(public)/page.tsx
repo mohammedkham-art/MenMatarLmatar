@@ -260,6 +260,7 @@ export default async function HomePage() {
       <SimulatorSection />
 
       <AiSimulatorFloatingCta />
+      <PublicFooter />
     </main>
   );
 }

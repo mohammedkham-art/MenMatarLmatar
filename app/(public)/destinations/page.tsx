@@ -54,6 +54,7 @@ export default async function DestinationsPage({
 
         <CountriesList countries={countries} initialFilter={initialFilter} />
       </div>
+      <PublicFooter />
     </main>
   );
 }

@@ -28,6 +28,7 @@ export default async function DealsPage() {
           </div>
         )}
       </div>
+      <PublicFooter />
     </main>
   );
 }

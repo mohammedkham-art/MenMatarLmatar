@@ -31,6 +31,7 @@ export default async function SimulatorPage() {
           <TripSimulator destinations={destinations} />
         </div>
       </div>
+      <PublicFooter />
     </main>
   );
 }
