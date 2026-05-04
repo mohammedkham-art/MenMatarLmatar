@@ -1,150 +1,266 @@
+export const dynamic = 'force-dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { LaunchCountdown } from '@/components/features/home/launch-countdown';
+import { DealCard } from '@/components/features/deals/deal-card';
+import { AiSimulatorFloatingCta } from '@/components/features/home/ai-simulator-floating-cta';
+import { VisaDestinationsSection } from '@/components/features/home/visa-destinations-section';
+import { SimulatorSection } from '@/components/features/simulator/simulator-section';
+import { PublicFooter } from '@/components/shared/public-footer';
+import { PublicHeader } from '@/components/shared/public-header';
+import { fallbackCountries } from '@/services/countries/fallback-countries';
+import { getCountries } from '@/services/countries/get-countries';
+import { getDeals } from '@/services/deals/get-deals';
 
-const socialLinks = [
-  {
-    label: 'Instagram',
-    href: 'https://www.instagram.com/menmatarlmatar',
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5">
-        <path
-          fill="currentColor"
-          d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm4.5 3.25A4.75 4.75 0 1 1 7.25 12 4.75 4.75 0 0 1 12 7.25Zm0 2A2.75 2.75 0 1 0 14.75 12 2.75 2.75 0 0 0 12 9.25Zm5.25-2.55a1.05 1.05 0 1 1-1.05 1.05 1.05 1.05 0 0 1 1.05-1.05Z"
-        />
-      </svg>
-    ),
-  },
-  {
-    label: 'TikTok',
-    href: 'https://www.tiktok.com/@menmatarlmatar',
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5">
-        <path
-          fill="currentColor"
-          d="M14.75 2h2.2a5.55 5.55 0 0 0 4.25 4.88v2.28a7.45 7.45 0 0 1-4.05-1.2v7.02A6.02 6.02 0 1 1 11.13 9v2.34a3.73 3.73 0 1 0 3.62 3.72V2Z"
-        />
-      </svg>
-    ),
-  },
+const flightBoardRows = [
+  { code: 'IST', city: 'Istanbul', visa: 'Sans visa' },
+  { code: 'DXB', city: 'Dubaï', visa: 'eVisa' },
+  { code: 'BKK', city: 'Bangkok', visa: 'Sans visa' },
+  { code: 'DPS', city: 'Bali', visa: 'Visa à l’arrivée' },
+  { code: 'DOH', city: 'Doha', visa: 'Sans visa' },
+  { code: 'CAI', city: 'Le Caire', visa: 'Visa à l’arrivée' },
+  { code: 'TUN', city: 'Tunis', visa: 'Sans visa' },
+  { code: 'KUL', city: 'Kuala Lumpur', visa: 'Sans visa' },
+  { code: 'BAH', city: 'Bahreïn', visa: 'eVisa' },
+  { code: 'NBO', city: 'Nairobi', visa: 'eVisa' },
 ];
 
-export default function ComingSoonPage() {
+const simulatorSnapshots = [
+  { days: '3 jours', budget: '2 000 MAD', city: 'Istanbul' },
+  { days: '5 jours', budget: '4 500 MAD', city: 'Tunis' },
+  { days: '7 jours', budget: '6 500 MAD', city: 'Bangkok' },
+  { days: '4 jours', budget: '3 800 MAD', city: 'Le Caire' },
+  { days: '10 jours', budget: '9 900 MAD', city: 'Bali' },
+  { days: '6 jours', budget: '5 700 MAD', city: 'Doha' },
+];
+
+function getRefreshItems<T>(items: T[], count: number) {
+  return [...items].sort(() => Math.random() - 0.5).slice(0, count);
+}
+
+function getRefreshItem<T>(items: T[]) {
+  return items[Math.floor(Math.random() * items.length)];
+}
+
+export default async function HomePage() {
+  const [countriesResult, dealsResult] = await Promise.allSettled([
+    getCountries(),
+    getDeals(),
+  ]);
+
+  const countries =
+    countriesResult.status === 'fulfilled'
+      ? countriesResult.value
+      : fallbackCountries;
+
+  const deals = dealsResult.status === 'fulfilled' ? dealsResult.value : [];
+  const visaStats = [
+    {
+      label: 'Sans visa',
+      href: '/destinations?visa=visa_free',
+      value: '+40',
+      detail: 'départs possibles',
+      tone: 'from-emerald-600/12 to-emerald-50',
+    },
+    {
+      label: 'eVisa',
+      href: '/destinations?visa=e_visa',
+      value: '+40',
+      detail: 'dossiers simples',
+      tone: 'from-sky-600/12 to-sky-50',
+    },
+    {
+      label: 'Visa à l’arrivée',
+      href: '/destinations?visa=visa_on_arrival',
+      value: '14',
+      detail: 'options flexibles',
+      tone: 'from-amber-500/18 to-amber-50',
+    },
+  ];
+  const featuredDeals = deals.filter((deal) => deal.isFeatured);
+  const homepageDeals = [
+    ...featuredDeals,
+    ...deals.filter((deal) => !deal.isFeatured),
+  ].slice(0, 3);
+  const currentFlightRows = getRefreshItems(flightBoardRows, 3);
+  const currentSimulation = getRefreshItem(simulatorSnapshots);
+
   return (
-    <main className="relative min-h-screen overflow-hidden bg-primary text-primary-foreground">
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.055)_1px,transparent_1px),linear-gradient(180deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:4.5rem_4.5rem]" />
-      <div className="absolute right-[-8rem] top-[-8rem] h-80 w-80 rounded-full bg-accent/25 blur-3xl" />
-      <div className="absolute bottom-[-10rem] left-[-8rem] h-96 w-96 rounded-full bg-emerald-300/10 blur-3xl" />
+    <main>
+      <PublicHeader />
 
-      <section className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-between px-6 py-8">
-        <header className="flex items-center justify-between gap-4">
-          <Link href="/" className="inline-flex items-center gap-3">
-            <span className="bg-white/92 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 p-1.5 shadow-xl shadow-black/10">
-              <Image
-                src="/images/logo-sticker.png"
-                alt="Men Matar L Matar"
-                width={160}
-                height={160}
-                priority
-                className="h-full w-full object-contain"
-              />
-            </span>
-            <span className="grid leading-none">
-              <span className="text-lg font-black tracking-tight">
-                MEN MATAR
-              </span>
-              <span className="text-lg font-black tracking-tight text-accent">
-                L MATAR
-              </span>
-            </span>
-          </Link>
+      <section className="relative overflow-hidden border-b bg-[linear-gradient(180deg,hsl(var(--background))_0%,hsl(var(--muted)/0.42)_100%)]">
+        <div className="mx-auto grid min-h-[calc(100vh-5.5rem)] w-full max-w-7xl items-center gap-10 px-6 pb-14 pt-8 lg:grid-cols-[minmax(0,1fr)_minmax(22.5rem,26.5rem)] lg:pb-16 lg:pt-10 xl:grid-cols-[minmax(0,1fr)_minmax(25rem,29rem)]">
+          <div className="min-w-0 max-w-4xl">
+            <div className="mb-6 inline-flex items-center gap-3 rounded-full border bg-background/80 px-3 py-2 text-xs font-black uppercase tracking-[0.22em] text-primary shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-accent shadow-[0_0_0_5px_hsl(var(--accent)/0.16)]" />
+              Passeport marocain
+            </div>
 
-          <div className="flex items-center gap-2">
-            {socialLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={link.label}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.08] text-primary-foreground transition hover:-translate-y-0.5 hover:bg-white/[0.14]"
-              >
-                {link.icon}
-              </Link>
-            ))}
-          </div>
-        </header>
+            <div className="brand-hero-mark" aria-label="Men Matar L Matar">
+              <span>MEN MATAR</span>
+              <span>L MATAR</span>
+            </div>
 
-        <div className="grid items-center gap-10 py-14 lg:grid-cols-[minmax(0,1fr)_25rem]">
-          <div className="max-w-4xl">
-            <p className="inline-flex rounded-full border border-white/15 bg-white/[0.08] px-4 py-2 text-xs font-black uppercase tracking-[0.24em] text-primary-foreground/70">
-              Nouveau SaaS voyage marocain
-            </p>
-
-            <h1 className="mt-7 text-5xl font-black leading-[0.98] tracking-tight md:text-7xl">
-              Prochainement
-              <span
-                dir="rtl"
-                lang="ar"
-                className="mt-4 block text-4xl text-accent md:text-6xl"
-              >
-                قريباً
-              </span>
+            <h1 className="mt-7 max-w-3xl text-4xl font-black leading-[1.04] tracking-tight text-foreground md:text-6xl">
+              Ton prochain départ commence par ce que ton passeport permet.
             </h1>
-
-            <p className="text-primary-foreground/78 mt-7 max-w-2xl text-lg leading-8">
-              Men Matar L Matar prépare une expérience simple pour découvrir les
-              destinations accessibles avec un passeport marocain, suivre les
-              visas, repérer les bons plans vols et simuler ton prochain séjour.
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
+              Découvre où tu peux partir sans visa, compare les offres en MAD et
+              lance une simulation IA avant de réserver.
             </p>
 
-            <div className="mt-9 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="https://www.instagram.com/menmatarlmatar"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex h-12 items-center justify-center rounded-xl bg-accent px-5 text-sm font-black text-accent-foreground shadow-lg shadow-black/10 transition hover:-translate-y-0.5 hover:shadow-xl"
+                href="/destinations"
+                className="inline-flex h-12 items-center justify-center rounded-xl bg-primary px-5 text-sm font-black text-primary-foreground shadow-lg shadow-primary/15 transition hover:-translate-y-0.5 hover:shadow-xl"
               >
-                Suivre sur Instagram
+                Explorer les destinations
               </Link>
               <Link
-                href="https://www.tiktok.com/@menmatarlmatar"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex h-12 items-center justify-center rounded-xl border border-white/15 bg-white/[0.08] px-5 text-sm font-black text-primary-foreground transition hover:-translate-y-0.5 hover:bg-white/[0.14]"
+                href="/simulator"
+                className="inline-flex h-12 items-center justify-center rounded-xl border bg-background px-5 text-sm font-black text-primary shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40"
               >
-                Suivre sur TikTok
+                Simuler mon voyage
               </Link>
             </div>
           </div>
 
-          <aside className="rounded-3xl border border-white/15 bg-black/20 p-5 shadow-2xl shadow-black/15 backdrop-blur">
-            <p className="text-xs font-black uppercase tracking-[0.24em] text-primary-foreground/50">
-              Décollage dans
-            </p>
-            <div className="mt-5">
-              <LaunchCountdown
-                launchDate={process.env.NEXT_PUBLIC_LAUNCH_DATE}
-              />
-            </div>
-            <div className="mt-5 rounded-2xl border border-white/15 bg-white/[0.07] p-4">
-              <p className="text-sm font-black">Passeport marocain</p>
-              <p className="text-primary-foreground/68 mt-2 text-sm leading-6">
-                Destinations sans visa, eVisa, visa à l’arrivée, deals de vols
-                et simulateur IA de voyage.
-              </p>
-            </div>
-          </aside>
-        </div>
+          <div className="grid w-full max-w-[26.5rem] gap-5 justify-self-center lg:justify-self-end xl:max-w-[29rem]">
+            <div className="relative min-h-[27rem] overflow-hidden rounded-2xl border bg-primary p-5 text-primary-foreground shadow-2xl shadow-primary/20 sm:p-6">
+              <div className="absolute right-[-4rem] top-[-5rem] h-48 w-48 rounded-full bg-accent/25 blur-3xl" />
+              <div className="bg-emerald-300/12 absolute bottom-[-5rem] left-[-4rem] h-56 w-56 rounded-full blur-3xl" />
 
-        <footer className="border-white/12 text-primary-foreground/58 flex flex-wrap items-center justify-between gap-3 border-t pt-6 text-sm">
-          <span>© Men Matar L Matar</span>
-          <span dir="rtl" lang="ar">
-            نسافر بذكاء، ونعيش أحسن تجربة
-          </span>
-        </footer>
+              <div className="relative flex items-start justify-between gap-5">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.24em] text-primary-foreground/60">
+                    Flight board
+                  </p>
+                  <p className="mt-2 text-2xl font-black tracking-tight">
+                    Departures
+                  </p>
+                </div>
+                <span className="bg-white/92 flex h-20 w-20 shrink-0 items-center justify-center rounded-xl border border-white/30 p-1.5 shadow-xl shadow-black/10 sm:h-24 sm:w-24">
+                  <Image
+                    src="/images/logo-sticker.png"
+                    alt="Men Matar L Matar"
+                    width={220}
+                    height={260}
+                    priority
+                    className="h-full w-full object-contain"
+                  />
+                </span>
+              </div>
+
+              <div className="bg-black/22 relative mt-7 overflow-hidden rounded-xl border border-white/15 p-3 font-mono shadow-inner sm:p-4">
+                <div className="grid grid-cols-[3.6rem_minmax(0,1fr)_minmax(6.5rem,0.95fr)] gap-2 border-b border-white/10 pb-2 text-[0.6rem] font-black uppercase tracking-[0.14em] text-primary-foreground/45 sm:grid-cols-[4rem_minmax(0,1fr)_minmax(7.7rem,1fr)] sm:gap-3">
+                  <span>Code</span>
+                  <span>Ville</span>
+                  <span>Visa</span>
+                </div>
+                <div className="grid gap-2 pt-3">
+                  {currentFlightRows.map((row, index) => (
+                    <div
+                      key={row.code}
+                      className="flight-row grid grid-cols-[3.6rem_minmax(0,1fr)_minmax(6.5rem,0.95fr)] items-center gap-2 rounded-lg bg-white/[0.07] px-3 py-3 text-xs sm:grid-cols-[4rem_minmax(0,1fr)_minmax(7.7rem,1fr)] sm:gap-3 sm:text-sm"
+                      style={{ animationDelay: `${index * 180}ms` }}
+                    >
+                      <span className="text-base font-black text-accent sm:text-lg">
+                        {row.code}
+                      </span>
+                      <span className="min-w-0 truncate font-black">
+                        {row.city}
+                      </span>
+                      <span className="text-primary-foreground/78 min-w-0 text-balance">
+                        {row.visa}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="relative mt-5 rounded-xl border border-white/15 bg-white/[0.08] p-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.2em] text-primary-foreground/50">
+                      IA voyage
+                    </p>
+                    <p className="mt-1 text-lg font-black">
+                      {currentSimulation.days} · {currentSimulation.budget} ·{' '}
+                      {currentSimulation.city}
+                    </p>
+                  </div>
+                  <Link
+                    href="/simulator"
+                    className="rounded-full bg-accent px-3 py-1 text-xs font-black text-accent-foreground transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/10"
+                  >
+                    prêt
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              {visaStats.map((stat) => (
+                <Link
+                  key={stat.label}
+                  href={stat.href}
+                  className={`group rounded-xl border bg-gradient-to-br ${stat.tone} p-4 shadow-sm transition hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg`}
+                >
+                  <p className="text-3xl font-black text-primary">
+                    {stat.value}
+                  </p>
+                  <p className="mt-1 text-sm font-black">{stat.label}</p>
+                  <div className="mt-3 flex items-center justify-between gap-3 text-xs font-bold text-muted-foreground">
+                    <span>{stat.detail}</span>
+                    <span className="transition group-hover:translate-x-1">
+                      →
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
+
+      <VisaDestinationsSection countries={countries} />
+
+      {homepageDeals.length > 0 && (
+        <section className="border-y bg-muted/40">
+          <div className="mx-auto max-w-6xl px-6 py-16">
+            <div className="mb-8 flex items-end justify-between gap-4">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-primary/70">
+                  Bons plans
+                </p>
+                <h2 className="mt-2 text-3xl font-black tracking-tight">
+                  Meilleures offres
+                </h2>
+                <p className="mt-2 text-muted-foreground">
+                  Les vols à surveiller avant de réserver.
+                </p>
+              </div>
+              <Link
+                href="/deals"
+                className="text-sm font-black text-primary hover:underline"
+              >
+                Voir toutes les offres →
+              </Link>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {homepageDeals.map((deal) => (
+                <DealCard key={deal.id} deal={deal} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <SimulatorSection />
+
+      <AiSimulatorFloatingCta />
+      <PublicFooter />
     </main>
   );
 }
