@@ -97,7 +97,7 @@ export function TripSimulator({ destinations }: TripSimulatorProps) {
   const [arrivalDate, setArrivalDate] = useState('');
   const [days, setDays] = useState(5);
   const [travelerType, setTravelerType] = useState<TravelerType>('solo');
-  const [budgetMad, setBudgetMad] = useState(3000);
+  const [budgetMad, setBudgetMad] = useState('');
   const [travelStyle, setTravelStyle] = useState<TravelStyle>('balanced');
 
   const simulationMutation = useMutation({
@@ -109,6 +109,32 @@ export function TripSimulator({ destinations }: TripSimulatorProps) {
     [destinationQuery, destinations],
   );
 
+  const parsedBudgetMad = useMemo(() => {
+    if (budgetMad.trim().length === 0) {
+      return null;
+    }
+
+    const value = Number(budgetMad);
+
+    return Number.isFinite(value) ? Math.round(value) : null;
+  }, [budgetMad]);
+
+  const budgetError = useMemo(() => {
+    if (parsedBudgetMad === null) {
+      return null;
+    }
+
+    if (parsedBudgetMad < 1_000) {
+      return 'Ce montant est trop petit pour séjourner. Laisse le budget vide ou indique au moins 1 000 MAD.';
+    }
+
+    if (parsedBudgetMad / days < 350) {
+      return `Ce budget paraît trop bas pour ${days} jour${days > 1 ? 's' : ''}. Augmente le montant ou laisse le champ vide pour obtenir une estimation réaliste.`;
+    }
+
+    return null;
+  }, [days, parsedBudgetMad]);
+
   const isValid = useMemo(
     () =>
       Boolean(
@@ -116,9 +142,9 @@ export function TripSimulator({ destinations }: TripSimulatorProps) {
         arrivalDate &&
         days >= 1 &&
         days <= 30 &&
-        budgetMad >= 100,
+        !budgetError,
       ),
-    [arrivalDate, budgetMad, days, selectedDestination],
+    [arrivalDate, budgetError, days, selectedDestination],
   );
 
   function handleDestinationChange(value: string) {
@@ -149,7 +175,7 @@ export function TripSimulator({ destinations }: TripSimulatorProps) {
       visaType: selectedDestination.visaType,
       arrivalDate,
       durationDays: days,
-      budgetMad,
+      ...(parsedBudgetMad ? { budgetMad: parsedBudgetMad } : {}),
       travelerType,
       travelStyle,
     });
@@ -211,13 +237,20 @@ export function TripSimulator({ destinations }: TripSimulatorProps) {
             onChange={setTravelerType}
           />
 
-          <NumberInput
+          <OptionalNumberInput
             id="budget"
-            label="Budget total en MAD"
-            min={100}
+            label="Budget total en MAD (facultatif)"
+            min={0}
+            placeholder="Ex: 3000"
             value={budgetMad}
             onChange={setBudgetMad}
           />
+
+          {budgetError && (
+            <p className="rounded-xl border border-orange-200 bg-orange-50 p-3 text-sm font-medium text-orange-700">
+              {budgetError}
+            </p>
+          )}
 
           <SegmentedControl
             label="Style de voyage"
@@ -378,6 +411,44 @@ function NumberInput({
         onChange={(event) => onChange(Number(event.target.value))}
         className="mt-2 h-12 w-full rounded-xl border bg-background px-4 text-sm outline-none transition focus:border-primary"
         required
+      />
+    </div>
+  );
+}
+
+type OptionalNumberInputProps = {
+  id: string;
+  label: string;
+  min: number;
+  placeholder?: string;
+  value: string;
+  onChange: (value: string) => void;
+};
+
+function OptionalNumberInput({
+  id,
+  label,
+  min,
+  placeholder,
+  value,
+  onChange,
+}: OptionalNumberInputProps) {
+  return (
+    <div>
+      <label
+        htmlFor={id}
+        className="text-xs font-semibold uppercase tracking-widest text-muted-foreground"
+      >
+        {label}
+      </label>
+      <input
+        id={id}
+        type="number"
+        min={min}
+        value={value}
+        placeholder={placeholder}
+        onChange={(event) => onChange(event.target.value)}
+        className="mt-2 h-12 w-full rounded-xl border bg-background px-4 text-sm outline-none transition placeholder:text-muted-foreground focus:border-primary"
       />
     </div>
   );

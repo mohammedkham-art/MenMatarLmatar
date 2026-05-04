@@ -144,6 +144,15 @@ function getVisaContext(params: TripSimulationRequest) {
 }
 
 function getBudgetContext(params: TripSimulationRequest) {
+  if (!params.budgetMad) {
+    return [
+      'Aucun budget total fourni par l’utilisateur.',
+      'Propose une estimation réaliste en MAD pour ce séjour, adaptée au style demandé.',
+      'budgetMad et estimatedDailyBudgetMad doivent représenter ton estimation recommandée, pas une contrainte utilisateur.',
+      'budgetWarning doit rester null sauf si une contrainte rend le séjour difficile.',
+    ].join(' ');
+  }
+
   const dailyBudget = Math.floor(params.budgetMad / params.durationDays);
 
   if (dailyBudget < 450) {
@@ -178,7 +187,7 @@ function buildPrompt(params: TripSimulationRequest) {
   return [
     'Génère un plan de voyage utile pour un voyageur marocain, en français simple et pratique.',
     'Réponds en JSON strict selon le schéma. Ne prétends pas consulter des données en direct.',
-    'Prix: estimations plausibles en MAD, cohérentes avec le budget total.',
+    'Prix: estimations plausibles en MAD. Si le budget est fourni, reste cohérent avec ce budget total. Sinon, propose un budget réaliste.',
     'Contenu: vrais quartiers, monuments, marchés, musées, plages, points de vue ou expériences connues.',
     'Itinéraire: journées concrètes, zones logiques, peu d’allers-retours, budgetTip précis en MAD.',
     'Transport: conseil aéroport vers centre-ville, option économique, option confortable, taxis officiels ou transports publics si pertinent.',
@@ -189,7 +198,7 @@ function buildPrompt(params: TripSimulationRequest) {
     `Code pays: ${params.destinationCountryCode ?? 'non fourni'}`,
     `Date d'arrivée: ${params.arrivalDate}`,
     `Durée: ${params.durationDays} jours`,
-    `Budget total: ${params.budgetMad} MAD`,
+    `Budget total: ${params.budgetMad ? `${params.budgetMad} MAD` : 'non fourni'}`,
     `Contexte budget: ${getBudgetContext(params)}`,
     `Type de voyageur: ${params.travelerType}`,
     `Style: ${params.travelStyle}`,

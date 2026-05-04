@@ -18,7 +18,7 @@ export const tripSimulationRequestSchema = z.object({
     .nullable(),
   arrivalDate: z.string().date(),
   durationDays: z.number().int().min(1).max(30),
-  budgetMad: z.number().int().min(100).max(500_000),
+  budgetMad: z.number().int().min(1_000).max(500_000).optional(),
   travelerType: travelerTypeSchema,
   travelStyle: travelStyleSchema,
 });
