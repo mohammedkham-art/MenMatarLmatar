@@ -220,31 +220,49 @@ const countryRegionFixes: Record<string, string> = {
 
 const countryVisaTypeFixes: Partial<Record<string, VisaType>> = {
   BA: 'visa_required',
+  DK: 'visa_required',
   DZ: 'visa_required',
+  ES: 'visa_required',
+  FR: 'visa_required',
+  GB: 'visa_required',
   IT: 'visa_required',
   ME: 'visa_required',
   MK: 'visa_required',
+  NL: 'visa_required',
   PE: 'visa_required',
+  PT: 'visa_required',
   RS: 'visa_required',
 };
 
 const countryMaxStayDaysFixes: Partial<Record<string, number | null>> = {
   BA: null,
+  DK: null,
   DZ: null,
+  ES: null,
+  FR: null,
+  GB: null,
   IT: null,
   ME: null,
   MK: null,
+  NL: null,
   PE: null,
+  PT: null,
   RS: null,
 };
 
 const countryNotesFixes: Record<string, string> = {
   BA: 'Visa requis ou exemption uniquement sous conditions particulières. À vérifier auprès des autorités de Bosnie-Herzégovine avant le départ.',
+  DK: 'Visa Schengen requis pour les voyageurs marocains. À vérifier auprès des sources officielles avant réservation ou départ.',
   DZ: 'Visa obligatoire pour les voyageurs marocains. À vérifier auprès des autorités consulaires algériennes avant le départ.',
+  ES: 'Visa Schengen requis pour les voyageurs marocains. À vérifier auprès des sources officielles avant réservation ou départ.',
+  FR: 'Visa Schengen requis pour les voyageurs marocains. À vérifier auprès des sources officielles avant réservation ou départ.',
+  GB: 'Visa ou autorisation d’entrée requis selon le profil du voyageur marocain. À vérifier auprès des sources officielles avant réservation ou départ.',
   IT: 'Visa Schengen requis pour les voyageurs marocains. À vérifier auprès des sources officielles avant réservation ou départ.',
   ME: 'Visa requis pour les passeports marocains ordinaires, sauf exemptions conditionnelles avec certains visas ou titres de séjour. À vérifier avant le départ.',
   MK: 'Visa requis pour les passeports marocains ordinaires, sauf exemptions conditionnelles avec certains visas ou titres de séjour. À vérifier avant le départ.',
+  NL: 'Visa Schengen requis pour les voyageurs marocains. À vérifier auprès des sources officielles avant réservation ou départ.',
   PE: 'Visa requis selon les sources de référence consultées. À vérifier auprès des autorités consulaires péruviennes avant le départ.',
+  PT: 'Visa Schengen requis pour les voyageurs marocains. À vérifier auprès des sources officielles avant réservation ou départ.',
   RS: 'Visa requis pour les passeports marocains ordinaires. À vérifier auprès des autorités serbes avant le départ.',
 };
 

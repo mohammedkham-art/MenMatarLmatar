@@ -64,7 +64,13 @@ type CountryVisaRow = {
 };
 
 const dealVisaTypeFixes: Partial<Record<string, DealVisaType>> = {
+  DK: 'visa_required',
+  ES: 'visa_required',
+  FR: 'visa_required',
+  GB: 'visa_required',
   IT: 'visa_required',
+  NL: 'visa_required',
+  PT: 'visa_required',
 };
 
 function getDealVisaType(countryCode: string, visaType: DealVisaType | null) {
