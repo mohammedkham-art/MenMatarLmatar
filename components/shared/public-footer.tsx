@@ -30,27 +30,27 @@ const socialLinks = [
 export function PublicFooter() {
   return (
     <footer className="bg-background/92 border-t">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-6 py-8 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+      <div className="mx-auto w-full max-w-6xl px-6 py-8">
+        <div className="max-w-xl">
           <p className="text-sm font-black text-primary">Men Matar L Matar</p>
           <p className="mt-1 text-sm text-muted-foreground">
             Destinations, visas et bons plans pour voyageurs marocains.
           </p>
-        </div>
 
-        <div className="flex items-center gap-3">
-          {socialLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={link.label}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border bg-background text-primary shadow-sm transition hover:-translate-y-0.5 hover:border-primary/35 hover:bg-muted"
-            >
-              {link.icon}
-            </Link>
-          ))}
+          <div className="mt-4 flex items-center gap-3">
+            {socialLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={link.label}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border bg-background text-primary shadow-sm transition hover:-translate-y-0.5 hover:border-primary/35 hover:bg-muted"
+              >
+                {link.icon}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </footer>
