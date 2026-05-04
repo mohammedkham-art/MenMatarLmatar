@@ -63,16 +63,27 @@ type CountryVisaRow = {
   visa_type: DealVisaType | null;
 };
 
-function getRelatedVisaType(country: DealRow['countries']) {
+const dealVisaTypeFixes: Partial<Record<string, DealVisaType>> = {
+  IT: 'visa_required',
+};
+
+function getDealVisaType(countryCode: string, visaType: DealVisaType | null) {
+  return dealVisaTypeFixes[countryCode] ?? visaType;
+}
+
+function getRelatedVisaType(
+  countryCode: string,
+  country: DealRow['countries'],
+) {
   if (!country) {
-    return null;
+    return getDealVisaType(countryCode, null);
   }
 
   if (Array.isArray(country)) {
-    return country[0]?.visa_type ?? null;
+    return getDealVisaType(countryCode, country[0]?.visa_type ?? null);
   }
 
-  return country.visa_type;
+  return getDealVisaType(countryCode, country.visa_type);
 }
 
 function mapDealRow(deal: DealRow, visaType: DealVisaType | null): Deal {
@@ -140,7 +151,7 @@ export async function getDeals(): Promise<Deal[]> {
 
   if (!primaryResult.error) {
     return primaryResult.data.map((deal) =>
-      mapDealRow(deal, getRelatedVisaType(deal.countries)),
+      mapDealRow(deal, getRelatedVisaType(deal.country_code, deal.countries)),
     );
   }
 
@@ -157,7 +168,7 @@ export async function getDeals(): Promise<Deal[]> {
 
   if (!relationFallbackResult.error) {
     return relationFallbackResult.data.map((deal) =>
-      mapDealRow(deal, getRelatedVisaType(deal.countries)),
+      mapDealRow(deal, getRelatedVisaType(deal.country_code, deal.countries)),
     );
   }
 
@@ -181,6 +192,12 @@ export async function getDeals(): Promise<Deal[]> {
   );
 
   return fallbackResult.data.map((deal) =>
-    mapDealRow(deal, visaTypesByCountryCode.get(deal.country_code) ?? null),
+    mapDealRow(
+      deal,
+      getDealVisaType(
+        deal.country_code,
+        visaTypesByCountryCode.get(deal.country_code) ?? null,
+      ),
+    ),
   );
 }

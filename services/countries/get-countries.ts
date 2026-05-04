@@ -221,6 +221,7 @@ const countryRegionFixes: Record<string, string> = {
 const countryVisaTypeFixes: Partial<Record<string, VisaType>> = {
   BA: 'visa_required',
   DZ: 'visa_required',
+  IT: 'visa_required',
   ME: 'visa_required',
   MK: 'visa_required',
   PE: 'visa_required',
@@ -230,6 +231,7 @@ const countryVisaTypeFixes: Partial<Record<string, VisaType>> = {
 const countryMaxStayDaysFixes: Partial<Record<string, number | null>> = {
   BA: null,
   DZ: null,
+  IT: null,
   ME: null,
   MK: null,
   PE: null,
@@ -239,6 +241,7 @@ const countryMaxStayDaysFixes: Partial<Record<string, number | null>> = {
 const countryNotesFixes: Record<string, string> = {
   BA: 'Visa requis ou exemption uniquement sous conditions particulières. À vérifier auprès des autorités de Bosnie-Herzégovine avant le départ.',
   DZ: 'Visa obligatoire pour les voyageurs marocains. À vérifier auprès des autorités consulaires algériennes avant le départ.',
+  IT: 'Visa Schengen requis pour les voyageurs marocains. À vérifier auprès des sources officielles avant réservation ou départ.',
   ME: 'Visa requis pour les passeports marocains ordinaires, sauf exemptions conditionnelles avec certains visas ou titres de séjour. À vérifier avant le départ.',
   MK: 'Visa requis pour les passeports marocains ordinaires, sauf exemptions conditionnelles avec certains visas ou titres de séjour. À vérifier avant le départ.',
   PE: 'Visa requis selon les sources de référence consultées. À vérifier auprès des autorités consulaires péruviennes avant le départ.',
