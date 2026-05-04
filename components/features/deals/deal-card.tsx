@@ -51,7 +51,7 @@ function getFreshness(deal: Deal) {
     };
   }
 
-  if (diffHours < 24) {
+  if (diffHours <= 48) {
     return {
       label: 'Prix repéré récemment',
       className: 'text-emerald-700',
@@ -59,8 +59,8 @@ function getFreshness(deal: Deal) {
   }
 
   return {
-    label: `Vérifié il y a ${diffHours} heures`,
-    className: 'text-muted-foreground',
+    label: 'À vérifier',
+    className: 'text-orange-700',
   };
 }
 
