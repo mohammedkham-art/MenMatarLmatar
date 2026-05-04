@@ -443,16 +443,22 @@ function SimulationPreview({
   if (isLoading) {
     return (
       <aside className="rounded-2xl border bg-muted/50 p-6 shadow-sm">
-        <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-          IA voyage
-        </p>
-        <h2 className="mt-4 text-3xl font-bold tracking-tight">
-          Préparation de ton programme
-        </h2>
-        <p className="mt-4 leading-7 text-muted-foreground">
-          L’itinéraire, le budget et les conseils passeport sont en cours de
-          génération.
-        </p>
+        <div className="flex min-h-[18rem] flex-col items-center justify-center text-center">
+          <div
+            className="h-14 w-14 animate-spin rounded-full border-4 border-primary/20 border-t-primary"
+            aria-hidden="true"
+          />
+          <p className="mt-6 text-sm font-semibold uppercase tracking-widest text-primary">
+            IA voyage
+          </p>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight">
+            Préparation de ton programme
+          </h2>
+          <p className="mt-4 max-w-md leading-7 text-muted-foreground">
+            Merci de patienter quelques secondes pendant que l’IA prépare ton
+            itinéraire, ton budget et tes conseils passeport.
+          </p>
+        </div>
       </aside>
     );
   }

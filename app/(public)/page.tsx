@@ -224,8 +224,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <VisaDestinationsSection countries={countries} />
-
       {homepageDeals.length > 0 && (
         <section className="border-y bg-muted/40">
           <div className="mx-auto max-w-6xl px-6 py-16">
@@ -256,6 +254,8 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      <VisaDestinationsSection countries={countries} />
 
       <SimulatorSection />
 
