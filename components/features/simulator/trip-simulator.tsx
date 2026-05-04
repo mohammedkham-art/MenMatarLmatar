@@ -20,6 +20,7 @@ type TripSimulatorProps = {
 type SimulatorApiResponse = {
   plan?: TripSimulationResult;
   error?: string;
+  code?: string;
 };
 
 const travelerTypeOptions: Array<{
@@ -75,7 +76,9 @@ async function requestTripSimulation(params: TripSimulationRequest) {
     },
     body: JSON.stringify(params),
   });
-  const payload = (await response.json()) as SimulatorApiResponse;
+  const payload = (await response
+    .json()
+    .catch(() => ({}))) as SimulatorApiResponse;
 
   if (!response.ok || !payload.plan) {
     throw new Error(
@@ -248,6 +251,7 @@ export function TripSimulator({ destinations }: TripSimulatorProps) {
 
       <SimulationPreview
         isLoading={simulationMutation.isPending}
+        error={simulationMutation.error?.message ?? null}
         result={simulationMutation.data ?? null}
       />
     </div>
@@ -427,10 +431,15 @@ function SegmentedControl<TValue extends string>({
 
 type SimulationPreviewProps = {
   isLoading: boolean;
+  error: string | null;
   result: TripSimulationResult | null;
 };
 
-function SimulationPreview({ isLoading, result }: SimulationPreviewProps) {
+function SimulationPreview({
+  isLoading,
+  error,
+  result,
+}: SimulationPreviewProps) {
   if (isLoading) {
     return (
       <aside className="rounded-2xl border bg-muted/50 p-6 shadow-sm">
@@ -443,6 +452,24 @@ function SimulationPreview({ isLoading, result }: SimulationPreviewProps) {
         <p className="mt-4 leading-7 text-muted-foreground">
           L’itinéraire, le budget et les conseils passeport sont en cours de
           génération.
+        </p>
+      </aside>
+    );
+  }
+
+  if (error) {
+    return (
+      <aside className="rounded-2xl border bg-muted/50 p-6 shadow-sm">
+        <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+          Simulateur IA
+        </p>
+        <h2 className="mt-4 text-3xl font-bold tracking-tight">
+          La simulation n’a pas abouti
+        </h2>
+        <p className="mt-4 leading-7 text-muted-foreground">{error}</p>
+        <p className="mt-4 rounded-xl border bg-background p-4 text-sm leading-6 text-muted-foreground">
+          Tu peux relancer avec une durée plus courte, un budget légèrement
+          différent ou réessayer dans quelques instants.
         </p>
       </aside>
     );
@@ -519,6 +546,11 @@ function SimulationPreview({ isLoading, result }: SimulationPreviewProps) {
       <TipsBlock title="Conseils transport" tips={result.transportTips} />
       <TipsBlock title="Conseils repas" tips={result.foodTips} />
       <TipsBlock title="Passeport marocain" tips={result.passportVisaNotes} />
+      <p className="mt-6 rounded-xl border bg-background p-4 text-xs leading-6 text-muted-foreground">
+        Ces conseils sont une première estimation. Vérifie toujours les règles
+        visa, passeport, transit et entrée auprès des sources officielles avant
+        de réserver ou de partir.
+      </p>
     </aside>
   );
 }

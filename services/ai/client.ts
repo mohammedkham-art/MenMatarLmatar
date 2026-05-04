@@ -15,8 +15,30 @@ type OpenAIResponsesPayload = {
   }>;
   error?: {
     message?: string;
+    type?: string;
+    code?: string;
   };
 };
+
+export type TripPlanGenerationErrorCode =
+  | 'missing_api_key'
+  | 'invalid_api_key'
+  | 'rate_limited'
+  | 'timeout'
+  | 'invalid_response'
+  | 'provider_error';
+
+export class TripPlanGenerationError extends Error {
+  constructor(
+    public readonly code: TripPlanGenerationErrorCode,
+    public readonly publicMessage: string,
+    public readonly status = 500,
+    message = publicMessage,
+  ) {
+    super(message);
+    this.name = 'TripPlanGenerationError';
+  }
+}
 
 const responseJsonSchema = {
   type: 'object',
@@ -154,36 +176,14 @@ function getBudgetContext(params: TripSimulationRequest) {
 
 function buildPrompt(params: TripSimulationRequest) {
   return [
-    'Génère un plan de voyage très utile pour un voyageur marocain.',
-    'Réponds uniquement en français simple, chaleureux, pratique et UTF-8 propre.',
-    'Ne produis jamais de texte générique: cite des vrais quartiers, monuments, marchés, musées, plages, points de vue ou expériences connus de la destination.',
-    'Ne prétends pas avoir consulté des données en direct. Les prix sont des estimations plausibles, pas des tarifs garantis.',
-    'Tous les montants doivent être en dirhams marocains MAD. Convertis mentalement depuis les prix locaux si nécessaire et reste cohérent avec le budget total.',
-    'Adapte fortement les choix au budget, au type de voyageur et au style demandé. Un petit budget doit donner des alternatives simples, pas des activités premium.',
-    'Pense comme un voyageur marocain: coût global, visa, passeport, sécurité, quartiers pratiques, transport depuis l’aéroport, bagages, repas halal ou faciles à trouver quand pertinent, marge pour imprévus et paiement cash/carte.',
-    'Pour les visas et passeports, utilise seulement le contexte fourni et recommande de vérifier les sources officielles avant réservation.',
-    '',
-    'Qualité attendue du plan:',
-    '- Chaque journée doit avoir un titre et des activités concrètes matin, après-midi et soir.',
-    '- Les activités doivent former un itinéraire logique par zone pour éviter les allers-retours coûteux.',
-    '- Mentionne des spots touristiques réels et des expériences locales précises.',
-    '- Ajoute pour chaque jour un budgetTip concret avec une estimation ou une optimisation en MAD.',
-    '- Le summary doit expliquer le style du voyage en 2 à 4 phrases utiles.',
-    '',
-    'Conseils transport:',
-    '- Inclure au moins un conseil aéroport → centre-ville avec option économique et option confortable.',
-    '- Mentionner métro, bus, tram, train, taxi officiel ou applications VTC si pertinent pour la destination.',
-    '- Donner des conseils pratiques: éviter taxis non officiels, vérifier prix avant départ, acheter carte transport, garder marge pour l’aéroport.',
-    '',
-    'Conseils repas:',
-    '- Citer des plats locaux ou types de repas à essayer.',
-    '- Séparer clairement options économiques et options plus confortables.',
-    '- Donner des astuces pour manger bien sans exploser le budget.',
-    '',
-    'Conseils budget:',
-    '- Si le budget est trop bas, le dire clairement dans budgetWarning et proposer des optimisations.',
-    '- Répartir le budget en logement, nourriture, transport local, activités et marge.',
-    '- Les chiffres doivent être réalistes et la somme de la répartition doit rester proche du budget total.',
+    'Génère un plan de voyage utile pour un voyageur marocain, en français simple et pratique.',
+    'Réponds en JSON strict selon le schéma. Ne prétends pas consulter des données en direct.',
+    'Prix: estimations plausibles en MAD, cohérentes avec le budget total.',
+    'Contenu: vrais quartiers, monuments, marchés, musées, plages, points de vue ou expériences connues.',
+    'Itinéraire: journées concrètes, zones logiques, peu d’allers-retours, budgetTip précis en MAD.',
+    'Transport: conseil aéroport vers centre-ville, option économique, option confortable, taxis officiels ou transports publics si pertinent.',
+    'Repas: plats locaux, options économiques et confortables, astuces pour maîtriser le budget.',
+    'Visa/passeport: utilise seulement le contexte fourni et recommande toujours de vérifier les sources officielles avant réservation ou départ.',
     '',
     `Destination: ${params.destinationCity}, ${params.destinationCountry}`,
     `Code pays: ${params.destinationCountryCode ?? 'non fourni'}`,
@@ -195,6 +195,10 @@ function buildPrompt(params: TripSimulationRequest) {
     `Style: ${params.travelStyle}`,
     `Contexte visa: ${getVisaContext(params)}`,
   ].join('\n');
+}
+
+function getMaxOutputTokens(durationDays: number) {
+  return Math.min(4_500, Math.max(1_800, 1_200 + durationDays * 140));
 }
 
 function extractResponseText(payload: OpenAIResponsesPayload) {
@@ -210,36 +214,82 @@ export async function generateTripPlan(
   const apiKey = env.OPENAI_API_KEY ?? env.AI_API_KEY;
 
   if (!apiKey) {
-    throw new Error('OPENAI_API_KEY is required to generate a trip plan.');
+    throw new TripPlanGenerationError(
+      'missing_api_key',
+      "Le simulateur IA n'est pas encore configuré. Ajoute OPENAI_API_KEY sur Vercel puis réessaie.",
+      503,
+      'OPENAI_API_KEY or AI_API_KEY is required to generate a trip plan.',
+    );
   }
 
-  const response = await fetch('https://api.openai.com/v1/responses', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: env.OPENAI_MODEL ?? 'gpt-4o-mini',
-      instructions:
-        'Tu es l’assistant voyage de Men Matar L Matar, une app SaaS pour voyageurs marocains. Tu produis des itinéraires concrets, prudents, bien budgétés et directement utilisables. Tu respectes strictement le schéma JSON demandé.',
-      input: buildPrompt(params),
-      max_output_tokens: 2200,
-      text: {
-        format: {
-          type: 'json_schema',
-          name: 'trip_simulation',
-          strict: true,
-          schema: responseJsonSchema,
-        },
+  let response: Response;
+
+  try {
+    response = await fetch('https://api.openai.com/v1/responses', {
+      method: 'POST',
+      signal: AbortSignal.timeout(30_000),
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
       },
-    }),
-  });
+      body: JSON.stringify({
+        model: env.OPENAI_MODEL ?? 'gpt-4.1-mini',
+        instructions:
+          'Tu es l’assistant voyage de Men Matar L Matar, une app SaaS pour voyageurs marocains. Produis des itinéraires concrets, prudents, bien budgétés et directement utilisables. Respecte strictement le schéma JSON demandé.',
+        input: buildPrompt(params),
+        max_output_tokens: getMaxOutputTokens(params.durationDays),
+        text: {
+          format: {
+            type: 'json_schema',
+            name: 'trip_simulation',
+            strict: true,
+            schema: responseJsonSchema,
+          },
+        },
+      }),
+    });
+  } catch (error) {
+    if (error instanceof Error && error.name === 'TimeoutError') {
+      throw new TripPlanGenerationError(
+        'timeout',
+        'Le simulateur met trop de temps à répondre. Essaie avec une durée plus courte ou relance dans quelques secondes.',
+        504,
+      );
+    }
+
+    throw new TripPlanGenerationError(
+      'provider_error',
+      'Le simulateur IA est momentanément indisponible. Réessaie dans quelques instants.',
+      502,
+      error instanceof Error ? error.message : undefined,
+    );
+  }
 
   const payload = (await response.json()) as OpenAIResponsesPayload;
 
   if (!response.ok) {
-    throw new Error(
+    if (response.status === 401 || response.status === 403) {
+      throw new TripPlanGenerationError(
+        'invalid_api_key',
+        'La clé OpenAI du simulateur est refusée. Vérifie OPENAI_API_KEY côté Vercel.',
+        503,
+        payload.error?.message,
+      );
+    }
+
+    if (response.status === 429) {
+      throw new TripPlanGenerationError(
+        'rate_limited',
+        'Le quota IA est temporairement atteint. Réessaie dans quelques minutes.',
+        429,
+        payload.error?.message,
+      );
+    }
+
+    throw new TripPlanGenerationError(
+      'provider_error',
+      "Le simulateur IA n'a pas pu générer ce voyage. Réessaie avec un budget ou une durée légèrement différente.",
+      502,
       payload.error?.message ?? 'OpenAI trip generation request failed.',
     );
   }
@@ -247,8 +297,22 @@ export async function generateTripPlan(
   const responseText = extractResponseText(payload);
 
   if (!responseText) {
-    throw new Error('OpenAI returned an empty trip plan.');
+    throw new TripPlanGenerationError(
+      'invalid_response',
+      'Le simulateur a reçu une réponse vide. Relance la simulation dans quelques secondes.',
+      502,
+      'OpenAI returned an empty trip plan.',
+    );
   }
 
-  return tripSimulationResultSchema.parse(JSON.parse(responseText));
+  try {
+    return tripSimulationResultSchema.parse(JSON.parse(responseText));
+  } catch (error) {
+    throw new TripPlanGenerationError(
+      'invalid_response',
+      'Le simulateur a reçu une réponse incomplète. Réessaie avec une durée plus courte.',
+      502,
+      error instanceof Error ? error.message : undefined,
+    );
+  }
 }
