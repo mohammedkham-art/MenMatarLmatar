@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { DealsList } from '@/components/features/deals/deals-list';
 import { PublicHeader } from '@/components/shared/public-header';
 import { getDeals } from '@/services/deals/get-deals';
