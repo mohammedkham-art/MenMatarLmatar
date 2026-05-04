@@ -4,11 +4,12 @@ import { PublicFooter } from '@/components/shared/public-footer';
 import { PublicHeader } from '@/components/shared/public-header';
 import { fallbackDestinations } from '@/services/destinations/fallback-destinations';
 import { getDestinations } from '@/services/destinations/get-destinations';
+import { getSimulatorDestinations } from '@/services/destinations/simulator-extra-destinations';
 
 export default async function SimulatorPage() {
-  const destinations = (
-    await getDestinations().catch(() => fallbackDestinations)
-  ).filter((destination) => destination.visaType !== 'visa_required');
+  const destinations = getSimulatorDestinations(
+    await getDestinations().catch(() => fallbackDestinations),
+  );
 
   return (
     <main className="min-h-screen">

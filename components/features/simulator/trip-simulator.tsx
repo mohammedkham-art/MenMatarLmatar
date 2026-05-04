@@ -42,6 +42,20 @@ const travelStyleOptions: Array<{
   { label: 'Confortable', value: 'comfortable' },
 ];
 
+const visaLabels: Record<NonNullable<Destination['visaType']>, string> = {
+  visa_free: 'Sans visa',
+  evisa: 'eVisa',
+  on_arrival: 'Visa à l’arrivée',
+  visa_required: 'Visa requis - à vérifier',
+};
+
+const visaBadgeStyles: Record<NonNullable<Destination['visaType']>, string> = {
+  visa_free: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+  evisa: 'bg-blue-50 text-blue-700 ring-blue-200',
+  on_arrival: 'bg-orange-50 text-orange-700 ring-orange-200',
+  visa_required: 'bg-red-50 text-red-700 ring-red-200',
+};
+
 function getDestinationLabel(destination: Destination) {
   return `${destination.city}, ${destination.country}`;
 }
@@ -338,7 +352,16 @@ function DestinationAutocomplete({
       />
 
       {selectedDestination && (
-        <input type="hidden" value={selectedDestination.id} readOnly />
+        <>
+          <input type="hidden" value={selectedDestination.id} readOnly />
+          {selectedDestination.visaType && (
+            <span
+              className={`mt-2 inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${visaBadgeStyles[selectedDestination.visaType]}`}
+            >
+              {visaLabels[selectedDestination.visaType]}
+            </span>
+          )}
+        </>
       )}
 
       {(shouldShowSuggestions || shouldShowEmptyState) && (
@@ -363,6 +386,13 @@ function DestinationAutocomplete({
                       : ''}
                   </span>
                 </span>
+                {destination.visaType && (
+                  <span
+                    className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${visaBadgeStyles[destination.visaType]}`}
+                  >
+                    {visaLabels[destination.visaType]}
+                  </span>
+                )}
               </button>
             ))}
 
