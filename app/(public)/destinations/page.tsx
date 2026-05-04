@@ -1,5 +1,7 @@
 import { CountriesList } from '@/components/features/countries/countries-list';
+import { PublicFooter } from '@/components/shared/public-footer';
 import { PublicHeader } from '@/components/shared/public-header';
+import { fallbackCountries } from '@/services/countries/fallback-countries';
 import { getCountries } from '@/services/countries/get-countries';
 import type { VisaType } from '@/services/countries/get-countries';
 
@@ -29,7 +31,7 @@ export default async function DestinationsPage({
   searchParams,
 }: DestinationsPageProps) {
   const params = await searchParams;
-  const countries = await getCountries();
+  const countries = await getCountries().catch(() => fallbackCountries);
   const initialFilter = getInitialVisaFilter(params?.visa);
 
   return (

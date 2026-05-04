@@ -1,10 +1,11 @@
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 import { DealsList } from '@/components/features/deals/deals-list';
+import { PublicFooter } from '@/components/shared/public-footer';
 import { PublicHeader } from '@/components/shared/public-header';
 import { getDeals } from '@/services/deals/get-deals';
 
 export default async function DealsPage() {
-  const deals = await getDeals();
+  const deals = await getDeals().catch(() => []);
 
   return (
     <main className="min-h-screen">

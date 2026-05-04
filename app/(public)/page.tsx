@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -6,10 +6,11 @@ import { DealCard } from '@/components/features/deals/deal-card';
 import { AiSimulatorFloatingCta } from '@/components/features/home/ai-simulator-floating-cta';
 import { VisaDestinationsSection } from '@/components/features/home/visa-destinations-section';
 import { SimulatorSection } from '@/components/features/simulator/simulator-section';
+import { PublicFooter } from '@/components/shared/public-footer';
 import { PublicHeader } from '@/components/shared/public-header';
+import { fallbackCountries } from '@/services/countries/fallback-countries';
 import { getCountries } from '@/services/countries/get-countries';
 import { getDeals } from '@/services/deals/get-deals';
-
 
 const flightBoardRows = [
   { code: 'IST', city: 'Istanbul', visa: 'Sans visa' },
@@ -43,15 +44,16 @@ function getRefreshItem<T>(items: T[]) {
 
 export default async function HomePage() {
   const [countriesResult, dealsResult] = await Promise.allSettled([
-  getCountries(),
-  getDeals(),
-]);
+    getCountries(),
+    getDeals(),
+  ]);
 
-const countries =
-  countriesResult.status === "fulfilled" ? countriesResult.value : [];
+  const countries =
+    countriesResult.status === 'fulfilled'
+      ? countriesResult.value
+      : fallbackCountries;
 
-const deals =
-  dealsResult.status === "fulfilled" ? dealsResult.value : [];
+  const deals = dealsResult.status === 'fulfilled' ? dealsResult.value : [];
   const visaStats = [
     {
       label: 'Sans visa',

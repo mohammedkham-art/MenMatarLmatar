@@ -1,6 +1,10 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
+import {
+  adminSessionCookieName,
+  verifyAdminSessionToken,
+} from '@/lib/auth/admin-session';
 import { clientEnv } from '@/lib/validators/env';
 
 type CookieToSet = {
@@ -9,7 +13,38 @@ type CookieToSet = {
   options: CookieOptions;
 };
 
+async function protectAdminRoute(request: NextRequest) {
+  if (!request.nextUrl.pathname.startsWith('/admin')) {
+    return null;
+  }
+
+  if (request.nextUrl.pathname === '/admin/login') {
+    return null;
+  }
+
+  const isAllowed = await verifyAdminSessionToken(
+    request.cookies.get(adminSessionCookieName)?.value,
+    process.env.ADMIN_PASSWORD,
+  );
+
+  if (isAllowed) {
+    return null;
+  }
+
+  const loginUrl = request.nextUrl.clone();
+  loginUrl.pathname = '/admin/login';
+  loginUrl.search = '';
+
+  return NextResponse.redirect(loginUrl);
+}
+
 export async function middleware(request: NextRequest) {
+  const adminResponse = await protectAdminRoute(request);
+
+  if (adminResponse) {
+    return adminResponse;
+  }
+
   let response = NextResponse.next({
     request,
   });

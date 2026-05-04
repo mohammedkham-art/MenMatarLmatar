@@ -1,10 +1,14 @@
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 import { TripSimulator } from '@/components/features/simulator/trip-simulator';
+import { PublicFooter } from '@/components/shared/public-footer';
 import { PublicHeader } from '@/components/shared/public-header';
+import { fallbackDestinations } from '@/services/destinations/fallback-destinations';
 import { getDestinations } from '@/services/destinations/get-destinations';
 
 export default async function SimulatorPage() {
-  const destinations = await getDestinations();
+  const destinations = await getDestinations().catch(
+    () => fallbackDestinations,
+  );
 
   return (
     <main className="min-h-screen">

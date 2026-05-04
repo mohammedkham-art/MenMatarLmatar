@@ -1,0 +1,58 @@
+import type { Destination } from '@/services/destinations/get-destinations';
+
+export const fallbackDestinations: Destination[] = [
+  {
+    id: 'fallback-destination-istanbul',
+    city: 'Istanbul',
+    country: 'Turquie',
+    countryCode: 'TR',
+    region: 'Europe / Asie',
+    visaType: 'visa_free',
+    isFeatured: true,
+  },
+  {
+    id: 'fallback-destination-bangkok',
+    city: 'Bangkok',
+    country: 'Thaïlande',
+    countryCode: 'TH',
+    region: 'Asie du Sud-Est',
+    visaType: 'visa_free',
+    isFeatured: true,
+  },
+  {
+    id: 'fallback-destination-tunis',
+    city: 'Tunis',
+    country: 'Tunisie',
+    countryCode: 'TN',
+    region: 'Afrique du Nord',
+    visaType: 'visa_free',
+    isFeatured: true,
+  },
+  {
+    id: 'fallback-destination-dubai',
+    city: 'Dubaï',
+    country: 'Émirats arabes unis',
+    countryCode: 'AE',
+    region: 'Moyen-Orient',
+    visaType: 'evisa',
+    isFeatured: true,
+  },
+  {
+    id: 'fallback-destination-manama',
+    city: 'Manama',
+    country: 'Bahreïn',
+    countryCode: 'BH',
+    region: 'Moyen-Orient',
+    visaType: 'evisa',
+    isFeatured: false,
+  },
+  {
+    id: 'fallback-destination-mahe',
+    city: 'Mahé',
+    country: 'Seychelles',
+    countryCode: 'SC',
+    region: 'Afrique de l’Est',
+    visaType: 'on_arrival',
+    isFeatured: true,
+  },
+];
