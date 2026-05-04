@@ -1,0 +1,128 @@
+[
+  {
+    "code": "CMN",
+    "name": "Mohammed V International Airport",
+    "city": "Casablanca",
+    "country": "Maroc"
+  },
+  {
+    "code": "RAK",
+    "name": "Marrakech Menara Airport",
+    "city": "Marrakech",
+    "country": "Maroc"
+  },
+  {
+    "code": "AGA",
+    "name": "Agadir Al Massira Airport",
+    "city": "Agadir",
+    "country": "Maroc"
+  },
+  {
+    "code": "TNG",
+    "name": "Tangier Ibn Battouta Airport",
+    "city": "Tanger",
+    "country": "Maroc"
+  },
+  {
+    "code": "FEZ",
+    "name": "Fes Sais Airport",
+    "city": "Fes",
+    "country": "Maroc"
+  },
+  {
+    "code": "RBA",
+    "name": "Rabat-Sale Airport",
+    "city": "Rabat",
+    "country": "Maroc"
+  },
+  {
+    "code": "ORY",
+    "name": "Paris Orly Airport",
+    "city": "Paris",
+    "country": "France"
+  },
+  {
+    "code": "CDG",
+    "name": "Charles de Gaulle Airport",
+    "city": "Paris",
+    "country": "France"
+  },
+  {
+    "code": "BCN",
+    "name": "Barcelona-El Prat Airport",
+    "city": "Barcelone",
+    "country": "Espagne"
+  },
+  {
+    "code": "MAD",
+    "name": "Adolfo Suarez Madrid-Barajas Airport",
+    "city": "Madrid",
+    "country": "Espagne"
+  },
+  {
+    "code": "LIS",
+    "name": "Humberto Delgado Airport",
+    "city": "Lisbonne",
+    "country": "Portugal"
+  },
+  {
+    "code": "IST",
+    "name": "Istanbul Airport",
+    "city": "Istanbul",
+    "country": "Turquie"
+  },
+  {
+    "code": "SAW",
+    "name": "Sabiha Gokcen International Airport",
+    "city": "Istanbul",
+    "country": "Turquie"
+  },
+  {
+    "code": "DXB",
+    "name": "Dubai International Airport",
+    "city": "Dubai",
+    "country": "Emirats arabes unis"
+  },
+  {
+    "code": "DOH",
+    "name": "Hamad International Airport",
+    "city": "Doha",
+    "country": "Qatar"
+  },
+  {
+    "code": "JED",
+    "name": "King Abdulaziz International Airport",
+    "city": "Jeddah",
+    "country": "Arabie saoudite"
+  },
+  {
+    "code": "CAI",
+    "name": "Cairo International Airport",
+    "city": "Le Caire",
+    "country": "Egypte"
+  },
+  {
+    "code": "TUN",
+    "name": "Tunis-Carthage International Airport",
+    "city": "Tunis",
+    "country": "Tunisie"
+  },
+  {
+    "code": "DSS",
+    "name": "Blaise Diagne International Airport",
+    "city": "Dakar",
+    "country": "Senegal"
+  },
+  {
+    "code": "KUL",
+    "name": "Kuala Lumpur International Airport",
+    "city": "Kuala Lumpur",
+    "country": "Malaisie"
+  },
+  {
+    "code": "BKK",
+    "name": "Suvarnabhumi Airport",
+    "city": "Bangkok",
+    "country": "Thailande"
+  }
+]

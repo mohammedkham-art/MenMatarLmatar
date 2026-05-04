@@ -1,0 +1,87 @@
+{
+  "appCount": 94,
+  "appVisaFreeCount": 41,
+  "visaFreeMismatches": [
+    {
+      "code": "BA",
+      "name": "Bosnie-Herzégovine",
+      "visaType": "visa_free",
+      "maxStayDays": 90,
+      "reference": "not listed as visa-free by The Visa Index visa-free page"
+    },
+    {
+      "code": "CK",
+      "name": "Îles Cook",
+      "visaType": "visa_free",
+      "maxStayDays": 31,
+      "reference": "not listed as visa-free by The Visa Index visa-free page"
+    },
+    {
+      "code": "CV",
+      "name": "Cap-Vert",
+      "visaType": "visa_free",
+      "maxStayDays": 30,
+      "reference": "not listed as visa-free by The Visa Index visa-free page"
+    },
+    {
+      "code": "HK",
+      "name": "Hong Kong",
+      "visaType": "visa_free",
+      "maxStayDays": 30,
+      "reference": "not listed as visa-free by The Visa Index visa-free page"
+    },
+    {
+      "code": "ME",
+      "name": "Monténégro",
+      "visaType": "visa_free",
+      "maxStayDays": 90,
+      "reference": "not listed as visa-free by The Visa Index visa-free page"
+    },
+    {
+      "code": "MK",
+      "name": "Macédoine du Nord",
+      "visaType": "visa_free",
+      "maxStayDays": 90,
+      "reference": "not listed as visa-free by The Visa Index visa-free page"
+    },
+    {
+      "code": "MO",
+      "name": "Macao",
+      "visaType": "visa_free",
+      "maxStayDays": 90,
+      "reference": "not listed as visa-free by The Visa Index visa-free page"
+    },
+    {
+      "code": "NU",
+      "name": "Niue",
+      "visaType": "visa_free",
+      "maxStayDays": 30,
+      "reference": "not listed as visa-free by The Visa Index visa-free page"
+    },
+    {
+      "code": "PE",
+      "name": "Pérou",
+      "visaType": "visa_free",
+      "maxStayDays": 90,
+      "reference": "not listed as visa-free by The Visa Index visa-free page"
+    },
+    {
+      "code": "RS",
+      "name": "Serbie",
+      "visaType": "visa_free",
+      "maxStayDays": 90,
+      "reference": "not listed as visa-free by The Visa Index visa-free page"
+    }
+  ],
+  "missingVisaFreeCodesFromApp": [
+    "AD",
+    "AO",
+    "BF",
+    "DO",
+    "GH",
+    "KI",
+    "SM",
+    "SY",
+    "TG"
+  ]
+}

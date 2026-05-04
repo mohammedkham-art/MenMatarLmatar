@@ -1,0 +1,566 @@
+[
+  {
+    "code": "AE",
+    "name": "Émirats arabes unis",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "AL",
+    "name": "Albanie",
+    "visaType": "evisa",
+    "maxStayDays": 90
+  },
+  {
+    "code": "AM",
+    "name": "Arménie",
+    "visaType": "evisa",
+    "maxStayDays": 120
+  },
+  {
+    "code": "AU",
+    "name": "Australie",
+    "visaType": "evisa",
+    "maxStayDays": 90
+  },
+  {
+    "code": "AZ",
+    "name": "Azerbaïdjan",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "BA",
+    "name": "Bosnie-Herzégovine",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "BB",
+    "name": "Barbade",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "BH",
+    "name": "Bahreïn",
+    "visaType": "evisa",
+    "maxStayDays": 14
+  },
+  {
+    "code": "BJ",
+    "name": "Bénin",
+    "visaType": "visa_free",
+    "maxStayDays": 30
+  },
+  {
+    "code": "BO",
+    "name": "Bolivie",
+    "visaType": "evisa",
+    "maxStayDays": 90
+  },
+  {
+    "code": "BR",
+    "name": "Brésil",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "BZ",
+    "name": "Belize",
+    "visaType": "visa_free",
+    "maxStayDays": 30
+  },
+  {
+    "code": "CI",
+    "name": "Côte d’Ivoire",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "CK",
+    "name": "Îles Cook",
+    "visaType": "visa_free",
+    "maxStayDays": 31
+  },
+  {
+    "code": "CO",
+    "name": "Colombie",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "CV",
+    "name": "Cap-Vert",
+    "visaType": "visa_free",
+    "maxStayDays": 30
+  },
+  {
+    "code": "DJ",
+    "name": "Djibouti",
+    "visaType": "evisa",
+    "maxStayDays": 90
+  },
+  {
+    "code": "DM",
+    "name": "Dominique",
+    "visaType": "visa_free",
+    "maxStayDays": 21
+  },
+  {
+    "code": "DZ",
+    "name": "Algérie",
+    "visaType": "visa_required",
+    "maxStayDays": 90
+  },
+  {
+    "code": "EC",
+    "name": "Équateur",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "ET",
+    "name": "Éthiopie",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "FM",
+    "name": "Micronésie",
+    "visaType": "visa_free",
+    "maxStayDays": 30
+  },
+  {
+    "code": "GA",
+    "name": "Gabon",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "GD",
+    "name": "Grenade",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "GE",
+    "name": "Géorgie",
+    "visaType": "evisa",
+    "maxStayDays": 90
+  },
+  {
+    "code": "GM",
+    "name": "Gambie",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "GN",
+    "name": "Guinée",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "HK",
+    "name": "Hong Kong",
+    "visaType": "visa_free",
+    "maxStayDays": 30
+  },
+  {
+    "code": "HT",
+    "name": "Haïti",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "ID",
+    "name": "Indonésie",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "IN",
+    "name": "Inde",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "IR",
+    "name": "Iran",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "JO",
+    "name": "Jordanie",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "KE",
+    "name": "Kenya",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "KG",
+    "name": "Kirghizistan",
+    "visaType": "evisa",
+    "maxStayDays": 60
+  },
+  {
+    "code": "KH",
+    "name": "Cambodge",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "KM",
+    "name": "Comores",
+    "visaType": "evisa",
+    "maxStayDays": 45
+  },
+  {
+    "code": "KN",
+    "name": "Saint-Christophe-et-Niévès",
+    "visaType": "evisa",
+    "maxStayDays": 90
+  },
+  {
+    "code": "KR",
+    "name": "Corée du Sud",
+    "visaType": "on_arrival",
+    "maxStayDays": 90
+  },
+  {
+    "code": "KZ",
+    "name": "Kazakhstan",
+    "visaType": "visa_free",
+    "maxStayDays": 30
+  },
+  {
+    "code": "LA",
+    "name": "Laos",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "LB",
+    "name": "Liban",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "LK",
+    "name": "Sri Lanka",
+    "visaType": "on_arrival",
+    "maxStayDays": 30
+  },
+  {
+    "code": "LS",
+    "name": "Lesotho",
+    "visaType": "evisa",
+    "maxStayDays": 14
+  },
+  {
+    "code": "MD",
+    "name": "Moldavie",
+    "visaType": "evisa",
+    "maxStayDays": 90
+  },
+  {
+    "code": "ME",
+    "name": "Monténégro",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "MG",
+    "name": "Madagascar",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "MH",
+    "name": "Îles Marshall",
+    "visaType": "evisa",
+    "maxStayDays": 90
+  },
+  {
+    "code": "MK",
+    "name": "Macédoine du Nord",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "ML",
+    "name": "Mali",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "MM",
+    "name": "Birmanie",
+    "visaType": "evisa",
+    "maxStayDays": 28
+  },
+  {
+    "code": "MN",
+    "name": "Mongolie",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "MO",
+    "name": "Macao",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "MU",
+    "name": "Maurice",
+    "visaType": "evisa",
+    "maxStayDays": 60
+  },
+  {
+    "code": "MV",
+    "name": "Maldives",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "MW",
+    "name": "Malawi",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "MY",
+    "name": "Malaisie",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "MZ",
+    "name": "Mozambique",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "NE",
+    "name": "Niger",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "NP",
+    "name": "Népal",
+    "visaType": "evisa",
+    "maxStayDays": 90
+  },
+  {
+    "code": "NU",
+    "name": "Niue",
+    "visaType": "visa_free",
+    "maxStayDays": 30
+  },
+  {
+    "code": "NZ",
+    "name": "Nouvelle-Zélande",
+    "visaType": "evisa",
+    "maxStayDays": 90
+  },
+  {
+    "code": "OM",
+    "name": "Oman",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "PE",
+    "name": "Pérou",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "PH",
+    "name": "Philippines",
+    "visaType": "visa_free",
+    "maxStayDays": 30
+  },
+  {
+    "code": "PK",
+    "name": "Pakistan",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "PW",
+    "name": "Palaos",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "QA",
+    "name": "Qatar",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "RS",
+    "name": "Serbie",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "RU",
+    "name": "Russie",
+    "visaType": "evisa",
+    "maxStayDays": 16
+  },
+  {
+    "code": "RW",
+    "name": "Rwanda",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "SA",
+    "name": "Arabie saoudite",
+    "visaType": "evisa",
+    "maxStayDays": 90
+  },
+  {
+    "code": "SC",
+    "name": "Seychelles",
+    "visaType": "on_arrival",
+    "maxStayDays": 90
+  },
+  {
+    "code": "SG",
+    "name": "Singapour",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "SN",
+    "name": "Sénégal",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "SR",
+    "name": "Suriname",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "ST",
+    "name": "São Tomé-et-Príncipe",
+    "visaType": "visa_free",
+    "maxStayDays": 15
+  },
+  {
+    "code": "TH",
+    "name": "Thaïlande",
+    "visaType": "visa_free",
+    "maxStayDays": 60
+  },
+  {
+    "code": "TJ",
+    "name": "Tadjikistan",
+    "visaType": "evisa",
+    "maxStayDays": 45
+  },
+  {
+    "code": "TL",
+    "name": "Timor oriental",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "TN",
+    "name": "Tunisie",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "TO",
+    "name": "Tonga",
+    "visaType": "on_arrival",
+    "maxStayDays": 31
+  },
+  {
+    "code": "TR",
+    "name": "Turquie",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "TV",
+    "name": "Tuvalu",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "TW",
+    "name": "Taïwan",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "TZ",
+    "name": "Tanzanie",
+    "visaType": "evisa",
+    "maxStayDays": 90
+  },
+  {
+    "code": "UG",
+    "name": "Ouganda",
+    "visaType": "evisa",
+    "maxStayDays": 90
+  },
+  {
+    "code": "UZ",
+    "name": "Ouzbékistan",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "VC",
+    "name": "Saint-Vincent-et-les-Grenadines",
+    "visaType": "visa_free",
+    "maxStayDays": 30
+  },
+  {
+    "code": "VN",
+    "name": "Vietnam",
+    "visaType": "evisa",
+    "maxStayDays": 30
+  },
+  {
+    "code": "VU",
+    "name": "Vanuatu",
+    "visaType": "visa_free",
+    "maxStayDays": 30
+  },
+  {
+    "code": "WS",
+    "name": "Samoa",
+    "visaType": "evisa",
+    "maxStayDays": 60
+  },
+  {
+    "code": "ZM",
+    "name": "Zambie",
+    "visaType": "visa_free",
+    "maxStayDays": 90
+  },
+  {
+    "code": "ZW",
+    "name": "Zimbabwe",
+    "visaType": "evisa",
+    "maxStayDays": 90
+  }
+]
