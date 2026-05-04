@@ -16,7 +16,7 @@ const visaLabels: Record<DealVisaType, string> = {
   e_visa: 'eVisa',
   on_arrival: 'Visa à l’arrivée',
   visa_on_arrival: 'Visa à l’arrivée',
-  visa_required: '',
+  visa_required: 'Visa requis - à vérifier',
 };
 
 const visaBadgeStyles: Record<DealVisaType, string> = {
@@ -25,7 +25,7 @@ const visaBadgeStyles: Record<DealVisaType, string> = {
   e_visa: 'bg-blue-50 text-blue-700 ring-blue-200',
   on_arrival: 'bg-orange-50 text-orange-700 ring-orange-200',
   visa_on_arrival: 'bg-orange-50 text-orange-700 ring-orange-200',
-  visa_required: '',
+  visa_required: 'bg-red-50 text-red-700 ring-red-200',
 };
 
 function formatDate(date: string) {
@@ -71,8 +71,7 @@ export function DealCard({ deal }: DealCardProps) {
   const returnDate = deal.returnDate ? formatDate(deal.returnDate) : null;
   const formattedPrice = deal.priceMad.toLocaleString('fr-MA');
   const freshness = getFreshness(deal);
-  const visibleVisaType =
-    deal.visaType && deal.visaType !== 'visa_required' ? deal.visaType : null;
+  const visibleVisaType = deal.visaType;
 
   return (
     <article className="flex h-full flex-col rounded-xl border bg-background p-5 shadow-sm transition hover:border-primary/30 hover:shadow-md">
