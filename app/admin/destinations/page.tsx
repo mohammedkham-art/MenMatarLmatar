@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
 import { DeleteCountryButton } from '@/app/admin/destinations/delete-country-button';
+import { AdminHeaderActions } from '@/components/shared/admin-header-actions';
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import { countryAdminSchema } from '@/lib/validators/country';
 import type { Country, VisaType } from '@/services/countries/get-countries';
@@ -255,14 +256,12 @@ export default async function AdminDestinationsPage({
             compris le type de visa, la durée maximale et la source officielle.
           </p>
         </div>
-        <div className="flex flex-wrap gap-3 text-sm font-semibold">
-          <Link href="/admin/deals" className="text-primary">
-            Admin offres
-          </Link>
-          <Link href="/" className="text-primary">
-            Retour au site
-          </Link>
-        </div>
+        <AdminHeaderActions
+          links={[
+            { href: '/admin', label: 'Admin' },
+            { href: '/admin/deals', label: 'Offres' },
+          ]}
+        />
       </header>
 
       {successMessage && (

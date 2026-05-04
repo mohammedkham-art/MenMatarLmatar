@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import { AdminHeaderActions } from '@/components/shared/admin-header-actions';
+
 const adminSections = [
   {
     title: 'Destinations',
@@ -31,9 +33,7 @@ export default function AdminPage() {
           </p>
         </div>
 
-        <Link href="/" className="text-sm font-semibold text-primary">
-          Retour au site
-        </Link>
+        <AdminHeaderActions />
       </header>
 
       <section className="mt-10 grid gap-5 md:grid-cols-2">

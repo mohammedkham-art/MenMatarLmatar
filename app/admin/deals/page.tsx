@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
 import { DeleteDealButton } from '@/app/admin/deals/delete-deal-button';
+import { AdminHeaderActions } from '@/components/shared/admin-header-actions';
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import { createDealSchema } from '@/lib/validators/deal';
 import type { Country } from '@/services/countries/get-countries';
@@ -292,9 +293,12 @@ export default async function AdminDealsPage({
             Ajoute, modifie et pilote les offres visibles sur le SaaS.
           </p>
         </div>
-        <Link href="/" className="text-sm font-semibold text-primary">
-          Retour au site
-        </Link>
+        <AdminHeaderActions
+          links={[
+            { href: '/admin', label: 'Admin' },
+            { href: '/admin/destinations', label: 'Destinations' },
+          ]}
+        />
       </header>
 
       {successMessage && (
