@@ -45,7 +45,7 @@ export function PublicFooter() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={link.label}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border bg-background text-primary shadow-sm transition hover:-translate-y-0.5 hover:border-primary/35 hover:bg-muted"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-md"
               >
                 {link.icon}
               </Link>
