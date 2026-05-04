@@ -17,7 +17,7 @@ const flightBoardRows = [
   { code: 'DXB', city: 'Dubaï', visa: 'eVisa' },
   { code: 'BKK', city: 'Bangkok', visa: 'Sans visa' },
   { code: 'DPS', city: 'Bali', visa: 'Visa à l’arrivée' },
-  { code: 'DOH', city: 'Doha', visa: 'Sans visa' },
+  { code: 'DOH', city: 'Doha', visa: 'eVisa' },
   { code: 'CAI', city: 'Le Caire', visa: 'Visa à l’arrivée' },
   { code: 'TUN', city: 'Tunis', visa: 'Sans visa' },
   { code: 'KUL', city: 'Kuala Lumpur', visa: 'Sans visa' },
