@@ -10,7 +10,6 @@ import { PublicHeader } from '@/components/shared/public-header';
 import { getCountries } from '@/services/countries/get-countries';
 import { getDeals } from '@/services/deals/get-deals';
 
-export const dynamic = 'force-dynamic';
 
 const flightBoardRows = [
   { code: 'IST', city: 'Istanbul', visa: 'Sans visa' },
