@@ -42,7 +42,16 @@ function getRefreshItem<T>(items: T[]) {
 }
 
 export default async function HomePage() {
-  const [countries, deals] = await Promise.all([getCountries(), getDeals()]);
+  const [countriesResult, dealsResult] = await Promise.allSettled([
+  getCountries(),
+  getDeals(),
+]);
+
+const countries =
+  countriesResult.status === "fulfilled" ? countriesResult.value : [];
+
+const deals =
+  dealsResult.status === "fulfilled" ? dealsResult.value : [];
   const visaStats = [
     {
       label: 'Sans visa',
