@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { TripSimulator } from '@/components/features/simulator/trip-simulator';
 import { PublicHeader } from '@/components/shared/public-header';
 import { getDestinations } from '@/services/destinations/get-destinations';
