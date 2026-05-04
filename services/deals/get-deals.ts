@@ -134,6 +134,7 @@ export async function getDeals(): Promise<Deal[]> {
     .eq('is_active', true)
     .order('is_featured', { ascending: false })
     .order('score', { ascending: false })
+    .order('last_checked_at', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false })
     .returns<DealRow[]>();
 

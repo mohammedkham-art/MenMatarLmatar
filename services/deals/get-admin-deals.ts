@@ -18,6 +18,7 @@ type AdminDealRow = {
   is_active: boolean;
   is_featured: boolean;
   score: number | null;
+  last_checked_at?: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -28,10 +29,11 @@ export async function getAdminDeals(): Promise<Deal[]> {
   const { data, error } = await supabase
     .from('deals')
     .select(
-      'id, title, from_airport, to_airport, from_city, to_city, country_code, price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, created_at, updated_at',
+      'id, title, from_airport, to_airport, from_city, to_city, country_code, price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at',
     )
     .order('is_featured', { ascending: false })
     .order('score', { ascending: false })
+    .order('last_checked_at', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false })
     .returns<AdminDealRow[]>();
 
@@ -57,7 +59,7 @@ export async function getAdminDeals(): Promise<Deal[]> {
     isActive: deal.is_active,
     isFeatured: deal.is_featured,
     score: deal.score ?? 0,
-    lastCheckedAt: deal.created_at,
+    lastCheckedAt: deal.last_checked_at ?? deal.created_at,
     createdAt: deal.created_at,
     updatedAt: deal.updated_at,
   }));
