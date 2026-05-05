@@ -77,11 +77,7 @@ export default async function HomePage() {
       tone: 'from-amber-500/18 to-amber-50',
     },
   ];
-  const featuredDeals = deals.filter((deal) => deal.isFeatured);
-  const homepageDeals = [
-    ...featuredDeals,
-    ...deals.filter((deal) => !deal.isFeatured),
-  ].slice(0, 3);
+  const homepageDeals = deals.slice(0, 3);
   const currentFlightRows = getRefreshItems(flightBoardRows, 3);
   const currentSimulation = getRefreshItem(simulatorSnapshots);
 
@@ -233,7 +229,7 @@ export default async function HomePage() {
                   Bons plans
                 </p>
                 <h2 className="mt-2 text-3xl font-black tracking-tight">
-                  Meilleures offres
+                  Deals
                 </h2>
                 <p className="mt-2 text-muted-foreground">
                   Les vols à surveiller avant de réserver.
