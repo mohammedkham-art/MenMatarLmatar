@@ -387,6 +387,12 @@ function AdminDealItem({ countries, deal }: AdminDealItemProps) {
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2">
+        <Link
+          href={`/admin/deals/${deal.id}/instagram`}
+          className="inline-flex h-9 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 px-3 text-xs font-semibold text-primary transition hover:bg-primary/15"
+        >
+          Générer visuels Instagram
+        </Link>
         <form action={toggleDealActive}>
           <input name="id" type="hidden" value={deal.id} />
           <input name="isActive" type="hidden" value={String(deal.isActive)} />
