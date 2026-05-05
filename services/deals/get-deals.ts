@@ -146,6 +146,20 @@ function mapDealRow(deal: DealRow, visaType: DealVisaType | null): Deal {
   };
 }
 
+function shuffleDeals(deals: Deal[]) {
+  const shuffledDeals = [...deals];
+
+  for (let index = shuffledDeals.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffledDeals[index], shuffledDeals[randomIndex]] = [
+      shuffledDeals[randomIndex],
+      shuffledDeals[index],
+    ];
+  }
+
+  return shuffledDeals;
+}
+
 async function getVisaTypesByCountryCode(
   countryCodes: string[],
 ): Promise<Map<string, DealVisaType | null>> {
@@ -187,8 +201,10 @@ export async function getDeals(): Promise<Deal[]> {
     .returns<DealRow[]>();
 
   if (!primaryResult.error) {
-    return primaryResult.data.map((deal) =>
-      mapDealRow(deal, getRelatedVisaType(deal.country_code, deal.countries)),
+    return shuffleDeals(
+      primaryResult.data.map((deal) =>
+        mapDealRow(deal, getRelatedVisaType(deal.country_code, deal.countries)),
+      ),
     );
   }
 
@@ -206,8 +222,10 @@ export async function getDeals(): Promise<Deal[]> {
     .returns<DealRow[]>();
 
   if (!relationFallbackResult.error) {
-    return relationFallbackResult.data.map((deal) =>
-      mapDealRow(deal, getRelatedVisaType(deal.country_code, deal.countries)),
+    return shuffleDeals(
+      relationFallbackResult.data.map((deal) =>
+        mapDealRow(deal, getRelatedVisaType(deal.country_code, deal.countries)),
+      ),
     );
   }
 
@@ -232,12 +250,14 @@ export async function getDeals(): Promise<Deal[]> {
     fallbackResult.data.map((deal) => deal.country_code),
   );
 
-  return fallbackResult.data.map((deal) =>
-    mapDealRow(
-      deal,
-      getDealVisaType(
-        deal.country_code,
-        visaTypesByCountryCode.get(deal.country_code) ?? null,
+  return shuffleDeals(
+    fallbackResult.data.map((deal) =>
+      mapDealRow(
+        deal,
+        getDealVisaType(
+          deal.country_code,
+          visaTypesByCountryCode.get(deal.country_code) ?? null,
+        ),
       ),
     ),
   );
