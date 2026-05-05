@@ -1,45 +1,8 @@
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-
-import {
-  adminSessionCookieName,
-  adminSessionMaxAgeSeconds,
-  createAdminSessionToken,
-} from '@/lib/auth/admin-session';
-
 type AdminLoginPageProps = {
   searchParams?: Promise<{
     error?: string;
   }>;
 };
-
-async function loginAdmin(formData: FormData) {
-  'use server';
-
-  const password = formData.get('password');
-  const adminPassword = process.env.ADMIN_PASSWORD;
-
-  if (!adminPassword) {
-    redirect('/admin/login?error=missing-config');
-  }
-
-  if (typeof password !== 'string' || password !== adminPassword) {
-    redirect('/admin/login?error=invalid-password');
-  }
-
-  const token = await createAdminSessionToken(adminPassword);
-  const cookieStore = await cookies();
-
-  cookieStore.set(adminSessionCookieName, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: adminSessionMaxAgeSeconds,
-    path: '/',
-  });
-
-  redirect('/admin');
-}
 
 function getErrorMessage(error?: string) {
   if (error === 'missing-config') {
@@ -76,7 +39,11 @@ export default async function AdminLoginPage({
           </p>
         )}
 
-        <form action={loginAdmin} className="mt-6 grid gap-4">
+        <form
+          action="/admin/login/submit"
+          className="mt-6 grid gap-4"
+          method="post"
+        >
           <label
             className="grid gap-2 text-sm font-semibold"
             htmlFor="password"

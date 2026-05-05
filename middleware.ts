@@ -18,7 +18,7 @@ async function protectAdminRoute(request: NextRequest) {
     return null;
   }
 
-  if (request.nextUrl.pathname === '/admin/login') {
+  if (request.nextUrl.pathname.startsWith('/admin/login')) {
     return null;
   }
 
