@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { AdminHeaderActions } from '@/components/shared/admin-header-actions';
+import { requireAdminSession } from '@/lib/auth/require-admin-session';
 
 const adminSections = [
   {
@@ -17,7 +18,9 @@ const adminSections = [
   },
 ];
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  await requireAdminSession();
+
   return (
     <main className="mx-auto min-h-screen w-full max-w-6xl px-6 py-10">
       <header className="flex flex-wrap items-center justify-between gap-4">

@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { DeleteDealButton } from '@/app/admin/deals/delete-deal-button';
 import { AdminHeaderActions } from '@/components/shared/admin-header-actions';
+import { requireAdminSession } from '@/lib/auth/require-admin-session';
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import { createDealSchema } from '@/lib/validators/deal';
 import type { Country } from '@/services/countries/get-countries';
@@ -143,6 +144,8 @@ function revalidateDealPaths() {
 async function createDeal(formData: FormData) {
   'use server';
 
+  await requireAdminSession();
+
   try {
     const payload = getDealPayload(formData);
     const supabase = createAdminSupabaseClient();
@@ -162,6 +165,8 @@ async function createDeal(formData: FormData) {
 
 async function updateDeal(formData: FormData) {
   'use server';
+
+  await requireAdminSession();
 
   try {
     const id = getDealId(formData);
@@ -187,6 +192,8 @@ async function updateDeal(formData: FormData) {
 async function deleteDeal(formData: FormData) {
   'use server';
 
+  await requireAdminSession();
+
   try {
     const id = getDealId(formData);
     const supabase = createAdminSupabaseClient();
@@ -206,6 +213,8 @@ async function deleteDeal(formData: FormData) {
 
 async function toggleDealActive(formData: FormData) {
   'use server';
+
+  await requireAdminSession();
 
   let nextStatus: AdminFlash = 'activated';
 
@@ -233,6 +242,8 @@ async function toggleDealActive(formData: FormData) {
 
 async function toggleDealFeatured(formData: FormData) {
   'use server';
+
+  await requireAdminSession();
 
   let nextStatus: AdminFlash = 'featured';
 
@@ -268,6 +279,8 @@ type AdminDealsPageProps = {
 export default async function AdminDealsPage({
   searchParams,
 }: AdminDealsPageProps) {
+  await requireAdminSession();
+
   const params = await searchParams;
   const successMessage = params?.status
     ? adminFlashMessages[params.status]

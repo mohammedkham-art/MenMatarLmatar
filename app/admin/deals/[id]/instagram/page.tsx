@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { requireAdminSession } from '@/lib/auth/require-admin-session';
 import { getAdminDeal } from '@/services/deals/get-admin-deal';
 import {
   getInstagramSlideFilename,
@@ -25,6 +26,8 @@ const slides: Array<{
 export default async function InstagramVisualsPage({
   params,
 }: InstagramVisualsPageProps) {
+  await requireAdminSession();
+
   const { id } = await params;
   const deal = await getAdminDeal(id);
 

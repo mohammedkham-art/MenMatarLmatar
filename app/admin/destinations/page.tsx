@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { DeleteCountryButton } from '@/app/admin/destinations/delete-country-button';
 import { AdminHeaderActions } from '@/components/shared/admin-header-actions';
+import { requireAdminSession } from '@/lib/auth/require-admin-session';
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import { countryAdminSchema } from '@/lib/validators/country';
 import type { Country, VisaType } from '@/services/countries/get-countries';
@@ -129,6 +130,8 @@ function revalidateDestinationPaths() {
 async function createCountry(formData: FormData) {
   'use server';
 
+  await requireAdminSession();
+
   try {
     const payload = getCountryPayload(formData);
     const supabase = createAdminSupabaseClient();
@@ -148,6 +151,8 @@ async function createCountry(formData: FormData) {
 
 async function updateCountry(formData: FormData) {
   'use server';
+
+  await requireAdminSession();
 
   try {
     const id = getCountryId(formData);
@@ -173,6 +178,8 @@ async function updateCountry(formData: FormData) {
 async function deleteCountry(formData: FormData) {
   'use server';
 
+  await requireAdminSession();
+
   try {
     const id = getCountryId(formData);
     const supabase = createAdminSupabaseClient();
@@ -192,6 +199,8 @@ async function deleteCountry(formData: FormData) {
 
 async function toggleCountryFeatured(formData: FormData) {
   'use server';
+
+  await requireAdminSession();
 
   let nextStatus: AdminFlash = 'featured';
 
@@ -227,6 +236,8 @@ type AdminDestinationsPageProps = {
 export default async function AdminDestinationsPage({
   searchParams,
 }: AdminDestinationsPageProps) {
+  await requireAdminSession();
+
   const params = await searchParams;
   const successMessage = params?.status
     ? adminFlashMessages[params.status]
