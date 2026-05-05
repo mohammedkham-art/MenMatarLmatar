@@ -289,7 +289,7 @@ export async function generateTripPlan(
     if (response.status === 429) {
       throw new TripPlanGenerationError(
         'rate_limited',
-        'Le quota IA est temporairement atteint. Réessaie dans quelques minutes.',
+        'Le simulateur IA est temporairement indisponible. Notre équipe a été notifiée, réessaie un peu plus tard.',
         429,
         payload.error?.message,
       );
