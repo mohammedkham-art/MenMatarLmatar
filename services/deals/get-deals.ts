@@ -164,11 +164,12 @@ export async function getDeals(): Promise<Deal[]> {
   const relationFallbackResult = await supabase
     .from('deals')
     .select(
-      'id, title, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type), price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, created_at, updated_at',
+      'id, title, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type), price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at',
     )
     .eq('is_active', true)
     .order('is_featured', { ascending: false })
     .order('score', { ascending: false })
+    .order('last_checked_at', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false })
     .returns<DealRow[]>();
 
@@ -181,11 +182,12 @@ export async function getDeals(): Promise<Deal[]> {
   const fallbackResult = await supabase
     .from('deals')
     .select(
-      'id, title, from_airport, to_airport, from_city, to_city, country_code, price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, created_at, updated_at',
+      'id, title, from_airport, to_airport, from_city, to_city, country_code, price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at',
     )
     .eq('is_active', true)
     .order('is_featured', { ascending: false })
     .order('score', { ascending: false })
+    .order('last_checked_at', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false })
     .returns<DealRow[]>();
 
