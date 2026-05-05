@@ -73,6 +73,35 @@ const dealVisaTypeFixes: Partial<Record<string, DealVisaType>> = {
   PT: 'visa_required',
 };
 
+function formatDateOnly(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function getMoroccoDateParts() {
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    day: '2-digit',
+    month: '2-digit',
+    timeZone: 'Africa/Casablanca',
+    year: 'numeric',
+  });
+  const parts = formatter.formatToParts(new Date());
+
+  return {
+    day: Number(parts.find((part) => part.type === 'day')?.value),
+    month: Number(parts.find((part) => part.type === 'month')?.value),
+    year: Number(parts.find((part) => part.type === 'year')?.value),
+  };
+}
+
+function getPublicDepartureCutoffDate() {
+  const { day, month, year } = getMoroccoDateParts();
+  const cutoffDate = new Date(Date.UTC(year, month - 1, day));
+
+  cutoffDate.setUTCDate(cutoffDate.getUTCDate() + 5);
+
+  return formatDateOnly(cutoffDate);
+}
+
 function getDealVisaType(countryCode: string, visaType: DealVisaType | null) {
   return dealVisaTypeFixes[countryCode] ?? visaType;
 }
@@ -142,6 +171,7 @@ async function getVisaTypesByCountryCode(
 
 export async function getDeals(): Promise<Deal[]> {
   const supabase = createAdminSupabaseClient();
+  const publicDepartureCutoffDate = getPublicDepartureCutoffDate();
 
   const primaryResult = await supabase
     .from('deals')
@@ -149,6 +179,7 @@ export async function getDeals(): Promise<Deal[]> {
       'id, title, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type), price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at',
     )
     .eq('is_active', true)
+    .gt('departure_date', publicDepartureCutoffDate)
     .order('is_featured', { ascending: false })
     .order('score', { ascending: false })
     .order('last_checked_at', { ascending: false, nullsFirst: false })
@@ -167,6 +198,7 @@ export async function getDeals(): Promise<Deal[]> {
       'id, title, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type), price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at',
     )
     .eq('is_active', true)
+    .gt('departure_date', publicDepartureCutoffDate)
     .order('is_featured', { ascending: false })
     .order('score', { ascending: false })
     .order('last_checked_at', { ascending: false, nullsFirst: false })
@@ -185,6 +217,7 @@ export async function getDeals(): Promise<Deal[]> {
       'id, title, from_airport, to_airport, from_city, to_city, country_code, price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at',
     )
     .eq('is_active', true)
+    .gt('departure_date', publicDepartureCutoffDate)
     .order('is_featured', { ascending: false })
     .order('score', { ascending: false })
     .order('last_checked_at', { ascending: false, nullsFirst: false })
