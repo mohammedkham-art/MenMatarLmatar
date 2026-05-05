@@ -57,7 +57,7 @@ export default async function InstagramVisualsPage({
 
       <section className="mt-10 grid gap-6 lg:grid-cols-3">
         {slides.map((slide) => {
-          const imageUrl = `/api/admin/deals/${deal.id}/instagram/${slide.value}`;
+          const imageUrl = `/admin/deals/${deal.id}/instagram/${slide.value}`;
           const filename = getInstagramSlideFilename(deal, slide.value);
 
           return (
