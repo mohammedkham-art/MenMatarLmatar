@@ -49,6 +49,10 @@ export async function middleware(request: NextRequest) {
     request,
   });
 
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    response.headers.set('Cache-Control', 'no-store');
+  }
+
   const supabase = createServerClient(
     clientEnv.NEXT_PUBLIC_SUPABASE_URL,
     clientEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,

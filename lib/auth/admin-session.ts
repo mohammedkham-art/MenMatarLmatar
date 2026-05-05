@@ -1,4 +1,5 @@
-export const adminSessionCookieName = 'mmlm_admin_session';
+export const adminSessionCookieName = 'mmlm_admin_session_v2';
+export const legacyAdminSessionCookieNames = ['mmlm_admin_session'];
 
 const sessionMaxAgeSeconds = 60 * 60 * 24 * 7;
 
