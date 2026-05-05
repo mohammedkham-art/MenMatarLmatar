@@ -78,8 +78,8 @@ function splitPrice(price: number) {
   const formattedPrice = formatPrice(price);
 
   return formattedPrice.length > 8
-    ? { amountFontSize: 118, unitFontSize: 54 }
-    : { amountFontSize: 146, unitFontSize: 64 };
+    ? { amountFontSize: 126, unitFontSize: 50 }
+    : { amountFontSize: 158, unitFontSize: 56 };
 }
 
 const rootStyle: CSSProperties = {
@@ -100,7 +100,8 @@ const cardStyle: CSSProperties = {
   color: colors.ink,
   display: 'flex',
   flexDirection: 'column',
-  fontFamily: 'Arial, sans-serif',
+  fontFamily:
+    'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
   height: '1202px',
   position: 'relative',
   width: '908px',
@@ -301,6 +302,8 @@ function OutboundSlide({ deal }: { deal: Deal }) {
             color: colors.greenText,
             fontSize: priceStyle.amountFontSize,
             fontWeight: 900,
+            letterSpacing: '-2px',
+            lineHeight: 1,
           }}
         >
           {formatPrice(deal.priceMad)}
@@ -310,7 +313,9 @@ function OutboundSlide({ deal }: { deal: Deal }) {
             color: colors.greenText,
             fontSize: priceStyle.unitFontSize,
             fontWeight: 900,
-            marginLeft: 44,
+            letterSpacing: '1px',
+            marginLeft: 34,
+            marginTop: 26,
           }}
         >
           DHS
@@ -465,9 +470,10 @@ function CtaSlide({ deal }: { deal: Deal }) {
           style={{
             color: colors.green,
             display: 'flex',
-            fontSize: 58,
+            fontSize: 64,
             fontWeight: 900,
             justifyContent: 'center',
+            letterSpacing: '-1px',
             marginTop: 34,
           }}
         >
