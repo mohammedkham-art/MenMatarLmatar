@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 import { AdminHeaderActions } from '@/components/shared/admin-header-actions';
 import { requireAdminSession } from '@/lib/auth/require-admin-session';
 
@@ -41,7 +39,7 @@ export default async function AdminPage() {
 
       <section className="mt-10 grid gap-5 md:grid-cols-2">
         {adminSections.map((section) => (
-          <Link
+          <a
             key={section.href}
             href={section.href}
             className="group rounded-xl border bg-muted/40 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
@@ -55,7 +53,7 @@ export default async function AdminPage() {
             <span className="mt-6 inline-flex text-sm font-bold text-primary transition group-hover:translate-x-1">
               {section.cta} →
             </span>
-          </Link>
+          </a>
         ))}
       </section>
     </main>

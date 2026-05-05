@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { requireAdminSession } from '@/lib/auth/require-admin-session';
@@ -50,12 +49,12 @@ export default async function InstagramVisualsPage({
             {deal.priceMad.toLocaleString('fr-MA')} MAD
           </p>
         </div>
-        <Link
+        <a
           href="/admin/deals"
           className="inline-flex h-10 items-center rounded-xl border bg-background px-4 text-sm font-semibold transition hover:bg-muted"
         >
           Retour aux offres
-        </Link>
+        </a>
       </header>
 
       <section className="mt-10 grid gap-6 lg:grid-cols-3">

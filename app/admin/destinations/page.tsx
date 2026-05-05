@@ -1,6 +1,5 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import Link from 'next/link';
 
 import { DeleteCountryButton } from '@/app/admin/destinations/delete-country-button';
 import { AdminHeaderActions } from '@/components/shared/admin-header-actions';
