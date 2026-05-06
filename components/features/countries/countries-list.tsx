@@ -42,21 +42,65 @@ function matchesVisaFilter(country: Country, activeFilter: VisaFilter) {
   return country.visaType === activeFilter;
 }
 
+function normalizeSearchValue(value: string) {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
+function matchesSearch(country: Country, query: string) {
+  const normalizedQuery = normalizeSearchValue(query.trim());
+
+  if (!normalizedQuery) {
+    return true;
+  }
+
+  return [
+    country.name,
+    country.code,
+    country.region,
+    country.notes ?? '',
+  ].some((value) => normalizeSearchValue(value).includes(normalizedQuery));
+}
+
 export function CountriesList({
   countries,
   initialFilter = 'all',
 }: CountriesListProps) {
   const [activeFilter, setActiveFilter] = useState<VisaFilter>(initialFilter);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const filteredCountries = useMemo(
     () =>
-      countries.filter((country) => matchesVisaFilter(country, activeFilter)),
-    [activeFilter, countries],
+      countries.filter(
+        (country) =>
+          matchesVisaFilter(country, activeFilter) &&
+          matchesSearch(country, searchQuery),
+      ),
+    [activeFilter, countries, searchQuery],
   );
 
   return (
     <section className="mt-10">
-      <div className="flex flex-wrap gap-3">
+      <div className="rounded-2xl border bg-background p-4 shadow-sm">
+        <label
+          htmlFor="country-search"
+          className="text-xs font-black uppercase tracking-[0.18em] text-primary/70"
+        >
+          Recherche par pays
+        </label>
+        <input
+          id="country-search"
+          type="search"
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          placeholder="Ex: Turquie, Thaïlande, AE..."
+          className="mt-3 h-12 w-full rounded-xl border bg-background px-4 text-sm outline-none transition placeholder:text-muted-foreground focus:border-primary"
+        />
+      </div>
+
+      <div className="mt-5 flex flex-wrap gap-3">
         {filters.map((filter) => {
           const isActive = activeFilter === filter.value;
 
@@ -78,11 +122,17 @@ export function CountriesList({
         })}
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filteredCountries.map((country) => (
-          <CountryCard key={country.id} country={country} />
-        ))}
-      </div>
+      {filteredCountries.length > 0 ? (
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredCountries.map((country) => (
+            <CountryCard key={country.id} country={country} />
+          ))}
+        </div>
+      ) : (
+        <div className="mt-6 rounded-xl border bg-background p-8 text-center text-muted-foreground">
+          Aucun pays ne correspond à cette recherche.
+        </div>
+      )}
     </section>
   );
 }
