@@ -17,24 +17,6 @@ const visaTypeAliases: Partial<Record<VisaType, StoredVisaType>> = {
   visa_on_arrival: 'on_arrival',
 };
 
-const countryVisaTypeOverrides: Partial<Record<string, StoredVisaType>> = {
-  BA: 'visa_required',
-  DK: 'visa_required',
-  DZ: 'visa_required',
-  ES: 'visa_required',
-  FR: 'visa_required',
-  GB: 'visa_required',
-  IT: 'visa_required',
-  ME: 'visa_required',
-  MK: 'visa_required',
-  MV: 'on_arrival',
-  NL: 'visa_required',
-  PE: 'visa_required',
-  PT: 'visa_required',
-  RS: 'visa_required',
-  SA: 'visa_required',
-};
-
 const visaTypeMetadataPattern =
   /<!--\s*mmlm:visa_type=(visa_free|evisa|e_visa|on_arrival|visa_on_arrival|visa_required)\s*-->/;
 
@@ -100,14 +82,7 @@ export function getVisaTypeForCountry(
   countryCode: string | null | undefined,
   visaType: VisaType | null,
 ) {
-  if (!countryCode) {
-    return normalizeVisaType(visaType);
-  }
-
-  return (
-    countryVisaTypeOverrides[countryCode.toUpperCase()] ??
-    normalizeVisaType(visaType)
-  );
+  return normalizeVisaType(visaType);
 }
 
 export function isPublicVisaType(visaType: VisaType | null) {

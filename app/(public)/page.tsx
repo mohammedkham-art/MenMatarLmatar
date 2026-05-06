@@ -11,6 +11,12 @@ import { PublicHeader } from '@/components/shared/public-header';
 import { fallbackCountries } from '@/services/countries/fallback-countries';
 import { getCountries } from '@/services/countries/get-countries';
 import { getDeals } from '@/services/deals/get-deals';
+import { fallbackDestinations } from '@/services/destinations/fallback-destinations';
+import {
+  getDestinations,
+  type Destination,
+} from '@/services/destinations/get-destinations';
+import { isPublicVisaType, visaLabels } from '@/services/visa/visa-rules';
 
 const flightBoardRows = [
   { code: 'IST', city: 'Istanbul', visa: 'Sans visa' },
@@ -42,10 +48,36 @@ function getRefreshItem<T>(items: T[]) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
+function getFlightBoardRows(destinations: Destination[]) {
+  const dynamicRows = destinations
+    .filter((destination) => isPublicVisaType(destination.visaType))
+    .map((destination) => {
+      const fallbackRow = flightBoardRows.find(
+        (row) => row.city === destination.city,
+      );
+
+      return {
+        code:
+          fallbackRow?.code ??
+          destination.countryCode ??
+          destination.city.slice(0, 3).toUpperCase(),
+        city: destination.city,
+        visa: destination.visaType ? visaLabels[destination.visaType] : 'Visa',
+      };
+    });
+
+  return getRefreshItems(
+    dynamicRows.length >= 3 ? dynamicRows : flightBoardRows,
+    3,
+  );
+}
+
 export default async function HomePage() {
-  const [countriesResult, dealsResult] = await Promise.allSettled([
+  const [countriesResult, dealsResult, destinationsResult] =
+    await Promise.allSettled([
     getCountries(),
     getDeals(),
+    getDestinations(),
   ]);
 
   const countries =
@@ -54,6 +86,10 @@ export default async function HomePage() {
       : fallbackCountries;
 
   const deals = dealsResult.status === 'fulfilled' ? dealsResult.value : [];
+  const destinations =
+    destinationsResult.status === 'fulfilled'
+      ? destinationsResult.value
+      : fallbackDestinations;
   const visaStats = [
     {
       label: 'Sans visa',
@@ -78,7 +114,7 @@ export default async function HomePage() {
     },
   ];
   const homepageDeals = deals.slice(0, 3);
-  const currentFlightRows = getRefreshItems(flightBoardRows, 3);
+  const currentFlightRows = getFlightBoardRows(destinations);
   const currentSimulation = getRefreshItem(simulatorSnapshots);
 
   return (

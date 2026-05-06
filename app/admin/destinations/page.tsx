@@ -96,12 +96,8 @@ function getCountryPayload(formData: FormData): CountryMutationPayload {
 
 function canFallbackToVisaTypeMetadata(
   error: { message?: string },
-  payload: CountryMutationPayload,
 ) {
-  return (
-    payload.visa_type === 'visa_required' &&
-    error.message?.includes('countries_visa_type_check')
-  );
+  return error.message?.includes('countries_visa_type_check');
 }
 
 function getPayloadWithVisaTypeMetadata(payload: CountryMutationPayload) {
@@ -140,7 +136,7 @@ async function createCountry(formData: FormData) {
     const { error } = await supabase.from('countries').insert(payload);
 
     if (error) {
-      if (canFallbackToVisaTypeMetadata(error, payload)) {
+      if (canFallbackToVisaTypeMetadata(error)) {
         const { error: fallbackError } = await supabase
           .from('countries')
           .insert(getPayloadWithVisaTypeMetadata(payload));
@@ -176,7 +172,7 @@ async function updateCountry(formData: FormData) {
       .eq('id', id);
 
     if (error) {
-      if (canFallbackToVisaTypeMetadata(error, payload)) {
+      if (canFallbackToVisaTypeMetadata(error)) {
         const { error: fallbackError } = await supabase
           .from('countries')
           .update(getPayloadWithVisaTypeMetadata(payload))
