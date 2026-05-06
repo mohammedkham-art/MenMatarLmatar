@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { Analytics } from '@vercel/analytics/next';
 
 import { QueryProvider } from '@/components/shared/query-provider';
 import './globals.css';
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="fr">
       <body>
         <QueryProvider>{children}</QueryProvider>
+        <Analytics />
       </body>
     </html>
   );
