@@ -1,5 +1,6 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import {
+  getVisaTypeFromMetadata,
   getVisaTypeForCountry,
   type StoredVisaType,
 } from '@/services/visa/visa-rules';
@@ -29,6 +30,7 @@ type DestinationRow = {
 type CountryVisaRow = {
   code: string;
   visa_type: DestinationVisaType | null;
+  notes: string | null;
 };
 
 async function getCountryVisaTypesByCode(
@@ -45,7 +47,7 @@ async function getCountryVisaTypesByCode(
   const supabase = createAdminSupabaseClient();
   const { data, error } = await supabase
     .from('countries')
-    .select('code, visa_type')
+    .select('code, visa_type, notes')
     .in('code', uniqueCountryCodes)
     .returns<CountryVisaRow[]>();
 
@@ -53,7 +55,12 @@ async function getCountryVisaTypesByCode(
     throw new Error(error.message);
   }
 
-  return new Map(data.map((country) => [country.code, country.visa_type]));
+  return new Map(
+    data.map((country) => [
+      country.code,
+      getVisaTypeFromMetadata(country.notes) ?? country.visa_type,
+    ]),
+  );
 }
 
 export async function getDestinations(): Promise<Destination[]> {

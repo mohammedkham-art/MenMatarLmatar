@@ -35,6 +35,9 @@ const countryVisaTypeOverrides: Partial<Record<string, StoredVisaType>> = {
   SA: 'visa_required',
 };
 
+const visaTypeMetadataPattern =
+  /<!--\s*mmlm:visa_type=(visa_free|evisa|e_visa|on_arrival|visa_on_arrival|visa_required)\s*-->/;
+
 export const visaLabels: Record<VisaType, string> = {
   visa_free: 'Sans visa',
   evisa: 'eVisa',
@@ -55,6 +58,30 @@ export function normalizeVisaType(visaType: VisaType | null) {
   }
 
   return visaTypeAliases[visaType] ?? visaType;
+}
+
+export function getVisaTypeFromMetadata(notes: string | null | undefined) {
+  const visaType = notes?.match(visaTypeMetadataPattern)?.[1] as
+    | VisaType
+    | undefined;
+
+  return visaType ? normalizeVisaType(visaType) : null;
+}
+
+export function stripVisaTypeMetadata(notes: string | null | undefined) {
+  return notes?.replace(visaTypeMetadataPattern, '').trim() || null;
+}
+
+export function appendVisaTypeMetadata(
+  notes: string | null | undefined,
+  visaType: VisaType,
+) {
+  return [
+    stripVisaTypeMetadata(notes),
+    `<!-- mmlm:visa_type=${normalizeVisaType(visaType)} -->`,
+  ]
+    .filter(Boolean)
+    .join('\n');
 }
 
 export function getVisaTypeForCountry(

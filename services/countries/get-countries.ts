@@ -1,6 +1,8 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import {
+  getVisaTypeFromMetadata,
   getVisaTypeForCountry,
+  stripVisaTypeMetadata,
   type VisaType as VisaRuleType,
   visaLabels,
 } from '@/services/visa/visa-rules';
@@ -256,8 +258,10 @@ function hasBrokenFrenchEncoding(value: string) {
 }
 
 function getCleanNotes(country: CountryRow, visaType: VisaType) {
-  if (country.notes && !hasBrokenFrenchEncoding(country.notes)) {
-    return country.notes;
+  const notes = stripVisaTypeMetadata(country.notes);
+
+  if (notes && !hasBrokenFrenchEncoding(notes)) {
+    return notes;
   }
 
   const visaLabel = visaLabels[visaType];
@@ -285,7 +289,9 @@ export async function getCountries(): Promise<Country[]> {
   }
 
   return data.map((country) => {
-    const visaType = getVisaTypeForCountry(country.code, country.visa_type);
+    const visaType =
+      getVisaTypeFromMetadata(country.notes) ??
+      getVisaTypeForCountry(country.code, country.visa_type);
 
     return {
       id: country.id,

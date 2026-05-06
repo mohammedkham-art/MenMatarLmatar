@@ -9,8 +9,9 @@ import { countryAdminSchema } from '@/lib/validators/country';
 import type { Country, VisaType } from '@/services/countries/get-countries';
 import { getCountries } from '@/services/countries/get-countries';
 import {
-  getVisaTypeForCountry,
+  appendVisaTypeMetadata,
   normalizeVisaType,
+  stripVisaTypeMetadata,
   type StoredVisaType,
   visaLabels,
 } from '@/services/visa/visa-rules';
@@ -87,18 +88,29 @@ function getCountryPayload(formData: FormData): CountryMutationPayload {
     visa_type: input.visaType,
     max_stay_days:
       typeof input.maxStayDays === 'number' ? input.maxStayDays : null,
-    notes: input.notes || null,
+    notes: stripVisaTypeMetadata(input.notes),
     official_source_url: input.officialSourceUrl || null,
     is_featured: input.isFeatured,
   };
 }
 
-function canFallbackToVisaRules(error: { message?: string }, payload: CountryMutationPayload) {
+function canFallbackToVisaTypeMetadata(
+  error: { message?: string },
+  payload: CountryMutationPayload,
+) {
   return (
     payload.visa_type === 'visa_required' &&
-    getVisaTypeForCountry(payload.code, null) === 'visa_required' &&
     error.message?.includes('countries_visa_type_check')
   );
+}
+
+function getPayloadWithVisaTypeMetadata(payload: CountryMutationPayload) {
+  const { visa_type: _visaType, ...payloadWithoutVisaType } = payload;
+
+  return {
+    ...payloadWithoutVisaType,
+    notes: appendVisaTypeMetadata(payload.notes, payload.visa_type),
+  };
 }
 
 function getCountryId(formData: FormData) {
@@ -128,7 +140,17 @@ async function createCountry(formData: FormData) {
     const { error } = await supabase.from('countries').insert(payload);
 
     if (error) {
-      throw new Error(error.message);
+      if (canFallbackToVisaTypeMetadata(error, payload)) {
+        const { error: fallbackError } = await supabase
+          .from('countries')
+          .insert(getPayloadWithVisaTypeMetadata(payload));
+
+        if (fallbackError) {
+          throw new Error(fallbackError.message);
+        }
+      } else {
+        throw new Error(error.message);
+      }
     }
 
     revalidateDestinationPaths();
@@ -154,11 +176,10 @@ async function updateCountry(formData: FormData) {
       .eq('id', id);
 
     if (error) {
-      if (canFallbackToVisaRules(error, payload)) {
-        const { visa_type: _visaType, ...payloadWithoutVisaType } = payload;
+      if (canFallbackToVisaTypeMetadata(error, payload)) {
         const { error: fallbackError } = await supabase
           .from('countries')
-          .update(payloadWithoutVisaType)
+          .update(getPayloadWithVisaTypeMetadata(payload))
           .eq('id', id);
 
         if (fallbackError) {

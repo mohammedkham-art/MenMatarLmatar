@@ -1,5 +1,6 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import {
+  getVisaTypeFromMetadata,
   getVisaTypeForCountry,
   type VisaType,
 } from '@/services/visa/visa-rules';
@@ -30,6 +31,7 @@ export type Deal = {
 };
 
 type DealCountryRow = {
+  notes?: string | null;
   visa_type: DealVisaType | null;
 };
 
@@ -58,6 +60,7 @@ type DealRow = {
 
 type CountryVisaRow = {
   code: string;
+  notes: string | null;
   visa_type: DealVisaType | null;
 };
 
@@ -103,10 +106,16 @@ function getRelatedVisaType(
   }
 
   if (Array.isArray(country)) {
-    return getDealVisaType(countryCode, country[0]?.visa_type ?? null);
+    return (
+      getVisaTypeFromMetadata(country[0]?.notes) ??
+      getDealVisaType(countryCode, country[0]?.visa_type ?? null)
+    );
   }
 
-  return getDealVisaType(countryCode, country.visa_type);
+  return (
+    getVisaTypeFromMetadata(country.notes) ??
+    getDealVisaType(countryCode, country.visa_type)
+  );
 }
 
 function mapDealRow(deal: DealRow, visaType: DealVisaType | null): Deal {
@@ -160,7 +169,7 @@ async function getVisaTypesByCountryCode(
 
   const { data, error } = await supabase
     .from('countries')
-    .select('code, visa_type')
+    .select('code, visa_type, notes')
     .in('code', uniqueCountryCodes)
     .returns<CountryVisaRow[]>();
 
@@ -168,7 +177,12 @@ async function getVisaTypesByCountryCode(
     throw new Error(error.message);
   }
 
-  return new Map(data.map((country) => [country.code, country.visa_type]));
+  return new Map(
+    data.map((country) => [
+      country.code,
+      getVisaTypeFromMetadata(country.notes) ?? country.visa_type,
+    ]),
+  );
 }
 
 export async function getDeals(): Promise<Deal[]> {
@@ -178,7 +192,7 @@ export async function getDeals(): Promise<Deal[]> {
   const primaryResult = await supabase
     .from('deals')
     .select(
-      'id, title, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type), price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at',
+      'id, title, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type, notes), price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at',
     )
     .eq('is_active', true)
     .gt('departure_date', publicDepartureCutoffDate)
@@ -199,7 +213,7 @@ export async function getDeals(): Promise<Deal[]> {
   const relationFallbackResult = await supabase
     .from('deals')
     .select(
-      'id, title, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type), price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at',
+      'id, title, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type, notes), price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at',
     )
     .eq('is_active', true)
     .gt('departure_date', publicDepartureCutoffDate)
