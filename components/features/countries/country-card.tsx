@@ -1,18 +1,10 @@
 import { cn } from '@/lib/utils/cn';
 import type { Country, VisaType } from '@/services/countries/get-countries';
+import { visaLabels } from '@/services/visa/visa-rules';
 
 type CountryCardProps = {
   country: Country;
   variant?: 'default' | 'compact';
-};
-
-const visaLabels: Record<VisaType, string> = {
-  visa_free: 'Sans visa',
-  evisa: 'eVisa',
-  e_visa: 'eVisa',
-  on_arrival: 'Visa à l’arrivée',
-  visa_on_arrival: 'Visa à l’arrivée',
-  visa_required: 'Visa requis',
 };
 
 const visaBadgeStyles: Record<VisaType, string> = {

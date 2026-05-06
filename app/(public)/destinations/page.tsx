@@ -4,6 +4,7 @@ import { PublicHeader } from '@/components/shared/public-header';
 import { fallbackCountries } from '@/services/countries/fallback-countries';
 import { getCountries } from '@/services/countries/get-countries';
 import type { VisaType } from '@/services/countries/get-countries';
+import { isPublicVisaType } from '@/services/visa/visa-rules';
 
 type DestinationsPageProps = {
   searchParams?: Promise<{
@@ -48,7 +49,7 @@ export default async function DestinationsPage({
   const params = await searchParams;
   const countries = (
     await getCountries().catch(() => fallbackCountries)
-  ).filter((country) => country.visaType !== 'visa_required');
+  ).filter((country) => isPublicVisaType(country.visaType));
   const initialFilter = getInitialVisaFilter(params?.visa);
 
   return (

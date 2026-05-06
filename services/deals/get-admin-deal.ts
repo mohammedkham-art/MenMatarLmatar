@@ -1,5 +1,6 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import type { Deal, DealVisaType } from '@/services/deals/get-deals';
+import { getVisaTypeForCountry } from '@/services/visa/visa-rules';
 
 type DealCountryRow = {
   visa_type: DealVisaType | null;
@@ -33,18 +34,8 @@ type CountryVisaRow = {
   visa_type: DealVisaType | null;
 };
 
-const dealVisaTypeFixes: Partial<Record<string, DealVisaType>> = {
-  DK: 'visa_required',
-  ES: 'visa_required',
-  FR: 'visa_required',
-  GB: 'visa_required',
-  IT: 'visa_required',
-  NL: 'visa_required',
-  PT: 'visa_required',
-};
-
 function getDealVisaType(countryCode: string, visaType: DealVisaType | null) {
-  return dealVisaTypeFixes[countryCode] ?? visaType;
+  return getVisaTypeForCountry(countryCode, visaType);
 }
 
 function getRelatedVisaType(

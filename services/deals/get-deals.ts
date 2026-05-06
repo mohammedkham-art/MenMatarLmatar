@@ -1,12 +1,10 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
+import {
+  getVisaTypeForCountry,
+  type VisaType,
+} from '@/services/visa/visa-rules';
 
-export type DealVisaType =
-  | 'visa_free'
-  | 'evisa'
-  | 'e_visa'
-  | 'on_arrival'
-  | 'visa_on_arrival'
-  | 'visa_required';
+export type DealVisaType = VisaType;
 
 export type Deal = {
   id: string;
@@ -63,16 +61,6 @@ type CountryVisaRow = {
   visa_type: DealVisaType | null;
 };
 
-const dealVisaTypeFixes: Partial<Record<string, DealVisaType>> = {
-  DK: 'visa_required',
-  ES: 'visa_required',
-  FR: 'visa_required',
-  GB: 'visa_required',
-  IT: 'visa_required',
-  NL: 'visa_required',
-  PT: 'visa_required',
-};
-
 function formatDateOnly(date: Date) {
   return date.toISOString().slice(0, 10);
 }
@@ -103,7 +91,7 @@ function getPublicDepartureCutoffDate() {
 }
 
 function getDealVisaType(countryCode: string, visaType: DealVisaType | null) {
-  return dealVisaTypeFixes[countryCode] ?? visaType;
+  return getVisaTypeForCountry(countryCode, visaType);
 }
 
 function getRelatedVisaType(

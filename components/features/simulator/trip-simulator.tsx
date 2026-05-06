@@ -12,6 +12,7 @@ import type {
   TripSimulationResult,
 } from '@/lib/validators/simulator';
 import type { Destination } from '@/services/destinations/get-destinations';
+import { visaLabels } from '@/services/visa/visa-rules';
 
 type TripSimulatorProps = {
   destinations: Destination[];
@@ -41,13 +42,6 @@ const travelStyleOptions: Array<{
   { label: 'Équilibré', value: 'balanced' },
   { label: 'Confortable', value: 'comfortable' },
 ];
-
-const visaLabels: Record<NonNullable<Destination['visaType']>, string> = {
-  visa_free: 'Sans visa',
-  evisa: 'eVisa',
-  on_arrival: 'Visa à l’arrivée',
-  visa_required: 'Visa requis',
-};
 
 const visaBadgeStyles: Record<NonNullable<Destination['visaType']>, string> = {
   visa_free: 'bg-emerald-50 text-emerald-700 ring-emerald-200',

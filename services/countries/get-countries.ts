@@ -1,12 +1,11 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
+import {
+  getVisaTypeForCountry,
+  type VisaType as VisaRuleType,
+  visaLabels,
+} from '@/services/visa/visa-rules';
 
-export type VisaType =
-  | 'visa_free'
-  | 'evisa'
-  | 'e_visa'
-  | 'on_arrival'
-  | 'visa_on_arrival'
-  | 'visa_required';
+export type VisaType = VisaRuleType;
 
 export type Country = {
   id: string;
@@ -218,22 +217,6 @@ const countryRegionFixes: Record<string, string> = {
   ZW: 'Afrique de l’Est',
 };
 
-const countryVisaTypeFixes: Partial<Record<string, VisaType>> = {
-  BA: 'visa_required',
-  DK: 'visa_required',
-  DZ: 'visa_required',
-  ES: 'visa_required',
-  FR: 'visa_required',
-  GB: 'visa_required',
-  IT: 'visa_required',
-  ME: 'visa_required',
-  MK: 'visa_required',
-  NL: 'visa_required',
-  PE: 'visa_required',
-  PT: 'visa_required',
-  RS: 'visa_required',
-};
-
 const countryMaxStayDaysFixes: Partial<Record<string, number | null>> = {
   BA: null,
   DK: null,
@@ -266,25 +249,16 @@ const countryNotesFixes: Record<string, string> = {
   RS: 'Visa requis pour les passeports marocains ordinaires. À vérifier auprès des autorités serbes avant le départ.',
 };
 
-const visaNotesLabels: Record<VisaType, string> = {
-  visa_free: 'Sans visa',
-  evisa: 'eVisa',
-  e_visa: 'eVisa',
-  on_arrival: 'Visa à l’arrivée',
-  visa_on_arrival: 'Visa à l’arrivée',
-  visa_required: 'Visa requis',
-};
-
 function hasBrokenFrenchEncoding(value: string) {
   return /[?\u00c3\u00c2\u00e2\ufffd]/.test(value);
 }
 
-function getCleanNotes(country: CountryRow) {
+function getCleanNotes(country: CountryRow, visaType: VisaType) {
   if (country.notes && !hasBrokenFrenchEncoding(country.notes)) {
     return country.notes;
   }
 
-  const visaLabel = visaNotesLabels[country.visa_type];
+  const visaLabel = visaLabels[visaType];
 
   if (country.max_stay_days === null) {
     return `${visaLabel} pour les voyageurs marocains selon conditions. Durée de séjour à vérifier avant le départ.`;
@@ -308,18 +282,22 @@ export async function getCountries(): Promise<Country[]> {
     throw new Error(error.message);
   }
 
-  return data.map((country) => ({
-    id: country.id,
-    name: countryNameFixes[country.code] ?? country.name,
-    code: country.code,
-    region: countryRegionFixes[country.code] ?? country.region,
-    visaType: countryVisaTypeFixes[country.code] ?? country.visa_type,
-    maxStayDays:
-      country.code in countryMaxStayDaysFixes
-        ? countryMaxStayDaysFixes[country.code]!
-        : country.max_stay_days,
-    notes: countryNotesFixes[country.code] ?? getCleanNotes(country),
-    officialSourceUrl: country.official_source_url,
-    isFeatured: country.is_featured,
-  }));
+  return data.map((country) => {
+    const visaType = getVisaTypeForCountry(country.code, country.visa_type);
+
+    return {
+      id: country.id,
+      name: countryNameFixes[country.code] ?? country.name,
+      code: country.code,
+      region: countryRegionFixes[country.code] ?? country.region,
+      visaType,
+      maxStayDays:
+        country.code in countryMaxStayDaysFixes
+          ? countryMaxStayDaysFixes[country.code]!
+          : country.max_stay_days,
+      notes: countryNotesFixes[country.code] ?? getCleanNotes(country, visaType),
+      officialSourceUrl: country.official_source_url,
+      isFeatured: country.is_featured,
+    };
+  });
 }

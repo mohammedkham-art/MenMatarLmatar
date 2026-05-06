@@ -8,6 +8,11 @@ import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import { countryAdminSchema } from '@/lib/validators/country';
 import type { Country, VisaType } from '@/services/countries/get-countries';
 import { getCountries } from '@/services/countries/get-countries';
+import {
+  normalizeVisaType,
+  type StoredVisaType,
+  visaLabels,
+} from '@/services/visa/visa-rules';
 
 type CountryMutationPayload = {
   name: string;
@@ -29,17 +34,6 @@ const adminFlashMessages: Record<AdminFlash, string> = {
   featured: 'Destination mise en avant avec succès.',
   unfeatured: 'Destination retirée des mises en avant avec succès.',
 };
-
-const visaLabels: Record<string, string> = {
-  visa_free: 'Sans visa',
-  evisa: 'eVisa',
-  e_visa: 'eVisa',
-  on_arrival: 'Visa à l’arrivée',
-  visa_on_arrival: 'Visa à l’arrivée',
-  visa_required: 'Visa requis',
-};
-
-type StoredVisaType = 'visa_free' | 'evisa' | 'on_arrival' | 'visa_required';
 
 function getAdminDestinationsUrl(params: Record<string, string>) {
   const searchParams = new URLSearchParams(params);
@@ -65,18 +59,6 @@ function redirectWithError(error: unknown) {
       error: getActionErrorMessage(error),
     }),
   );
-}
-
-function normalizeVisaType(visaType: VisaType): StoredVisaType {
-  if (visaType === 'e_visa') {
-    return 'evisa';
-  }
-
-  if (visaType === 'visa_on_arrival') {
-    return 'on_arrival';
-  }
-
-  return visaType;
 }
 
 function getCountryInput(formData: FormData) {

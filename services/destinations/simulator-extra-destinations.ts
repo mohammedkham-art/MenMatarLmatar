@@ -1,14 +1,8 @@
 import type { Destination } from '@/services/destinations/get-destinations';
-
-const visaRequiredCountryCodes = new Set([
-  'DK',
-  'ES',
-  'FR',
-  'GB',
-  'IT',
-  'NL',
-  'PT',
-]);
+import {
+  getVisaTypeForCountry,
+  isVisaRequiredCountry,
+} from '@/services/visa/visa-rules';
 
 const visaRequiredSimulatorDestinations: Destination[] = [
   { city: 'Paris', country: 'France', countryCode: 'FR', region: 'Europe' },
@@ -110,17 +104,17 @@ function getDestinationKey(destination: Destination) {
 function normalizeVisaRequiredDestination(
   destination: Destination,
 ): Destination {
-  if (
-    destination.countryCode &&
-    visaRequiredCountryCodes.has(destination.countryCode)
-  ) {
+  if (isVisaRequiredCountry(destination.countryCode)) {
     return {
       ...destination,
       visaType: 'visa_required',
     };
   }
 
-  return destination;
+  return {
+    ...destination,
+    visaType: getVisaTypeForCountry(destination.countryCode, destination.visaType),
+  };
 }
 
 export function getSimulatorDestinations(destinations: Destination[]) {

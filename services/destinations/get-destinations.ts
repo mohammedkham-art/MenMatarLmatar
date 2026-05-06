@@ -1,10 +1,10 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
+import {
+  getVisaTypeForCountry,
+  type StoredVisaType,
+} from '@/services/visa/visa-rules';
 
-export type DestinationVisaType =
-  | 'visa_free'
-  | 'evisa'
-  | 'on_arrival'
-  | 'visa_required';
+export type DestinationVisaType = StoredVisaType;
 
 export type Destination = {
   id: string;
@@ -26,6 +26,36 @@ type DestinationRow = {
   is_featured: boolean | null;
 };
 
+type CountryVisaRow = {
+  code: string;
+  visa_type: DestinationVisaType | null;
+};
+
+async function getCountryVisaTypesByCode(
+  countryCodes: Array<string | null>,
+): Promise<Map<string, DestinationVisaType | null>> {
+  const uniqueCountryCodes = Array.from(
+    new Set(countryCodes.filter((code): code is string => Boolean(code))),
+  );
+
+  if (uniqueCountryCodes.length === 0) {
+    return new Map();
+  }
+
+  const supabase = createAdminSupabaseClient();
+  const { data, error } = await supabase
+    .from('countries')
+    .select('code, visa_type')
+    .in('code', uniqueCountryCodes)
+    .returns<CountryVisaRow[]>();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return new Map(data.map((country) => [country.code, country.visa_type]));
+}
+
 export async function getDestinations(): Promise<Destination[]> {
   const supabase = createAdminSupabaseClient();
 
@@ -40,13 +70,23 @@ export async function getDestinations(): Promise<Destination[]> {
     throw new Error(error.message);
   }
 
+  const countryVisaTypesByCode = await getCountryVisaTypesByCode(
+    data.map((destination) => destination.country_code),
+  );
+
   return data.map((destination) => ({
     id: destination.id,
     city: destination.city,
     country: destination.country,
     countryCode: destination.country_code,
     region: destination.region,
-    visaType: destination.visa_type,
+    visaType: getVisaTypeForCountry(
+      destination.country_code,
+      destination.country_code
+        ? countryVisaTypesByCode.get(destination.country_code) ??
+            destination.visa_type
+        : destination.visa_type,
+    ),
     isFeatured: destination.is_featured ?? false,
   }));
 }

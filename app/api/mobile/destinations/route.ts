@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { fallbackDestinations } from '@/services/destinations/fallback-destinations';
 import { getDestinations } from '@/services/destinations/get-destinations';
 import { getSimulatorDestinations } from '@/services/destinations/simulator-extra-destinations';
+import { isPublicVisaType } from '@/services/visa/visa-rules';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -16,8 +17,8 @@ export async function GET(request: Request) {
     const mobileDestinations =
       mode === 'simulator'
         ? getSimulatorDestinations(destinations)
-        : destinations.filter(
-            (destination) => destination.visaType !== 'visa_required',
+        : destinations.filter((destination) =>
+            isPublicVisaType(destination.visaType),
           );
 
     return NextResponse.json({ destinations: mobileDestinations });

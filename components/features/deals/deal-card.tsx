@@ -1,4 +1,5 @@
 import type { Deal, DealVisaType } from '@/services/deals/get-deals';
+import { visaLabels } from '@/services/visa/visa-rules';
 
 type DealCardProps = {
   deal: Deal;
@@ -10,14 +11,7 @@ const dateFormatter = new Intl.DateTimeFormat('fr-FR', {
   year: 'numeric',
 });
 
-const visaLabels: Record<DealVisaType, string> = {
-  visa_free: 'Sans visa',
-  evisa: 'eVisa',
-  e_visa: 'eVisa',
-  on_arrival: 'Visa à l’arrivée',
-  visa_on_arrival: 'Visa à l’arrivée',
-  visa_required: 'Visa requis',
-};
+const recentPriceMaxAgeHours = 144;
 
 const visaBadgeStyles: Record<DealVisaType, string> = {
   visa_free: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
@@ -44,14 +38,14 @@ function getFreshness(deal: Deal) {
     (Date.now() - checkedAt.getTime()) / (1000 * 60 * 60),
   );
 
-  if (Number.isNaN(diffHours) || diffHours > 48) {
+  if (Number.isNaN(diffHours) || diffHours > recentPriceMaxAgeHours) {
     return {
       label: 'À vérifier',
       className: 'text-orange-700',
     };
   }
 
-  if (diffHours <= 48) {
+  if (diffHours <= recentPriceMaxAgeHours) {
     return {
       label: 'Prix repéré récemment',
       className: 'text-emerald-700',

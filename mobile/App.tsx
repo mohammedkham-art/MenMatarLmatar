@@ -60,6 +60,8 @@ const visaLabels: Record<DealVisaType | DestinationVisaType, string> = {
   visa_required: 'Visa requis',
 };
 
+const recentPriceMaxAgeHours = 144;
+
 function formatMad(value: number) {
   return `${value.toLocaleString('fr-MA')} MAD`;
 }
@@ -95,7 +97,7 @@ function getFreshnessLabel(deal: Deal) {
     (Date.now() - checkedAt.getTime()) / (1000 * 60 * 60),
   );
 
-  if (Number.isNaN(diffHours) || diffHours > 48) {
+  if (Number.isNaN(diffHours) || diffHours > recentPriceMaxAgeHours) {
     return 'À vérifier';
   }
 
