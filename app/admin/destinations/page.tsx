@@ -9,6 +9,7 @@ import { countryAdminSchema } from '@/lib/validators/country';
 import type { Country, VisaType } from '@/services/countries/get-countries';
 import { getCountries } from '@/services/countries/get-countries';
 import {
+  getVisaTypeForCountry,
   normalizeVisaType,
   type StoredVisaType,
   visaLabels,
@@ -92,6 +93,14 @@ function getCountryPayload(formData: FormData): CountryMutationPayload {
   };
 }
 
+function canFallbackToVisaRules(error: { message?: string }, payload: CountryMutationPayload) {
+  return (
+    payload.visa_type === 'visa_required' &&
+    getVisaTypeForCountry(payload.code, null) === 'visa_required' &&
+    error.message?.includes('countries_visa_type_check')
+  );
+}
+
 function getCountryId(formData: FormData) {
   const id = formData.get('id');
 
@@ -145,7 +154,19 @@ async function updateCountry(formData: FormData) {
       .eq('id', id);
 
     if (error) {
-      throw new Error(error.message);
+      if (canFallbackToVisaRules(error, payload)) {
+        const { visa_type: _visaType, ...payloadWithoutVisaType } = payload;
+        const { error: fallbackError } = await supabase
+          .from('countries')
+          .update(payloadWithoutVisaType)
+          .eq('id', id);
+
+        if (fallbackError) {
+          throw new Error(fallbackError.message);
+        }
+      } else {
+        throw new Error(error.message);
+      }
     }
 
     revalidateDestinationPaths();

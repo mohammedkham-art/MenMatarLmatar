@@ -32,6 +32,7 @@ const countryVisaTypeOverrides: Partial<Record<string, StoredVisaType>> = {
   PE: 'visa_required',
   PT: 'visa_required',
   RS: 'visa_required',
+  SA: 'visa_required',
 };
 
 export const visaLabels: Record<VisaType, string> = {

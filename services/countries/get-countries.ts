@@ -231,6 +231,7 @@ const countryMaxStayDaysFixes: Partial<Record<string, number | null>> = {
   PE: null,
   PT: null,
   RS: null,
+  SA: null,
 };
 
 const countryNotesFixes: Record<string, string> = {
@@ -247,6 +248,7 @@ const countryNotesFixes: Record<string, string> = {
   PE: 'Visa requis selon les sources de référence consultées. À vérifier auprès des autorités consulaires péruviennes avant le départ.',
   PT: 'Visa Schengen requis pour les voyageurs marocains. À vérifier auprès des sources officielles avant réservation ou départ.',
   RS: 'Visa requis pour les passeports marocains ordinaires. À vérifier auprès des autorités serbes avant le départ.',
+  SA: 'Visa requis pour les voyageurs marocains. À vérifier auprès des autorités saoudiennes ou de la plateforme officielle avant réservation ou départ.',
 };
 
 function hasBrokenFrenchEncoding(value: string) {
