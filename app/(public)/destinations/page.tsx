@@ -11,6 +11,21 @@ type DestinationsPageProps = {
   }>;
 };
 
+const seoLinks = [
+  {
+    href: '/destinations/sans-visa-marocains',
+    label: 'Pays sans visa pour Marocains',
+  },
+  {
+    href: '/destinations/evisa-marocains',
+    label: 'Destinations eVisa',
+  },
+  {
+    href: '/destinations/visa-a-l-arrivee-marocains',
+    label: 'Visa à l’arrivée',
+  },
+];
+
 function getInitialVisaFilter(visa?: string): VisaType | 'all' {
   if (visa === 'visa_free') {
     return 'visa_free';
@@ -45,13 +60,24 @@ export default async function DestinationsPage({
             Destinations accessibles
           </h1>
           <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800">
-            Informations indicatives – à vérifier avant de voyager auprès des
+            Informations indicatives - à vérifier avant de voyager auprès des
             autorités officielles.
           </p>
           <p className="mt-3 text-muted-foreground">
             Explore les destinations accessibles selon le type de visa et la
             région.
           </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            {seoLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="rounded-full border bg-background px-4 py-2 text-sm font-bold text-primary transition hover:bg-muted"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
         </header>
 
         <CountriesList countries={countries} initialFilter={initialFilter} />
