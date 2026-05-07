@@ -30,7 +30,7 @@ const visaGroups: HomeVisaGroup[] = [
 function getCountriesByVisaType(countries: Country[], visaTypes: string[]) {
   return countries
     .filter((country) => visaTypes.includes(country.visaType))
-    .slice(0, 2);
+    .slice(0, 3);
 }
 
 export function VisaDestinationsSection({
