@@ -1,12 +1,8 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import type { Deal, DealVisaType } from '@/services/deals/get-deals';
-import {
-  getVisaTypeFromMetadata,
-  getVisaTypeForCountry,
-} from '@/services/visa/visa-rules';
+import { getVisaTypeForCountry } from '@/services/visa/visa-rules';
 
 type DealCountryRow = {
-  notes?: string | null;
   visa_type: DealVisaType | null;
 };
 
@@ -35,7 +31,6 @@ type AdminDealRow = {
 
 type CountryVisaRow = {
   code: string;
-  notes: string | null;
   visa_type: DealVisaType | null;
 };
 
@@ -52,16 +47,10 @@ function getRelatedVisaType(
   }
 
   if (Array.isArray(country)) {
-    return (
-      getVisaTypeFromMetadata(country[0]?.notes) ??
-      getDealVisaType(countryCode, country[0]?.visa_type ?? null)
-    );
+    return getDealVisaType(countryCode, country[0]?.visa_type ?? null);
   }
 
-  return (
-    getVisaTypeFromMetadata(country.notes) ??
-    getDealVisaType(countryCode, country.visa_type)
-  );
+  return getDealVisaType(countryCode, country.visa_type);
 }
 
 function mapAdminDealRow(
@@ -96,7 +85,7 @@ async function getVisaTypeByCountryCode(countryCode: string) {
   const supabase = createAdminSupabaseClient();
   const { data, error } = await supabase
     .from('countries')
-    .select('code, visa_type, notes')
+    .select('code, visa_type')
     .eq('code', countryCode)
     .maybeSingle()
     .returns<CountryVisaRow | null>();
@@ -105,16 +94,13 @@ async function getVisaTypeByCountryCode(countryCode: string) {
     throw new Error(error.message);
   }
 
-  return (
-    getVisaTypeFromMetadata(data?.notes) ??
-    getDealVisaType(countryCode, data?.visa_type ?? null)
-  );
+  return getDealVisaType(countryCode, data?.visa_type ?? null);
 }
 
 export async function getAdminDeal(dealId: string): Promise<Deal | null> {
   const supabase = createAdminSupabaseClient();
   const selectFields =
-    'id, title, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type, notes), price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at';
+    'id, title, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type), price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at';
 
   const relationResult = await supabase
     .from('deals')
