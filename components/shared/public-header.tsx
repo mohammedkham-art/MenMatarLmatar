@@ -30,7 +30,7 @@ export function PublicHeader() {
             <span
               dir="rtl"
               lang="ar"
-              className="hidden whitespace-nowrap text-sm font-bold text-accent-foreground/80 md:block"
+              className="hidden whitespace-nowrap text-sm font-bold text-accent-foreground/80 dark:text-foreground/50 md:block"
             >
               نسافر بذكاء، ونعيش أحسن تجربة
             </span>

@@ -72,7 +72,7 @@ export function DealCard({ deal }: DealCardProps) {
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           {deal.isFeatured && (
-            <span className="mb-3 inline-flex rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent-foreground ring-1 ring-inset ring-accent/30">
+            <span className="mb-3 inline-flex rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent-foreground ring-1 ring-inset ring-accent/30 dark:bg-accent/25 dark:text-accent dark:ring-accent/50">
               Meilleure offre
             </span>
           )}
@@ -145,7 +145,7 @@ export function DealCard({ deal }: DealCardProps) {
           {deal.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent-foreground"
+              className="rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent-foreground dark:bg-accent/25 dark:text-accent"
             >
               {tag}
             </span>
