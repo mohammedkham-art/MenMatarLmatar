@@ -242,7 +242,7 @@ const countryNotesFixes: Record<string, string> = {
   DZ: 'Visa obligatoire pour les voyageurs marocains. À vérifier auprès des autorités consulaires algériennes avant le départ.',
   ES: 'Visa Schengen requis pour les voyageurs marocains. À vérifier auprès des sources officielles avant réservation ou départ.',
   FR: 'Visa Schengen requis pour les voyageurs marocains. À vérifier auprès des sources officielles avant réservation ou départ.',
-  GB: 'Visa ou autorisation d’entrée requis selon le profil du voyageur marocain. À vérifier auprès des sources officielles avant réservation ou départ.',
+  GB: ‘eVisa obligatoire pour les voyageurs marocains depuis février 2026. Demande en ligne via le portail officiel UK Visas and Immigration. Durée de séjour variable selon le type de visa accordé.’,
   IT: 'Visa Schengen requis pour les voyageurs marocains. À vérifier auprès des sources officielles avant réservation ou départ.',
   ME: 'Visa requis pour les passeports marocains ordinaires, sauf exemptions conditionnelles avec certains visas ou titres de séjour. À vérifier avant le départ.',
   MK: 'Visa requis pour les passeports marocains ordinaires, sauf exemptions conditionnelles avec certains visas ou titres de séjour. À vérifier avant le départ.',
