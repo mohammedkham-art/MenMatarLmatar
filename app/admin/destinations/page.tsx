@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 
 import { CountryCodeInput } from '@/app/admin/destinations/country-code-input';
 import { DeleteCountryButton } from '@/app/admin/destinations/delete-country-button';
+import { FlashMessage } from '@/app/admin/destinations/flash-message';
 import { AdminHeaderActions } from '@/components/shared/admin-header-actions';
 import { requireAdminSession } from '@/lib/auth/require-admin-session';
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
@@ -258,15 +259,11 @@ export default async function AdminDestinationsPage({
       </header>
 
       {successMessage && (
-        <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
-          {successMessage}
-        </div>
+        <FlashMessage message={successMessage} type="success" />
       )}
 
       {(errorMessage || loadErrorMessage) && (
-        <div className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
-          {errorMessage ?? loadErrorMessage}
-        </div>
+        <FlashMessage message={errorMessage ?? loadErrorMessage!} type="error" />
       )}
 
       <section className="mt-10 grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
