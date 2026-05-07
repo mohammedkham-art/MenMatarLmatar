@@ -66,6 +66,22 @@ export function appendVisaTypeMetadata(
     .join('\n');
 }
 
+const countryVisaTypeOverrides: Partial<Record<string, StoredVisaType>> = {
+  BA: 'visa_required',
+  DK: 'visa_required',
+  DZ: 'visa_required',
+  ES: 'visa_required',
+  FR: 'visa_required',
+  IT: 'visa_required',
+  ME: 'visa_required',
+  MK: 'visa_required',
+  NL: 'visa_required',
+  PE: 'visa_required',
+  PT: 'visa_required',
+  RS: 'visa_required',
+  SA: 'visa_required',
+};
+
 export function getVisaTypeForCountry(
   countryCode: string | null | undefined,
   visaType: null,
@@ -82,6 +98,10 @@ export function getVisaTypeForCountry(
   countryCode: string | null | undefined,
   visaType: VisaType | null,
 ) {
+  if (countryCode && countryCode in countryVisaTypeOverrides) {
+    return countryVisaTypeOverrides[countryCode]!;
+  }
+
   return normalizeVisaType(visaType);
 }
 

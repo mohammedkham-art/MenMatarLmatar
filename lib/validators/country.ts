@@ -10,7 +10,7 @@ export const countryAdminSchema = z.object({
   region: z.string().min(2).max(80),
   visaType: z.enum(['visa_free', 'evisa', 'on_arrival', 'visa_required']),
   maxStayDays: z
-    .union([z.literal(''), z.coerce.number().int().positive()])
+    .union([z.literal(''), z.literal('0'), z.coerce.number().int().positive()])
     .optional(),
   notes: z.string().max(800).optional(),
   officialSourceUrl: z.union([z.literal(''), z.string().url()]).optional(),
