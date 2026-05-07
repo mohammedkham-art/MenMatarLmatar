@@ -403,12 +403,7 @@ function CountryForm({
             placeholder="DZ"
             defaultValue={country?.code}
           />
-          <AdminInput
-            name="region"
-            label="Région"
-            placeholder="Afrique du Nord"
-            defaultValue={country?.region}
-          />
+          <RegionSelect defaultValue={country?.region} />
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -484,6 +479,57 @@ function VisaTypeSelect({ defaultValue }: VisaTypeSelectProps) {
         <option value="evisa">eVisa</option>
         <option value="on_arrival">Visa à l’arrivée</option>
         <option value="visa_required">Visa requis</option>
+      </select>
+    </div>
+  );
+}
+
+const regions = [
+  'Afrique centrale',
+  "Afrique de l'Est",
+  "Afrique de l'Ouest",
+  'Afrique du Nord',
+  'Afrique australe',
+  'Amérique centrale',
+  'Amérique du Nord',
+  'Amérique du Sud',
+  'Asie centrale',
+  "Asie de l'Est",
+  'Asie du Sud',
+  'Asie du Sud-Est',
+  'Caraïbes',
+  'Caucase',
+  'Europe',
+  'Moyen-Orient',
+  'Océanie',
+];
+
+type RegionSelectProps = {
+  defaultValue?: string;
+};
+
+function RegionSelect({ defaultValue }: RegionSelectProps) {
+  return (
+    <div>
+      <label
+        htmlFor="region"
+        className="text-xs font-semibold uppercase tracking-widest text-muted-foreground"
+      >
+        Région
+      </label>
+      <select
+        id="region"
+        name="region"
+        className="mt-2 h-12 w-full rounded-xl border bg-background px-4 text-sm outline-none transition focus:border-primary"
+        defaultValue={defaultValue ?? ''}
+        required
+      >
+        <option value="">Choisir une région</option>
+        {regions.map((region) => (
+          <option key={region} value={region}>
+            {region}
+          </option>
+        ))}
       </select>
     </div>
   );
