@@ -1,6 +1,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
+import { DealsFilterBar } from '@/app/admin/deals/deals-filter-bar';
 import { DeleteDealButton } from '@/app/admin/deals/delete-deal-button';
 import { FlashMessage } from '@/app/admin/destinations/flash-message';
 import { AdminHeaderActions } from '@/components/shared/admin-header-actions';
@@ -273,6 +274,10 @@ type AdminDealsPageProps = {
   searchParams?: Promise<{
     error?: string;
     status?: AdminFlash;
+    q?: string;
+    statut?: string;
+    visa?: string;
+    tri?: string;
   }>;
 };
 
@@ -294,6 +299,54 @@ export default async function AdminDealsPage({
     [countries, deals] = await Promise.all([getCountries(), getAdminDeals()]);
   } catch (error) {
     loadErrorMessage = getActionErrorMessage(error);
+  }
+
+  const search = (params?.q ?? '').toLowerCase();
+  const statut = params?.statut ?? 'all';
+  const visa = params?.visa ?? 'all';
+  const tri = params?.tri ?? '';
+
+  let filteredDeals = deals;
+
+  if (search) {
+    filteredDeals = filteredDeals.filter(
+      (deal) =>
+        deal.title.toLowerCase().includes(search) ||
+        deal.fromCity.toLowerCase().includes(search) ||
+        deal.toCity.toLowerCase().includes(search) ||
+        deal.countryCode.toLowerCase().includes(search),
+    );
+  }
+
+  if (statut === 'active') {
+    filteredDeals = filteredDeals.filter((deal) => deal.isActive);
+  } else if (statut === 'inactive') {
+    filteredDeals = filteredDeals.filter((deal) => !deal.isActive);
+  }
+
+  if (visa !== 'all') {
+    filteredDeals = filteredDeals.filter((deal) => {
+      const v = deal.visaType;
+      if (visa === 'evisa') return v === 'evisa' || v === 'e_visa';
+      if (visa === 'on_arrival')
+        return v === 'on_arrival' || v === 'visa_on_arrival';
+      return v === visa;
+    });
+  }
+
+  if (tri === 'departure') {
+    filteredDeals = [...filteredDeals].sort((a, b) => {
+      if (!a.departureDate) return 1;
+      if (!b.departureDate) return -1;
+      return (
+        new Date(a.departureDate).getTime() -
+        new Date(b.departureDate).getTime()
+      );
+    });
+  } else if (tri === 'price') {
+    filteredDeals = [...filteredDeals].sort((a, b) => a.priceMad - b.priceMad);
+  } else if (tri === 'score') {
+    filteredDeals = [...filteredDeals].sort((a, b) => b.score - a.score);
   }
 
   return (
@@ -344,14 +397,21 @@ export default async function AdminDealsPage({
             </p>
           </div>
 
+          <DealsFilterBar
+            totalCount={deals.length}
+            filteredCount={filteredDeals.length}
+          />
+
           <div className="mt-6 space-y-4">
-            {deals.map((deal) => (
+            {filteredDeals.map((deal) => (
               <AdminDealItem key={deal.id} countries={countries} deal={deal} />
             ))}
 
-            {deals.length === 0 && (
+            {filteredDeals.length === 0 && (
               <div className="rounded-xl border bg-muted p-8 text-center text-muted-foreground">
-                Aucune offre pour le moment.
+                {deals.length === 0
+                  ? 'Aucune offre pour le moment.'
+                  : 'Aucune offre ne correspond aux filtres.'}
               </div>
             )}
           </div>
