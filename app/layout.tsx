@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { Analytics } from '@vercel/analytics/next';
 
 import { QueryProvider } from '@/components/shared/query-provider';
+import { ThemeProvider } from '@/components/shared/theme-provider';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -67,9 +68,11 @@ type RootLayoutProps = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="fr">
+    <html lang="fr" suppressHydrationWarning>
       <body>
-        <QueryProvider>{children}</QueryProvider>
+        <ThemeProvider>
+          <QueryProvider>{children}</QueryProvider>
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>

@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { ThemeToggle } from '@/components/shared/theme-toggle';
+
 export function PublicHeader() {
   return (
     <header className="bg-background/88 sticky top-0 z-40 border-b backdrop-blur-xl">
@@ -53,6 +55,7 @@ export function PublicHeader() {
           >
             Simulateur IA
           </Link>
+          <ThemeToggle />
         </nav>
       </div>
     </header>
