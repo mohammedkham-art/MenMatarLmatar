@@ -2,10 +2,6 @@ import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import type { Deal, DealVisaType } from '@/services/deals/get-deals';
 import { getVisaTypeForCountry } from '@/services/visa/visa-rules';
 
-type AdminDealCountryRow = {
-  visa_type: DealVisaType | null;
-};
-
 type AdminDealRow = {
   id: string;
   title: string;
@@ -14,7 +10,6 @@ type AdminDealRow = {
   from_city: string;
   to_city: string;
   country_code: string;
-  countries?: AdminDealCountryRow | AdminDealCountryRow[] | null;
   price_mad: number;
   airline: string | null;
   departure_date: string | null;
@@ -29,14 +24,28 @@ type AdminDealRow = {
   updated_at: string;
 };
 
-function getVisaType(
-  countryCode: string,
-  countries: AdminDealRow['countries'],
-): DealVisaType | null {
-  if (!countries) return getVisaTypeForCountry(countryCode, null);
-  if (Array.isArray(countries))
-    return getVisaTypeForCountry(countryCode, countries[0]?.visa_type ?? null);
-  return getVisaTypeForCountry(countryCode, countries.visa_type);
+type CountryVisaRow = {
+  code: string;
+  visa_type: DealVisaType | null;
+};
+
+async function getVisaTypesByCountryCode(
+  countryCodes: string[],
+): Promise<Map<string, DealVisaType | null>> {
+  if (countryCodes.length === 0) return new Map();
+
+  const supabase = createAdminSupabaseClient();
+  const unique = Array.from(new Set(countryCodes));
+
+  const { data, error } = await supabase
+    .from('countries')
+    .select('code, visa_type')
+    .in('code', unique)
+    .returns<CountryVisaRow[]>();
+
+  if (error) return new Map();
+
+  return new Map(data.map((c) => [c.code, c.visa_type]));
 }
 
 export async function getAdminDeals(): Promise<Deal[]> {
@@ -45,7 +54,7 @@ export async function getAdminDeals(): Promise<Deal[]> {
   const { data, error } = await supabase
     .from('deals')
     .select(
-      'id, title, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type), price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at',
+      'id, title, from_airport, to_airport, from_city, to_city, country_code, price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at',
     )
     .order('is_featured', { ascending: false })
     .order('score', { ascending: false })
@@ -57,6 +66,10 @@ export async function getAdminDeals(): Promise<Deal[]> {
     throw new Error(error.message);
   }
 
+  const visaMap = await getVisaTypesByCountryCode(
+    data.map((d) => d.country_code),
+  );
+
   return data.map((deal) => ({
     id: deal.id,
     title: deal.title,
@@ -65,7 +78,10 @@ export async function getAdminDeals(): Promise<Deal[]> {
     fromCity: deal.from_city,
     toCity: deal.to_city,
     countryCode: deal.country_code,
-    visaType: getVisaType(deal.country_code, deal.countries),
+    visaType: getVisaTypeForCountry(
+      deal.country_code,
+      visaMap.get(deal.country_code) ?? null,
+    ),
     priceMad: deal.price_mad,
     airline: deal.airline,
     departureDate: deal.departure_date,
