@@ -1,6 +1,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
+import { CountryCodeInput } from '@/app/admin/destinations/country-code-input';
 import { DeleteCountryButton } from '@/app/admin/destinations/delete-country-button';
 import { AdminHeaderActions } from '@/components/shared/admin-header-actions';
 import { requireAdminSession } from '@/lib/auth/require-admin-session';
@@ -397,12 +398,7 @@ function CountryForm({
         />
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <AdminInput
-            name="code"
-            label="Code pays"
-            placeholder="DZ"
-            defaultValue={country?.code}
-          />
+          <CountryCodeInput defaultValue={country?.code} />
           <RegionSelect defaultValue={country?.region} />
         </div>
 
