@@ -12,6 +12,7 @@ import {
 } from '@/services/security/rate-limit';
 
 export const runtime = 'nodejs';
+export const maxDuration = 60;
 
 const simulatorRateLimit = {
   limit: 5,

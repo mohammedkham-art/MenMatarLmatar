@@ -207,7 +207,7 @@ function buildPrompt(params: TripSimulationRequest) {
 }
 
 function getMaxOutputTokens(durationDays: number) {
-  return Math.min(4_500, Math.max(1_800, 1_200 + durationDays * 140));
+  return Math.min(6_000, Math.max(2_000, 1_500 + durationDays * 250));
 }
 
 function extractResponseText(payload: OpenAIResponsesPayload) {
