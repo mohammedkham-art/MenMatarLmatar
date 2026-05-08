@@ -13,24 +13,6 @@ const dateFormatter = new Intl.DateTimeFormat('fr-FR', {
 
 const recentPriceMaxAgeHours = 144;
 
-// TODO: remplacer par ton AID Booking une fois inscrit (ex: aid=XXXXXXX)
-function getBookingUrl(toCity: string, departureDate: string): string {
-  const checkin = new Date(departureDate);
-  const checkout = new Date(departureDate);
-  checkout.setDate(checkout.getDate() + 2);
-
-  const fmt = (d: Date) => d.toISOString().slice(0, 10);
-
-  const params = new URLSearchParams({
-    ss: toCity,
-    checkin: fmt(checkin),
-    checkout: fmt(checkout),
-    lang: 'fr',
-  });
-
-  return `https://www.booking.com/search.html?${params.toString()}`;
-}
-
 const visaBadgeStyles: Record<DealVisaType, string> = {
   visa_free: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
   evisa: 'bg-blue-50 text-blue-700 ring-blue-200',
@@ -171,27 +153,14 @@ export function DealCard({ deal }: DealCardProps) {
         </div>
       )}
 
-      <div className="mt-6 flex flex-col gap-3">
-        <a
-          href={deal.bookingUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
-        >
-          Voir l’offre ↗
-        </a>
-
-        {deal.departureDate && (
-          <a
-            href={getBookingUrl(deal.toCity, deal.departureDate)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#003580] px-5 text-sm font-semibold text-white transition hover:opacity-90"
-          >
-            🏨 Trouver un hébergement à {deal.toCity}
-          </a>
-        )}
-      </div>
+      <a
+        href={deal.bookingUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+      >
+        Voir l’offre ↗
+      </a>
     </article>
   );
 }
