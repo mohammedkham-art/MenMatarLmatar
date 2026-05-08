@@ -181,8 +181,8 @@ export function getSimulatorDestinations(destinations: Destination[]) {
   const mergedDestinations = new Map<string, Destination>();
 
   for (const destination of [
-    ...destinations.map(normalizeDestination),
     ...builtExtraDestinations,
+    ...destinations.map(normalizeDestination),
   ]) {
     mergedDestinations.set(getDestinationKey(destination), destination);
   }
