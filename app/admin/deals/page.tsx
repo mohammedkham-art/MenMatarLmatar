@@ -372,11 +372,19 @@ export default async function AdminDealsPage({
       </header>
 
       {successMessage && (
-        <FlashMessage message={successMessage} type="success" />
+        <FlashMessage
+          message={successMessage}
+          type="success"
+          redirectTo="/admin/deals"
+        />
       )}
 
       {(errorMessage || loadErrorMessage) && (
-        <FlashMessage message={errorMessage ?? loadErrorMessage!} type="error" />
+        <FlashMessage
+          message={errorMessage ?? loadErrorMessage!}
+          type="error"
+          redirectTo="/admin/deals"
+        />
       )}
 
       <section className="mt-10 grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
