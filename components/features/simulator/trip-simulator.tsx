@@ -103,7 +103,7 @@ export function TripSimulator({ destinations }: TripSimulatorProps) {
     useState<Destination | null>(null);
   const [isDestinationOpen, setIsDestinationOpen] = useState(false);
   const [arrivalDate, setArrivalDate] = useState('');
-  const [days, setDays] = useState(5);
+  const [days, setDays] = useState(3);
   const [travelerType, setTravelerType] = useState<TravelerType>('solo');
   const [budgetMad, setBudgetMad] = useState('');
   const [travelStyle, setTravelStyle] = useState<TravelStyle>('balanced');

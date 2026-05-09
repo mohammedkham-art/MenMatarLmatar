@@ -510,8 +510,26 @@ function SimulatorScreen({
   const [query, setQuery] = useState('');
   const [selectedDestination, setSelectedDestination] =
     useState<Destination | null>(null);
-  const [arrivalDate, setArrivalDate] = useState('');
-  const [durationDays, setDurationDays] = useState(5);
+  const [arrivalDateDisplay, setArrivalDateDisplay] = useState('');
+  const [durationDays, setDurationDays] = useState(3);
+
+  // Convertit DD-MM-YYYY (affichage) → YYYY-MM-DD (API)
+  function toApiDate(display: string) {
+    const match = display.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+    if (!match) return '';
+    return `${match[3]}-${match[2]}-${match[1]}`;
+  }
+
+  // Formate la saisie automatiquement en DD-MM-YYYY
+  function handleArrivalDateChange(value: string) {
+    const digits = value.replace(/\D/g, '').slice(0, 8);
+    let formatted = digits;
+    if (digits.length > 2) formatted = `${digits.slice(0, 2)}-${digits.slice(2)}`;
+    if (digits.length > 4) formatted = `${digits.slice(0, 2)}-${digits.slice(2, 4)}-${digits.slice(4)}`;
+    setArrivalDateDisplay(formatted);
+  }
+
+  const arrivalDate = toApiDate(arrivalDateDisplay);
   const [budgetMad, setBudgetMad] = useState('');
   const [travelerType, setTravelerType] = useState<TravelerType>('solo');
   const [travelStyle, setTravelStyle] = useState<TravelStyle>('balanced');
@@ -620,10 +638,11 @@ function SimulatorScreen({
 
       <Text style={styles.label}>Date d'arrivée</Text>
       <TextInput
-        value={arrivalDate}
-        onChangeText={setArrivalDate}
-        placeholder="YYYY-MM-DD"
+        value={arrivalDateDisplay}
+        onChangeText={handleArrivalDateChange}
+        placeholder="JJ-MM-AAAA"
         placeholderTextColor={colors.muted}
+        keyboardType="numeric"
         style={styles.input}
       />
 
@@ -912,32 +931,31 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    borderBottomColor: colors.border,
-    borderBottomWidth: 1,
+    backgroundColor: colors.primary,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 18,
     paddingVertical: 14,
   },
   brandSmall: {
-    color: colors.primary,
+    color: 'rgba(255,255,255,0.6)',
     fontSize: 12,
     fontWeight: '900',
     letterSpacing: 1.4,
   },
   brand: {
-    color: colors.primary,
+    color: '#ffffff',
     fontSize: 26,
     fontWeight: '900',
   },
   headerPill: {
-    backgroundColor: colors.primarySoft,
+    backgroundColor: 'rgba(255,255,255,0.15)',
     borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
   headerPillText: {
-    color: colors.primary,
+    color: '#ffffff',
     fontSize: 11,
     fontWeight: '800',
   },
