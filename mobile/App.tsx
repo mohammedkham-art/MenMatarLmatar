@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  Image,
   Linking,
   Pressable,
   SafeAreaView,
@@ -214,9 +215,18 @@ export default function App() {
 function Header() {
   return (
     <View style={styles.header}>
-      <View>
-        <Text style={styles.brandSmall}>MEN MATAR</Text>
-        <Text style={styles.brand}>L MATAR</Text>
+      <View style={styles.headerLogo}>
+        <View style={styles.logoBox}>
+          <Image
+            source={require('./assets/logo-sticker.png')}
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
+        </View>
+        <View>
+          <Text style={styles.brandSmall}>MEN MATAR</Text>
+          <Text style={styles.brand}>L MATAR</Text>
+        </View>
       </View>
       <View style={styles.headerPill}>
         <Text style={styles.headerPillText}>Passeport marocain</Text>
@@ -935,7 +945,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 18,
-    paddingVertical: 14,
+    paddingVertical: 12,
+  },
+  headerLogo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  logoBox: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoImage: {
+    width: 38,
+    height: 44,
   },
   brandSmall: {
     color: 'rgba(255,255,255,0.6)',
