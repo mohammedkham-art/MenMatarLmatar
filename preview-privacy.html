@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Politique de confidentialité — Men Matar L Matar</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #0d4a2e; --green-light: #1a6644; --accent: #e07b20;
+      --bg: #f5f0e8; --card: #fff; --border: #ddd5c4;
+      --text: #0d2b1f; --muted: #5a7a6e; --muted-bg: #f0ebe0;
+    }
+    body { font-family: Inter, ui-sans-serif, system-ui, sans-serif; background: var(--bg); color: var(--text); }
+
+    header { background: var(--green); border-bottom: 1px solid rgba(255,255,255,.1); padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.1rem; font-weight: 900; color: #fff; text-decoration: none; }
+    .logo span { font-size: 0.6rem; display: block; opacity: .55; letter-spacing: .2em; text-transform: uppercase; }
+    nav { display: flex; gap: 1rem; font-size: 0.82rem; font-weight: 800; }
+    nav a { color: rgba(255,255,255,.75); text-decoration: none; padding: 0.4rem 0.8rem; border-radius: 9999px; transition: background .15s; }
+    nav a:hover { background: rgba(255,255,255,.12); color: #fff; }
+    nav a.cta { background: var(--accent); color: #fff; }
+
+    .container { max-width: 760px; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
+    .eyebrow { font-size: 0.62rem; font-weight: 900; letter-spacing: .2em; text-transform: uppercase; color: var(--green-light); }
+    h1 { font-size: 2.4rem; font-weight: 900; letter-spacing: -.02em; margin-top: 0.6rem; line-height: 1.1; }
+    .date { font-size: 0.82rem; color: var(--muted); margin-top: 0.5rem; }
+    .content { margin-top: 3rem; display: flex; flex-direction: column; gap: 2.5rem; }
+
+    article h2 { font-size: 1.15rem; font-weight: 900; margin-bottom: 0.75rem; }
+    article h3 { font-size: 0.9rem; font-weight: 900; margin-top: 1.2rem; margin-bottom: 0.4rem; color: var(--text); }
+    article p, article li { font-size: 0.95rem; line-height: 1.75; color: var(--muted); }
+    article ul { padding-left: 1.4rem; display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.5rem; }
+    article a { color: var(--green); font-weight: 700; text-decoration: none; }
+    article a:hover { text-decoration: underline; }
+
+    .contact-box { background: var(--muted-bg); border: 1px solid var(--border); border-radius: 0.85rem; padding: 1.25rem; margin-top: 1rem; }
+    .contact-box p { font-size: 0.9rem; }
+    .contact-box .name { font-weight: 900; color: var(--text); font-size: 1rem; margin-bottom: 0.5rem; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 1rem; border: 1px solid var(--border); border-radius: 0.85rem; overflow: hidden; }
+    thead { background: var(--muted-bg); }
+    th { padding: 0.75rem 1rem; text-align: left; font-weight: 900; font-size: 0.8rem; }
+    td { padding: 0.75rem 1rem; border-top: 1px solid var(--border); }
+    td:first-child { font-weight: 700; color: var(--text); }
+    td:last-child { color: var(--muted); }
+
+    footer { text-align: center; padding: 2rem; font-size: 0.78rem; color: var(--muted); border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#">
+    <span>Men Matar</span>
+    L MATAR
+  </a>
+  <nav>
+    <a href="#">Destinations</a>
+    <a href="#">Offres</a>
+    <a class="cta" href="#">Simulateur IA</a>
+  </nav>
+</header>
+
+<div class="container">
+  <p class="eyebrow">Légal</p>
+  <h1>Politique de confidentialité</h1>
+  <p class="date">Dernière mise à jour : 09 mai 2026</p>
+
+  <div class="content">
+
+    <article>
+      <h2>1. Qui sommes-nous ?</h2>
+      <p>Men Matar L Matar est une application web et mobile destinée aux voyageurs marocains. Elle permet de consulter des bons plans de vols, des informations visa et de simuler un itinéraire de voyage grâce à l'intelligence artificielle.</p>
+      <p style="margin-top:.75rem">Site web : <strong>https://menmatarlmatar.ma</strong><br>Contact : <a href="mailto:contact@menmatarlmatar.ma">contact@menmatarlmatar.ma</a></p>
+    </article>
+
+    <article>
+      <h2>2. Données collectées</h2>
+      <p>Nous collectons un minimum de données pour faire fonctionner le service.</p>
+      <h3>Données collectées automatiquement</h3>
+      <ul>
+        <li>Adresse IP (utilisée uniquement pour la limitation des requêtes au simulateur IA)</li>
+        <li>Pages visitées, durée de visite (via Google Analytics et Vercel Analytics)</li>
+        <li>Événements de navigation (via Meta Pixel, si applicable)</li>
+      </ul>
+      <h3>Données saisies dans le simulateur IA</h3>
+      <ul>
+        <li>Destination choisie</li>
+        <li>Date d'arrivée et durée du séjour</li>
+        <li>Budget indicatif (facultatif)</li>
+        <li>Type de voyageur et style de voyage</li>
+      </ul>
+      <p style="margin-top:.75rem">Ces données sont transmises à OpenAI pour générer la simulation. Elles ne sont <strong>pas stockées</strong> sur nos serveurs après traitement.</p>
+      <h3>Données non collectées</h3>
+      <ul>
+        <li>Nom, prénom, e-mail (aucun compte requis)</li>
+        <li>Données de paiement</li>
+        <li>Localisation GPS</li>
+        <li>Contacts ou fichiers du téléphone</li>
+      </ul>
+    </article>
+
+    <article>
+      <h2>3. Comment nous utilisons ces données</h2>
+      <ul>
+        <li>Générer votre simulation de voyage via l'IA (OpenAI)</li>
+        <li>Limiter les abus du simulateur (rate limiting par adresse IP)</li>
+        <li>Améliorer le site via des statistiques anonymes (Google Analytics, Vercel Analytics)</li>
+        <li>Mesurer l'audience publicitaire (Meta Pixel)</li>
+      </ul>
+    </article>
+
+    <article>
+      <h2>4. Services tiers</h2>
+      <p>Nous utilisons les services suivants, chacun ayant sa propre politique de confidentialité :</p>
+      <table>
+        <thead><tr><th>Service</th><th>Usage</th></tr></thead>
+        <tbody>
+          <tr><td>OpenAI</td><td>Génération du plan de voyage IA</td></tr>
+          <tr><td>Vercel</td><td>Hébergement et analytics anonymes</td></tr>
+          <tr><td>Google Analytics</td><td>Statistiques de fréquentation</td></tr>
+          <tr><td>Meta Pixel</td><td>Mesure des campagnes publicitaires</td></tr>
+          <tr><td>Supabase</td><td>Base de données (deals, destinations)</td></tr>
+        </tbody>
+      </table>
+    </article>
+
+    <article>
+      <h2>5. Cookies</h2>
+      <p>Nous utilisons des cookies techniques indispensables au fonctionnement du site (session, préférence de thème) ainsi que des cookies analytiques (Google Analytics, Meta Pixel). Aucun cookie publicitaire personnel n'est déposé sans consentement.</p>
+    </article>
+
+    <article>
+      <h2>6. Durée de conservation</h2>
+      <ul>
+        <li>Données du simulateur IA : non conservées après la réponse</li>
+        <li>Logs d'accès serveur : 30 jours maximum</li>
+        <li>Données analytiques : selon les politiques de Google et Meta</li>
+      </ul>
+    </article>
+
+    <article>
+      <h2>7. Vos droits</h2>
+      <p>Conformément au RGPD et à la loi 09-08 relative à la protection des données personnelles au Maroc, vous disposez des droits suivants :</p>
+      <ul>
+        <li>Droit d'accès à vos données</li>
+        <li>Droit de rectification</li>
+        <li>Droit à l'effacement (droit à l'oubli)</li>
+        <li>Droit d'opposition au traitement</li>
+      </ul>
+      <p style="margin-top:.75rem">Pour exercer vos droits, contactez-nous à <a href="mailto:contact@menmatarlmatar.ma">contact@menmatarlmatar.ma</a>. Nous répondrons dans un délai de 30 jours.</p>
+    </article>
+
+    <article>
+      <h2>8. Sécurité</h2>
+      <p>Les échanges entre votre appareil et nos serveurs sont chiffrés via HTTPS/TLS. L'accès à nos bases de données est restreint et authentifié. Aucune donnée de paiement ne transite par nos serveurs.</p>
+    </article>
+
+    <article>
+      <h2>9. Modifications</h2>
+      <p>Cette politique peut être mise à jour à tout moment. La date de dernière modification est indiquée en haut de cette page. En continuant à utiliser l'application après une mise à jour, vous acceptez la nouvelle version.</p>
+    </article>
+
+    <article>
+      <h2>10. Contact</h2>
+      <p>Pour toute question relative à cette politique de confidentialité :</p>
+      <div class="contact-box">
+        <p class="name">Men Matar L Matar</p>
+        <p>E-mail : <a href="mailto:contact@menmatarlmatar.ma">contact@menmatarlmatar.ma</a></p>
+        <p>Site web : <a href="https://menmatarlmatar.ma">https://menmatarlmatar.ma</a></p>
+      </div>
+    </article>
+
+  </div>
+</div>
+
+<footer>© 2026 Men Matar L Matar · Bons plans voyage depuis le Maroc</footer>
+
+</body>
+</html>
