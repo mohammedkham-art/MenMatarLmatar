@@ -22,7 +22,7 @@ export function ThemeToggle() {
       type="button"
       aria-label={isDark ? 'Activer le mode clair' : 'Activer le mode sombre'}
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-primary"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/75 transition hover:bg-white/10 hover:text-white"
     >
       {isDark ? (
         <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5">
