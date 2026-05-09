@@ -707,9 +707,9 @@ function SimulatorScreen({
         </Text>
       </Pressable>
 
-      {isSubmitting && <ActivityIndicator color={colors.primary} size="large" />}
-      {error && <ErrorState message={error} compact />}
-      {result && <SimulationResult result={result} />}
+      {isSubmitting && <SimulatorLoadingState />}
+      {!isSubmitting && error && <SimulatorErrorState message={error} />}
+      {!isSubmitting && result && <SimulationResult result={result} />}
     </View>
   );
 }
@@ -857,6 +857,38 @@ function OptionGroup<TValue extends string>({
             </Pressable>
           );
         })}
+      </View>
+    </View>
+  );
+}
+
+function SimulatorLoadingState() {
+  return (
+    <View style={styles.simStateCard}>
+      <ActivityIndicator color={colors.primary} size="large" />
+      <Text style={styles.simStateKicker}>IA voyage</Text>
+      <Text style={styles.simStateTitle}>Préparation de ton programme</Text>
+      <Text style={styles.simStateText}>
+        Merci de patienter quelques secondes pendant que l'IA prépare ton
+        itinéraire, ton budget et tes conseils passeport.
+      </Text>
+    </View>
+  );
+}
+
+function SimulatorErrorState({ message }: { message: string }) {
+  return (
+    <View style={styles.simStateCard}>
+      <Text style={styles.simStateKicker}>Simulateur IA</Text>
+      <Text style={[styles.simStateTitle, { color: colors.danger }]}>
+        La simulation n'a pas abouti
+      </Text>
+      <Text style={styles.simStateText}>{message}</Text>
+      <View style={styles.simStateHint}>
+        <Text style={styles.simStateHintText}>
+          Tu peux relancer avec une durée plus courte, un budget légèrement
+          différent ou réessayer dans quelques instants.
+        </Text>
       </View>
     </View>
   );
@@ -1282,6 +1314,54 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     marginTop: 8,
     padding: 12,
+  },
+  simStateCard: {
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+    borderRadius: 18,
+    borderWidth: 1,
+    marginTop: 18,
+    padding: 24,
+    alignItems: 'center',
+    minHeight: 220,
+    justifyContent: 'center',
+  },
+  simStateKicker: {
+    color: colors.primary,
+    fontSize: 11,
+    fontWeight: '900',
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    marginTop: 16,
+  },
+  simStateTitle: {
+    color: colors.text,
+    fontSize: 22,
+    fontWeight: '900',
+    lineHeight: 28,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  simStateText: {
+    color: colors.muted,
+    fontSize: 14,
+    lineHeight: 22,
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  simStateHint: {
+    backgroundColor: colors.primarySoft,
+    borderRadius: 12,
+    marginTop: 14,
+    padding: 12,
+    width: '100%',
+  },
+  simStateHintText: {
+    color: colors.primary,
+    fontSize: 13,
+    fontWeight: '700',
+    lineHeight: 20,
+    textAlign: 'center',
   },
   resultCard: {
     backgroundColor: colors.card,

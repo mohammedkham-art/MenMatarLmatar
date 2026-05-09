@@ -48,6 +48,7 @@ export async function simulateTrip(params: TripSimulationRequest) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(params),
+    signal: AbortSignal.timeout(55_000),
   });
 
   if (!payload.plan) {
