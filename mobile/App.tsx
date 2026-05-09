@@ -322,7 +322,6 @@ const visaFilterOptions: Array<{ label: string; value: VisaFilter }> = [
   { label: 'Sans visa', value: 'visa_free' },
   { label: 'eVisa', value: 'evisa' },
   { label: 'Arrivée', value: 'on_arrival' },
-  { label: 'Requis', value: 'visa_required' },
 ];
 
 const dealSortOptions: Array<{ label: string; value: DealSort }> = [
