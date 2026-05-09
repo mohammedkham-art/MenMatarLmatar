@@ -64,6 +64,18 @@ export function PublicFooter() {
             ))}
           </div>
         </div>
+
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t pt-6">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} Men Matar L Matar · Tous droits réservés
+          </p>
+          <Link
+            href="/privacy"
+            className="text-xs text-muted-foreground hover:text-primary hover:underline"
+          >
+            Politique de confidentialité
+          </Link>
+        </div>
       </div>
     </footer>
   );
