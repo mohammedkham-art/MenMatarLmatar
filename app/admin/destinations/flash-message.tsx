@@ -18,7 +18,7 @@ export function FlashMessage({ message, type, redirectTo = '/admin/destinations'
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [router]);
+  }, [router, redirectTo]);
 
   const className =
     type === 'success'

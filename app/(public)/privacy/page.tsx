@@ -40,7 +40,7 @@ export default function PrivacyPage() {
               Men Matar L Matar est une application web et mobile destinée aux
               voyageurs marocains. Elle permet de consulter des bons plans de
               vols, des informations visa et de simuler un itinéraire de voyage
-              grâce à l'intelligence artificielle.
+              grâce à l&apos;intelligence artificielle.
             </p>
             <p className="mt-3 text-muted-foreground">
               Site web : <span className="font-semibold text-foreground">{siteUrl}</span>
@@ -65,7 +65,7 @@ export default function PrivacyPage() {
             <h3 className="mt-5 font-black">Données saisies dans le simulateur IA</h3>
             <ul className="mt-2 list-disc space-y-1 pl-5 text-muted-foreground">
               <li>Destination choisie</li>
-              <li>Date d'arrivée et durée du séjour</li>
+              <li>Date d&apos;arrivée et durée du séjour</li>
               <li>Budget indicatif (facultatif)</li>
               <li>Type de voyageur et style de voyage</li>
             </ul>
@@ -87,9 +87,10 @@ export default function PrivacyPage() {
           <article>
             <h2 className="text-xl font-black">3. Comment nous utilisons ces données</h2>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-muted-foreground">
-              <li>Générer votre simulation de voyage via l'IA (OpenAI)</li>
+              <li>Générer votre simulation de voyage via l&apos;IA (OpenAI)</li>
               <li>Limiter les abus du simulateur (rate limiting par adresse IP)</li>
               <li>Améliorer le site via des statistiques anonymes (Google Analytics, Vercel Analytics)</li>
+
               <li>Mesurer l'audience publicitaire (Meta Pixel)</li>
             </ul>
           </article>
@@ -138,7 +139,7 @@ export default function PrivacyPage() {
             <p className="mt-3 text-muted-foreground">
               Nous utilisons des cookies techniques indispensables au fonctionnement
               du site (session, préférence de thème) ainsi que des cookies analytiques
-              (Google Analytics, Meta Pixel). Aucun cookie publicitaire personnel n'est
+              (Google Analytics, Meta Pixel). Aucun cookie publicitaire personnel n&apos;est
               déposé sans consentement.
             </p>
           </article>
@@ -159,10 +160,10 @@ export default function PrivacyPage() {
               données personnelles au Maroc, vous disposez des droits suivants :
             </p>
             <ul className="mt-3 list-disc space-y-1 pl-5 text-muted-foreground">
-              <li>Droit d'accès à vos données</li>
+              <li>Droit d&apos;accès à vos données</li>
               <li>Droit de rectification</li>
-              <li>Droit à l'effacement (droit à l'oubli)</li>
-              <li>Droit d'opposition au traitement</li>
+              <li>Droit à l&apos;effacement (droit à l&apos;oubli)</li>
+              <li>Droit d&apos;opposition au traitement</li>
             </ul>
             <p className="mt-3 text-muted-foreground">
               Pour exercer vos droits, contactez-nous à{' '}
@@ -180,7 +181,7 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-black">8. Sécurité</h2>
             <p className="mt-3 text-muted-foreground">
               Les échanges entre votre appareil et nos serveurs sont chiffrés via
-              HTTPS/TLS. L'accès à nos bases de données est restreint et authentifié.
+              HTTPS/TLS. L&apos;accès à nos bases de données est restreint et authentifié.
               Aucune donnée de paiement ne transite par nos serveurs.
             </p>
           </article>
