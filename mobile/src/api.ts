@@ -11,7 +11,22 @@ export const apiBaseUrl =
   process.env.EXPO_PUBLIC_API_BASE_URL?.replace(/\/$/, '') ?? defaultApiBaseUrl;
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${apiBaseUrl}${path}`, init);
+  let response: Response;
+
+  try {
+    response = await fetch(`${apiBaseUrl}${path}`, init);
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error(
+        'Le simulateur met trop de temps à répondre. Essaie avec une durée plus courte ou relance dans quelques secondes.',
+      );
+    }
+
+    throw new Error(
+      'Impossible de joindre le serveur. Vérifie ta connexion internet et réessaie.',
+    );
+  }
+
   const payload = (await response.json().catch(() => ({}))) as T & {
     error?: string;
   };
