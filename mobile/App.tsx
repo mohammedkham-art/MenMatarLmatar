@@ -314,17 +314,128 @@ function HomeScreen({
   );
 }
 
+type VisaFilter = 'all' | 'visa_free' | 'evisa' | 'on_arrival' | 'visa_required';
+type DealSort = 'score' | 'price' | 'departure';
+
+const visaFilterOptions: Array<{ label: string; value: VisaFilter }> = [
+  { label: 'Tous', value: 'all' },
+  { label: 'Sans visa', value: 'visa_free' },
+  { label: 'eVisa', value: 'evisa' },
+  { label: 'Arrivée', value: 'on_arrival' },
+  { label: 'Requis', value: 'visa_required' },
+];
+
+const dealSortOptions: Array<{ label: string; value: DealSort }> = [
+  { label: 'Score', value: 'score' },
+  { label: 'Prix ↑', value: 'price' },
+  { label: 'Date', value: 'departure' },
+];
+
+function FilterPills<TValue extends string>({
+  options,
+  value,
+  onChange,
+}: {
+  options: Array<{ label: string; value: TValue }>;
+  value: TValue;
+  onChange: (value: TValue) => void;
+}) {
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={styles.pillScroll}
+      contentContainerStyle={styles.pillScrollContent}
+    >
+      {options.map((option) => {
+        const isActive = option.value === value;
+        return (
+          <Pressable
+            key={option.value}
+            onPress={() => onChange(option.value)}
+            style={[styles.pill, isActive && styles.pillActive]}
+          >
+            <Text style={[styles.pillText, isActive && styles.pillTextActive]}>
+              {option.label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </ScrollView>
+  );
+}
+
 function DealsScreen({ deals }: { deals: Deal[] }) {
+  const [query, setQuery] = useState('');
+  const [visaFilter, setVisaFilter] = useState<VisaFilter>('all');
+  const [sort, setSort] = useState<DealSort>('score');
+
+  const filteredDeals = useMemo(() => {
+    let result = deals;
+    const normalizedQuery = normalize(query.trim());
+
+    if (normalizedQuery) {
+      result = result.filter(
+        (deal) =>
+          normalize(deal.fromCity).includes(normalizedQuery) ||
+          normalize(deal.toCity).includes(normalizedQuery) ||
+          normalize(deal.countryCode).includes(normalizedQuery),
+      );
+    }
+
+    if (visaFilter !== 'all') {
+      result = result.filter((deal) => {
+        const v = deal.visaType;
+        if (visaFilter === 'evisa') return v === 'evisa' || v === 'e_visa';
+        if (visaFilter === 'on_arrival') return v === 'on_arrival' || v === 'visa_on_arrival';
+        return v === visaFilter;
+      });
+    }
+
+    return [...result].sort((a, b) => {
+      if (sort === 'price') return a.priceMad - b.priceMad;
+      if (sort === 'departure') {
+        if (!a.departureDate) return 1;
+        if (!b.departureDate) return -1;
+        return new Date(a.departureDate).getTime() - new Date(b.departureDate).getTime();
+      }
+      return b.score - a.score;
+    });
+  }, [deals, query, visaFilter, sort]);
+
   return (
     <View>
       <SectionHeader
         title="Deals"
         subtitle="Les vols à surveiller avant de réserver"
       />
-      {deals.length === 0 ? (
-        <EmptyState message="Aucun deal actif pour le moment." />
+      <TextInput
+        value={query}
+        onChangeText={setQuery}
+        placeholder="Chercher une ville, un pays..."
+        placeholderTextColor={colors.muted}
+        style={styles.input}
+      />
+      <FilterPills
+        options={visaFilterOptions}
+        value={visaFilter}
+        onChange={setVisaFilter}
+      />
+      <FilterPills
+        options={dealSortOptions}
+        value={sort}
+        onChange={setSort}
+      />
+      {filteredDeals.length === 0 ? (
+        <EmptyState
+          message={
+            deals.length === 0
+              ? 'Aucun deal actif pour le moment.'
+              : 'Aucun deal ne correspond aux filtres.'
+          }
+        />
       ) : (
-        deals.map((deal) => <DealCard key={deal.id} deal={deal} />)
+        filteredDeals.map((deal) => <DealCard key={deal.id} deal={deal} />)
       )}
     </View>
   );
@@ -336,19 +447,32 @@ function DestinationsScreen({
   destinations: Destination[];
 }) {
   const [query, setQuery] = useState('');
+  const [visaFilter, setVisaFilter] = useState<VisaFilter>('all');
+
   const filteredDestinations = useMemo(() => {
     const normalizedQuery = normalize(query.trim());
 
-    if (!normalizedQuery) {
-      return destinations;
+    let result = destinations;
+
+    if (normalizedQuery) {
+      result = result.filter(
+        (destination) =>
+          normalize(destination.city).includes(normalizedQuery) ||
+          normalize(destination.country).includes(normalizedQuery),
+      );
     }
 
-    return destinations.filter(
-      (destination) =>
-        normalize(destination.city).includes(normalizedQuery) ||
-        normalize(destination.country).includes(normalizedQuery),
-    );
-  }, [destinations, query]);
+    if (visaFilter !== 'all') {
+      result = result.filter((destination) => {
+        const v = destination.visaType;
+        if (visaFilter === 'evisa') return v === 'evisa';
+        if (visaFilter === 'on_arrival') return v === 'on_arrival';
+        return v === visaFilter;
+      });
+    }
+
+    return result;
+  }, [destinations, query, visaFilter]);
 
   return (
     <View>
@@ -363,9 +487,18 @@ function DestinationsScreen({
         placeholderTextColor={colors.muted}
         style={styles.input}
       />
-      {filteredDestinations.map((destination) => (
-        <DestinationCard key={destination.id} destination={destination} />
-      ))}
+      <FilterPills
+        options={visaFilterOptions}
+        value={visaFilter}
+        onChange={setVisaFilter}
+      />
+      {filteredDestinations.length === 0 ? (
+        <EmptyState message="Aucune destination ne correspond aux filtres." />
+      ) : (
+        filteredDestinations.map((destination) => (
+          <DestinationCard key={destination.id} destination={destination} />
+        ))
+      )}
     </View>
   );
 }
@@ -1189,6 +1322,33 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 8,
     textAlign: 'center',
+  },
+  pillScroll: {
+    marginBottom: 10,
+  },
+  pillScrollContent: {
+    gap: 8,
+    paddingRight: 4,
+  },
+  pill: {
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+    borderRadius: 999,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  pillActive: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  pillText: {
+    color: colors.muted,
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  pillTextActive: {
+    color: '#ffffff',
   },
   tabBar: {
     backgroundColor: colors.card,
