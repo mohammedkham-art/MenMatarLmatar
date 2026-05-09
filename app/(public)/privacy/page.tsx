@@ -91,7 +91,7 @@ export default function PrivacyPage() {
               <li>Limiter les abus du simulateur (rate limiting par adresse IP)</li>
               <li>Améliorer le site via des statistiques anonymes (Google Analytics, Vercel Analytics)</li>
 
-              <li>Mesurer l'audience publicitaire (Meta Pixel)</li>
+              <li>Mesurer l&apos;audience publicitaire (Meta Pixel)</li>
             </ul>
           </article>
 
@@ -148,7 +148,7 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-black">6. Durée de conservation</h2>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-muted-foreground">
               <li>Données du simulateur IA : non conservées après la réponse</li>
-              <li>Logs d'accès serveur : 30 jours maximum</li>
+              <li>Logs d&apos;accès serveur : 30 jours maximum</li>
               <li>Données analytiques : selon les politiques de Google et Meta</li>
             </ul>
           </article>
@@ -191,7 +191,7 @@ export default function PrivacyPage() {
             <p className="mt-3 text-muted-foreground">
               Cette politique peut être mise à jour à tout moment. La date de
               dernière modification est indiquée en haut de cette page. En
-              continuant à utiliser l'application après une mise à jour, vous
+              continuant à utiliser l&apos;application après une mise à jour, vous
               acceptez la nouvelle version.
             </p>
           </article>
