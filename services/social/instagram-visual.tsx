@@ -240,21 +240,6 @@ function Pill({
   );
 }
 
-function SiteMark() {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        fontSize: 34,
-        fontWeight: 900,
-        letterSpacing: 2,
-        marginTop: 58,
-      }}
-    >
-      menmatarlmatar.ma
-    </div>
-  );
-}
 
 function Base({
   badge,
@@ -349,7 +334,6 @@ function OutboundSlide({ deal }: { deal: Deal }) {
           {getVisaLabel(deal.visaType)}
         </Pill>
       </div>
-      <SiteMark />
     </Base>
   );
 }
@@ -416,7 +400,6 @@ function ReturnSlide({ deal }: { deal: Deal }) {
           {deal.airline}
         </div>
       )}
-      <SiteMark />
     </Base>
   );
 }
@@ -479,23 +462,6 @@ function CtaSlide({ deal }: { deal: Deal }) {
         >
           {formatPrice(deal.priceMad)} DHS
         </div>
-        <div
-          style={{
-            alignItems: 'center',
-            background: colors.green,
-            borderRadius: 18,
-            color: 'white',
-            display: 'flex',
-            fontSize: 34,
-            fontWeight: 900,
-            height: 74,
-            justifyContent: 'center',
-            margin: '34px auto 0',
-            width: 480,
-          }}
-        >
-          Voir l’offre
-        </div>
       </div>
       <div
         style={{
@@ -516,26 +482,6 @@ function CtaSlide({ deal }: { deal: Deal }) {
         }}
       >
         Vols • Visas • IA voyage
-      </div>
-      <div
-        style={{
-          display: 'flex',
-          fontSize: 44,
-          fontWeight: 900,
-          marginTop: 78,
-        }}
-      >
-        menmatarlmatar.ma
-      </div>
-      <div
-        style={{
-          color: colors.muted,
-          display: 'flex',
-          fontSize: 24,
-          marginTop: 92,
-        }}
-      >
-        Prix, disponibilité et conditions à vérifier avant réservation.
       </div>
     </Base>
   );
