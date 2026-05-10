@@ -13,6 +13,8 @@ type InstagramVisualsPageProps = {
   }>;
 };
 
+const instagramVisualVersion = 'story-clean-v2';
+
 const slides: Array<{
   label: string;
   value: InstagramSlide;
@@ -59,7 +61,7 @@ export default async function InstagramVisualsPage({
 
       <section className="mt-10 grid gap-6 lg:grid-cols-3">
         {slides.map((slide) => {
-          const imageUrl = `/admin/deals/${deal.id}/instagram/${slide.value}`;
+          const imageUrl = `/admin/deals/${deal.id}/instagram/${slide.value}?v=${instagramVisualVersion}`;
           const filename = getInstagramSlideFilename(deal, slide.value);
 
           return (

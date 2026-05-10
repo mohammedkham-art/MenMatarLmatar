@@ -12,6 +12,7 @@ import {
   type InstagramSlide,
 } from '@/services/social/instagram-visual';
 
+export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 const imageSize = {
@@ -57,6 +58,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
     {
       ...imageSize,
       headers: {
+        'Cache-Control': 'no-store, max-age=0',
         'Content-Disposition': `inline; filename="${getInstagramSlideFilename(
           deal,
           slide as InstagramSlide,
