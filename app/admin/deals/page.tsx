@@ -99,6 +99,37 @@ function getDealInput(formData: FormData) {
   return createDealSchema.parse(rawInput);
 }
 
+function getTransitTag(formData: FormData) {
+  if (formData.get('hasTransit') !== 'on') {
+    return null;
+  }
+
+  const transitAirport = formData.get('transitAirport');
+
+  if (typeof transitAirport !== 'string') {
+    return null;
+  }
+
+  const normalizedAirport = transitAirport
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '');
+
+  return normalizedAirport ? `transit:${normalizedAirport}` : null;
+}
+
+function getVisibleTags(tags: string[]) {
+  return tags.filter((tag) => !tag.toLowerCase().startsWith('transit:'));
+}
+
+function getTransitAirport(tags: string[]) {
+  const transitTag = tags.find((tag) =>
+    tag.toLowerCase().startsWith('transit:'),
+  );
+
+  return transitTag?.split(':')[1]?.trim().toUpperCase() ?? '';
+}
+
 function getDealPayload(formData: FormData): DealMutationPayload {
   const input = getDealInput(formData);
   const tags =
@@ -106,6 +137,8 @@ function getDealPayload(formData: FormData): DealMutationPayload {
       ?.split(',')
       .map((tag) => tag.trim())
       .filter(Boolean) ?? [];
+  const transitTag = getTransitTag(formData);
+  const payloadTags = transitTag ? [...tags, transitTag] : tags;
 
   return {
     title: input.title,
@@ -119,7 +152,7 @@ function getDealPayload(formData: FormData): DealMutationPayload {
     departure_date: input.departureDate || null,
     return_date: input.returnDate || null,
     booking_url: input.bookingUrl,
-    tags,
+    tags: payloadTags,
     is_active: input.isActive,
     is_featured: input.isFeatured,
     score: input.score,
@@ -615,8 +648,10 @@ function DealForm({
           name="tags"
           label="Tags"
           placeholder="sans visa, bon prix, été"
-          defaultValue={deal?.tags.join(', ')}
+          defaultValue={deal ? getVisibleTags(deal.tags).join(', ') : ''}
         />
+
+        <TransitFields deal={deal} />
 
         <div className="grid gap-4 sm:grid-cols-2">
           <AdminInput
@@ -654,6 +689,36 @@ function DealForm({
         </button>
       </div>
     </form>
+  );
+}
+
+function TransitFields({ deal }: { deal?: Deal }) {
+  const transitAirport = deal ? getTransitAirport(deal.tags) : '';
+
+  return (
+    <div className="grid gap-3 rounded-xl border bg-muted p-4">
+      <label className="flex items-start gap-3 text-sm font-semibold">
+        <input
+          name="hasTransit"
+          type="checkbox"
+          defaultChecked={Boolean(transitAirport)}
+          className="mt-1"
+        />
+        <span>
+          Afficher un badge transit
+          <span className="mt-1 block text-xs font-medium leading-5 text-muted-foreground">
+            Pour les vols avec bagages transferes automatiquement pendant
+            l&apos;escale.
+          </span>
+        </span>
+      </label>
+      <AdminInput
+        name="transitAirport"
+        label="Code aeroport transit"
+        placeholder="MAD"
+        defaultValue={transitAirport}
+      />
+    </div>
   );
 }
 
@@ -720,7 +785,10 @@ function AdminInput({
         defaultValue={defaultValue}
         className="mt-2 h-12 w-full rounded-xl border bg-background px-4 text-sm outline-none transition placeholder:text-muted-foreground focus:border-primary"
         required={
-          name !== 'airline' && name !== 'returnDate' && name !== 'tags'
+          name !== 'airline' &&
+          name !== 'returnDate' &&
+          name !== 'tags' &&
+          name !== 'transitAirport'
         }
       />
     </div>

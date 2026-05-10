@@ -58,6 +58,18 @@ function getFreshness(deal: Deal) {
   };
 }
 
+function getTransitAirport(tags: string[]) {
+  const transitTag = tags.find((tag) =>
+    tag.toLowerCase().startsWith('transit:'),
+  );
+
+  return transitTag?.split(':')[1]?.trim().toUpperCase() ?? null;
+}
+
+function getVisibleTags(tags: string[]) {
+  return tags.filter((tag) => !tag.toLowerCase().startsWith('transit:'));
+}
+
 export function DealCard({ deal }: DealCardProps) {
   const departureDate = deal.departureDate
     ? formatDate(deal.departureDate)
@@ -66,6 +78,8 @@ export function DealCard({ deal }: DealCardProps) {
   const formattedPrice = deal.priceMad.toLocaleString('fr-MA');
   const freshness = getFreshness(deal);
   const visibleVisaType = deal.visaType;
+  const transitAirport = getTransitAirport(deal.tags);
+  const visibleTags = getVisibleTags(deal.tags);
 
   return (
     <article className="flex h-full flex-col rounded-xl border bg-background p-5 shadow-sm transition hover:border-primary/30 hover:shadow-md">
@@ -111,9 +125,16 @@ export function DealCard({ deal }: DealCardProps) {
       </div>
 
       <div className="mt-5 rounded-xl bg-muted p-4">
-        <p className="text-sm font-semibold">
-          {deal.fromAirport} → {deal.toAirport}
-        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="text-sm font-semibold">
+            {deal.fromAirport} → {deal.toAirport}
+          </p>
+          {transitAirport && (
+            <span className="inline-flex items-center rounded-full bg-accent/15 px-2.5 py-1 text-[11px] font-bold text-accent-foreground ring-1 ring-inset ring-accent/30 dark:bg-accent/25 dark:text-accent dark:ring-accent/50">
+              Transit via {transitAirport}
+            </span>
+          )}
+        </div>
         <p className="mt-1 text-sm text-muted-foreground">
           {deal.fromCity} → {deal.toCity}
         </p>
@@ -140,9 +161,9 @@ export function DealCard({ deal }: DealCardProps) {
         )}
       </div>
 
-      {deal.tags.length > 0 && (
+      {visibleTags.length > 0 && (
         <div className="mt-5 flex flex-wrap gap-2">
-          {deal.tags.map((tag) => (
+          {visibleTags.map((tag) => (
             <span
               key={tag}
               className="rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent-foreground dark:bg-accent/25 dark:text-accent"
