@@ -21,6 +21,7 @@ const filters: Array<{
   { label: 'Sans visa', value: 'visa_free' },
   { label: 'eVisa', value: 'e_visa' },
   { label: 'Visa à l’arrivée', value: 'visa_on_arrival' },
+  { label: 'Visa requis', value: 'visa_required' },
 ];
 
 function matchesVisaFilter(country: Country, activeFilter: VisaFilter) {
