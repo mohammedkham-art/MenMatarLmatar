@@ -30,7 +30,7 @@ export function PublicHeader() {
             <span
               dir="rtl"
               lang="ar"
-              className="hidden whitespace-nowrap text-sm font-bold text-white/50 md:block"
+              className="hidden whitespace-nowrap text-sm font-bold text-white md:block"
             >
               نسافر بذكاء، ونعيش أحسن تجربة
             </span>
@@ -39,13 +39,13 @@ export function PublicHeader() {
         <nav className="flex flex-wrap items-center justify-end gap-2 text-sm font-black md:gap-3">
           <Link
             href="/destinations"
-            className="rounded-full px-3 py-2 text-white/75 transition hover:bg-white/10 hover:text-white"
+            className="rounded-full px-3 py-2 text-white transition hover:bg-white/10"
           >
             Destinations
           </Link>
           <Link
             href="/deals"
-            className="rounded-full px-3 py-2 text-white/75 transition hover:bg-white/10 hover:text-white"
+            className="rounded-full px-3 py-2 text-white transition hover:bg-white/10"
           >
             Offres
           </Link>
