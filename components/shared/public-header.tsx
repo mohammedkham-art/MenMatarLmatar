@@ -12,7 +12,7 @@ export function PublicHeader() {
           className="inline-flex min-w-0 shrink-0 items-center gap-3 md:gap-4"
           aria-label="Men Matar L Matar"
         >
-          <span className="relative flex h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-white/20 bg-white/10 shadow-sm md:h-14 md:w-14">
+          <span className="relative flex h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-white bg-white shadow-sm shadow-black/10 md:h-14 md:w-14">
             <Image
               src="/images/logo-sticker.png"
               alt=""

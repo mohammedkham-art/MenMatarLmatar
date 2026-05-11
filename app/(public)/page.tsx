@@ -172,7 +172,7 @@ export default async function HomePage() {
                     Departures
                   </p>
                 </div>
-                <span className="bg-white/92 flex h-20 w-20 shrink-0 items-center justify-center rounded-xl border border-white/30 p-1.5 shadow-xl shadow-black/10 sm:h-24 sm:w-24">
+                <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl border border-white bg-white p-1.5 shadow-xl shadow-black/10 sm:h-24 sm:w-24">
                   <Image
                     src="/images/logo-sticker.png"
                     alt="Men Matar L Matar"
