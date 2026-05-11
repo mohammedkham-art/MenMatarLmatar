@@ -51,6 +51,15 @@ const adminFlashMessages: Record<AdminFlash, string> = {
   unfeatured: 'Offre retirée des mises en avant avec succès.',
 };
 
+const marketingTagOptions = [
+  'offre spéciale !',
+  'bon prix',
+  "le deal de l'année !",
+  'le meilleur prix',
+  'bon deal',
+  'offre éclair !',
+];
+
 function getAdminDealsUrl(params: Record<string, string>) {
   const searchParams = new URLSearchParams(params);
 
@@ -78,6 +87,11 @@ function redirectWithError(error: unknown) {
 }
 
 function getDealInput(formData: FormData) {
+  const selectedTags = formData
+    .getAll('tags')
+    .filter((tag): tag is string => typeof tag === 'string')
+    .map((tag) => tag.trim())
+    .filter(Boolean);
   const rawInput = {
     title: formData.get('title'),
     fromAirport: formData.get('fromAirport'),
@@ -90,7 +104,7 @@ function getDealInput(formData: FormData) {
     departureDate: formData.get('departureDate') || undefined,
     returnDate: formData.get('returnDate') || undefined,
     bookingUrl: formData.get('bookingUrl'),
-    tags: formData.get('tags') || undefined,
+    tags: selectedTags.length > 0 ? selectedTags.join(',') : undefined,
     isActive: formData.get('isActive') === 'on',
     isFeatured: formData.get('isFeatured') === 'on',
     score: formData.get('score'),
@@ -643,13 +657,7 @@ function DealForm({
           type="url"
           defaultValue={deal?.bookingUrl}
         />
-
-        <AdminInput
-          name="tags"
-          label="Tags"
-          placeholder="sans visa, bon prix, été"
-          defaultValue={deal ? getVisibleTags(deal.tags).join(', ') : ''}
-        />
+        <TagsCheckboxes deal={deal} />
 
         <TransitFields deal={deal} />
 
@@ -689,6 +697,46 @@ function DealForm({
         </button>
       </div>
     </form>
+  );
+}
+
+function TagsCheckboxes({ deal }: { deal?: Deal }) {
+  const selectedTags = deal ? getVisibleTags(deal.tags) : [];
+  const extraTags = selectedTags.filter(
+    (tag) => !marketingTagOptions.includes(tag),
+  );
+
+  return (
+    <div className="rounded-xl border bg-muted p-4">
+      <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+        Tags
+      </p>
+      <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        {marketingTagOptions.map((tag) => (
+          <label
+            key={tag}
+            className="flex items-center gap-3 rounded-lg border bg-background px-3 py-2 text-sm font-semibold"
+          >
+            <input
+              name="tags"
+              type="checkbox"
+              value={tag}
+              defaultChecked={selectedTags.includes(tag)}
+            />
+            {tag}
+          </label>
+        ))}
+      </div>
+      {extraTags.map((tag) => (
+        <input key={tag} name="tags" type="hidden" value={tag} />
+      ))}
+      {extraTags.length > 0 && (
+        <p className="mt-3 text-xs leading-5 text-muted-foreground">
+          Les anciens tags hors liste sont conserves si tu modifies cette
+          offre.
+        </p>
+      )}
+    </div>
   );
 }
 
