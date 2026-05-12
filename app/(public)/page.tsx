@@ -48,6 +48,18 @@ function getRefreshItem<T>(items: T[]) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
+function getVisaStatCount(
+  countries: typeof fallbackCountries,
+  visaTypes: Array<string>,
+) {
+  return countries.filter((country) => visaTypes.includes(country.visaType))
+    .length;
+}
+
+function formatThresholdCount(count: number, threshold = 40) {
+  return count > threshold ? `+${threshold}` : String(count);
+}
+
 function getFlightBoardRows(destinations: Destination[]) {
   const dynamicRows = destinations
     .filter((destination) => isPublicVisaType(destination.visaType))
@@ -90,25 +102,31 @@ export default async function HomePage() {
     destinationsResult.status === 'fulfilled'
       ? destinationsResult.value
       : fallbackDestinations;
+  const visaFreeCount = getVisaStatCount(countries, ['visa_free']);
+  const eVisaCount = getVisaStatCount(countries, ['evisa', 'e_visa']);
+  const visaOnArrivalCount = getVisaStatCount(countries, [
+    'on_arrival',
+    'visa_on_arrival',
+  ]);
   const visaStats = [
     {
       label: 'Sans visa',
       href: '/destinations?visa=visa_free',
-      value: '+40',
+      value: formatThresholdCount(visaFreeCount),
       detail: 'départs possibles',
       tone: 'from-emerald-600/12 to-emerald-50',
     },
     {
       label: 'eVisa',
       href: '/destinations?visa=e_visa',
-      value: '+40',
+      value: formatThresholdCount(eVisaCount),
       detail: 'dossiers simples',
       tone: 'from-sky-600/12 to-sky-50',
     },
     {
       label: 'Visa à l’arrivée',
       href: '/destinations?visa=visa_on_arrival',
-      value: '14',
+      value: String(visaOnArrivalCount),
       detail: 'options flexibles',
       tone: 'from-amber-500/18 to-amber-50',
     },
