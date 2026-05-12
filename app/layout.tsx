@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Analytics } from '@vercel/analytics/next';
+import Script from 'next/script';
 
 import { ConsentManager } from '@/components/shared/consent-manager';
 import { QueryProvider } from '@/components/shared/query-provider';
@@ -76,6 +77,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
         </ThemeProvider>
         <Analytics />
         <ConsentManager />
+        <Script
+          id="travelpayouts-tracker"
+          src="https://tp-em.com/NTI4MzQz.js?t=528343"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
