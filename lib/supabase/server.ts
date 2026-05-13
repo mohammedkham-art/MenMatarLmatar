@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
-import { clientEnv } from '@/lib/validators/env';
+import { getClientEnv } from '@/lib/validators/env';
 
 type CookieToSet = {
   name: string;
@@ -11,6 +11,7 @@ type CookieToSet = {
 
 export async function createServerSupabaseClient() {
   const cookieStore = await cookies();
+  const clientEnv = getClientEnv();
 
   return createServerClient(
     clientEnv.NEXT_PUBLIC_SUPABASE_URL,

@@ -1,6 +1,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
+import { AirlineFareSelect } from '@/app/admin/deals/airline-fare-select';
 import { DealsFilterBar } from '@/app/admin/deals/deals-filter-bar';
 import { DeleteDealButton } from '@/app/admin/deals/delete-deal-button';
 import { FlashMessage } from '@/app/admin/destinations/flash-message';
@@ -8,13 +9,17 @@ import { AdminHeaderActions } from '@/components/shared/admin-header-actions';
 import { requireAdminSession } from '@/lib/auth/require-admin-session';
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import { createDealSchema } from '@/lib/validators/deal';
+import { getAirlines } from '@/services/airlines/get-airlines';
+import type { Airline } from '@/services/airlines/types';
 import type { Country } from '@/services/countries/get-countries';
 import { getCountries } from '@/services/countries/get-countries';
 import { getAdminDeals } from '@/services/deals/get-admin-deals';
 import type { Deal } from '@/services/deals/get-deals';
+import { buildDealSlug, slugifyDealTitle } from '@/services/deals/slug';
 
 type DealMutationPayload = {
   title: string;
+  slug: string;
   from_airport: string;
   to_airport: string;
   from_city: string;
@@ -22,6 +27,8 @@ type DealMutationPayload = {
   country_code: string;
   price_mad: number;
   airline: string | null;
+  airline_id: string | null;
+  fare_id: string | null;
   departure_date: string | null;
   return_date: string | null;
   booking_url: string;
@@ -94,6 +101,7 @@ function getDealInput(formData: FormData) {
     .filter(Boolean);
   const rawInput = {
     title: formData.get('title'),
+    slug: formData.get('slug') || undefined,
     fromAirport: formData.get('fromAirport'),
     toAirport: formData.get('toAirport'),
     fromCity: formData.get('fromCity'),
@@ -101,6 +109,8 @@ function getDealInput(formData: FormData) {
     countryCode: formData.get('countryCode'),
     priceMad: formData.get('priceMad'),
     airline: formData.get('airline') || undefined,
+    airlineId: formData.get('airlineId') || undefined,
+    fareId: formData.get('fareId') || undefined,
     departureDate: formData.get('departureDate') || undefined,
     returnDate: formData.get('returnDate') || undefined,
     bookingUrl: formData.get('bookingUrl'),
@@ -153,16 +163,28 @@ function getDealPayload(formData: FormData): DealMutationPayload {
       .filter(Boolean) ?? [];
   const transitTag = getTransitTag(formData);
   const payloadTags = transitTag ? [...tags, transitTag] : tags;
+  const selectedAirlineName = formData.get('airlineName');
+  const airlineName =
+    input.airline ||
+    (typeof selectedAirlineName === 'string' && selectedAirlineName
+      ? selectedAirlineName
+      : null);
 
   return {
     title: input.title,
+    slug:
+      input.slug && input.slug.trim().length > 0
+        ? slugifyDealTitle(input.slug)
+        : buildDealSlug(input.title, crypto.randomUUID().slice(0, 8)),
     from_airport: input.fromAirport,
     to_airport: input.toAirport,
     from_city: input.fromCity,
     to_city: input.toCity,
     country_code: input.countryCode,
     price_mad: input.priceMad,
-    airline: input.airline || null,
+    airline: airlineName,
+    airline_id: input.airlineId || null,
+    fare_id: input.fareId || null,
     departure_date: input.departureDate || null,
     return_date: input.returnDate || null,
     booking_url: input.bookingUrl,
@@ -218,10 +240,7 @@ async function updateDeal(formData: FormData) {
 
   try {
     const id = getDealId(formData);
-    const payload = {
-      ...getDealPayload(formData),
-      last_checked_at: new Date().toISOString(),
-    };
+    const payload = getDealPayload(formData);
     const supabase = createAdminSupabaseClient();
     const { error } = await supabase.from('deals').update(payload).eq('id', id);
 
@@ -317,6 +336,31 @@ async function toggleDealFeatured(formData: FormData) {
   redirectWithSuccess(nextStatus);
 }
 
+async function markDealVerified(formData: FormData) {
+  'use server';
+
+  await requireAdminSession();
+
+  try {
+    const id = getDealId(formData);
+    const supabase = createAdminSupabaseClient();
+    const { error } = await supabase
+      .from('deals')
+      .update({ last_checked_at: new Date().toISOString() })
+      .eq('id', id);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    revalidateDealPaths();
+  } catch (error) {
+    redirectWithError(error);
+  }
+
+  redirectWithSuccess('updated');
+}
+
 type AdminDealsPageProps = {
   searchParams?: Promise<{
     error?: string;
@@ -340,10 +384,15 @@ export default async function AdminDealsPage({
   const errorMessage = params?.error;
   let countries: Country[] = [];
   let deals: Deal[] = [];
+  let airlines: Airline[] = [];
   let loadErrorMessage: string | null = null;
 
   try {
-    [countries, deals] = await Promise.all([getCountries(), getAdminDeals()]);
+    [countries, deals, airlines] = await Promise.all([
+      getCountries(),
+      getAdminDeals(),
+      getAirlines(),
+    ]);
   } catch (error) {
     loadErrorMessage = getActionErrorMessage(error);
   }
@@ -414,6 +463,7 @@ export default async function AdminDealsPage({
           links={[
             { href: '/admin', label: 'Admin' },
             { href: '/admin/destinations', label: 'Destinations' },
+            { href: '/admin/airlines', label: 'Compagnies' },
           ]}
         />
       </header>
@@ -437,6 +487,7 @@ export default async function AdminDealsPage({
       <section className="mt-10 grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
         <DealForm
           action={createDeal}
+          airlines={airlines}
           countries={countries}
           submitLabel="Ajouter l’offre"
           title="Nouvelle offre"
@@ -459,7 +510,12 @@ export default async function AdminDealsPage({
 
           <div className="mt-6 space-y-4">
             {filteredDeals.map((deal) => (
-              <AdminDealItem key={deal.id} countries={countries} deal={deal} />
+              <AdminDealItem
+                key={deal.id}
+                airlines={airlines}
+                countries={countries}
+                deal={deal}
+              />
             ))}
 
             {filteredDeals.length === 0 && (
@@ -477,11 +533,12 @@ export default async function AdminDealsPage({
 }
 
 type AdminDealItemProps = {
+  airlines: Airline[];
   countries: Country[];
   deal: Deal;
 };
 
-function AdminDealItem({ countries, deal }: AdminDealItemProps) {
+function AdminDealItem({ airlines, countries, deal }: AdminDealItemProps) {
   return (
     <article className="rounded-xl border bg-muted/50 p-4">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -505,6 +562,11 @@ function AdminDealItem({ countries, deal }: AdminDealItemProps) {
           {deal.isFeatured && (
             <span className="rounded-full bg-accent/20 px-3 py-1 text-accent-foreground">
               Featured
+            </span>
+          )}
+          {deal.isTest && (
+            <span className="rounded-full bg-red-50 px-3 py-1 text-red-700">
+              TEST
             </span>
           )}
         </div>
@@ -535,6 +597,12 @@ function AdminDealItem({ countries, deal }: AdminDealItemProps) {
             {deal.isFeatured ? 'Unfeatured' : 'Featured'}
           </AdminActionButton>
         </form>
+        <form action={markDealVerified}>
+          <input name="id" type="hidden" value={deal.id} />
+          <AdminActionButton variant="secondary">
+            Marquer verifie maintenant
+          </AdminActionButton>
+        </form>
         <DeleteDealButton action={deleteDeal} dealId={deal.id} />
       </div>
 
@@ -545,6 +613,7 @@ function AdminDealItem({ countries, deal }: AdminDealItemProps) {
         <div className="mt-4">
           <DealForm
             action={updateDeal}
+            airlines={airlines}
             countries={countries}
             deal={deal}
             submitLabel="Enregistrer"
@@ -558,6 +627,7 @@ function AdminDealItem({ countries, deal }: AdminDealItemProps) {
 
 type DealFormProps = {
   action: (formData: FormData) => Promise<void>;
+  airlines: Airline[];
   countries: Country[];
   deal?: Deal;
   submitLabel: string;
@@ -566,6 +636,7 @@ type DealFormProps = {
 
 function DealForm({
   action,
+  airlines,
   countries,
   deal,
   submitLabel,
@@ -587,6 +658,13 @@ function DealForm({
           defaultValue={deal?.title}
         />
 
+        <AdminInput
+          name="slug"
+          label="Slug"
+          placeholder="casa-istanbul-pegasus"
+          defaultValue={deal?.slug}
+        />
+
         <div className="grid gap-4 sm:grid-cols-2">
           <AdminInput
             name="fromAirport"
@@ -601,6 +679,12 @@ function DealForm({
             defaultValue={deal?.toAirport}
           />
         </div>
+
+        <AirlineFareSelect
+          airlines={airlines}
+          defaultAirlineId={deal?.airlineId}
+          defaultFareId={deal?.fareId}
+        />
 
         <div className="grid gap-4 sm:grid-cols-2">
           <AdminInput
@@ -732,8 +816,7 @@ function TagsCheckboxes({ deal }: { deal?: Deal }) {
       ))}
       {extraTags.length > 0 && (
         <p className="mt-3 text-xs leading-5 text-muted-foreground">
-          Les anciens tags hors liste sont conserves si tu modifies cette
-          offre.
+          Les anciens tags hors liste sont conserves si tu modifies cette offre.
         </p>
       )}
     </div>
@@ -834,6 +917,7 @@ function AdminInput({
         className="mt-2 h-12 w-full rounded-xl border bg-background px-4 text-sm outline-none transition placeholder:text-muted-foreground focus:border-primary"
         required={
           name !== 'airline' &&
+          name !== 'slug' &&
           name !== 'returnDate' &&
           name !== 'tags' &&
           name !== 'transitAirport'

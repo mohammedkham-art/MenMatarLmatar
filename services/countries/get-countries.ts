@@ -1,4 +1,5 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
+import { hasAdminSupabaseEnv } from '@/lib/validators/env';
 import {
   countryMaxStayDaysFixes,
   countryNameFixes,
@@ -37,6 +38,22 @@ type CountryRow = {
   is_featured: boolean;
 };
 
+const productionCountriesApiUrl =
+  'https://menmatarlmatar.ma/api/mobile/countries';
+
+async function getProductionCountriesFallback(): Promise<Country[]> {
+  const response = await fetch(productionCountriesApiUrl, {
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    throw new Error('Impossible de charger les pays de production.');
+  }
+
+  const payload = (await response.json()) as { countries?: Country[] };
+  return payload.countries ?? [];
+}
+
 function hasBrokenFrenchEncoding(value: string) {
   return /[?\u00c3\u00c2\u00e2\ufffd]/.test(value);
 }
@@ -58,6 +75,10 @@ function getCleanNotes(country: CountryRow, visaType: VisaType) {
 }
 
 export async function getCountries(): Promise<Country[]> {
+  if (!hasAdminSupabaseEnv()) {
+    return getProductionCountriesFallback();
+  }
+
   const supabase = createAdminSupabaseClient();
 
   const { data, error } = await supabase

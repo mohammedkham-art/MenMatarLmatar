@@ -17,12 +17,43 @@ const serverEnvSchema = clientEnvSchema.extend({
   OPENAI_MODEL: z.string().optional(),
 });
 
-export const clientEnv = clientEnvSchema.parse({
-  NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
-  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+const adminSupabaseEnvSchema = z.object({
+  SUPABASE_URL: z.string().url(),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
 });
+
+export function getClientEnv() {
+  return clientEnvSchema.parse({
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  });
+}
+
+export function getOptionalClientEnv() {
+  const result = clientEnvSchema.safeParse({
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  });
+
+  return result.success ? result.data : null;
+}
 
 export function getServerEnv() {
   return serverEnvSchema.parse(process.env);
+}
+
+export function getAdminSupabaseEnv() {
+  return adminSupabaseEnvSchema.parse({
+    SUPABASE_URL: process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+  });
+}
+
+export function hasAdminSupabaseEnv() {
+  return adminSupabaseEnvSchema.safeParse({
+    SUPABASE_URL: process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+  }).success;
 }

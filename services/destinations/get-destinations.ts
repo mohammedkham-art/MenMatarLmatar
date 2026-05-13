@@ -1,4 +1,5 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
+import { hasAdminSupabaseEnv } from '@/lib/validators/env';
 import {
   getVisaTypeForCountry,
   type StoredVisaType,
@@ -31,6 +32,22 @@ type CountryVisaRow = {
   visa_type: DestinationVisaType | null;
 };
 
+const productionDestinationsApiUrl =
+  'https://menmatarlmatar.ma/api/mobile/destinations';
+
+async function getProductionDestinationsFallback(): Promise<Destination[]> {
+  const response = await fetch(productionDestinationsApiUrl, {
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    throw new Error('Impossible de charger les destinations de production.');
+  }
+
+  const payload = (await response.json()) as { destinations?: Destination[] };
+  return payload.destinations ?? [];
+}
+
 async function getCountryVisaTypesByCode(
   countryCodes: Array<string | null>,
 ): Promise<Map<string, DestinationVisaType | null>> {
@@ -59,6 +76,10 @@ async function getCountryVisaTypesByCode(
 }
 
 export async function getDestinations(): Promise<Destination[]> {
+  if (!hasAdminSupabaseEnv()) {
+    return getProductionDestinationsFallback();
+  }
+
   const supabase = createAdminSupabaseClient();
 
   const { data, error } = await supabase

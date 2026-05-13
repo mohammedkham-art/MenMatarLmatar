@@ -13,7 +13,12 @@
     "typecheck": "tsc --noEmit",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "prisma:seed:airlines": "node prisma/seed-airlines.js",
+    "prisma:seed:test-deals": "node prisma/seed-test-deals.js"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
