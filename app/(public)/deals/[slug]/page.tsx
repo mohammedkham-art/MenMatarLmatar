@@ -4,7 +4,10 @@ import { notFound } from 'next/navigation';
 import { BaggageIcons } from '@/components/features/deals/baggage-icons';
 import { PriceFreshnessBadge } from '@/components/features/deals/price-freshness-badge';
 import { Button } from '@/components/ui/button';
+import airports from '@/data/airports.json';
+import { cn } from '@/lib/utils/cn';
 import { getDealBySlug } from '@/services/deals/get-deal-by-slug';
+import type { DealVisaType } from '@/services/deals/get-deals';
 import { visaLabels } from '@/services/visa/visa-rules';
 
 type DealPageProps = {
@@ -16,6 +19,19 @@ const dateFormatter = new Intl.DateTimeFormat('fr-FR', {
   month: 'long',
   year: 'numeric',
 });
+
+const visaBadgeStyles: Record<DealVisaType, string> = {
+  visa_free: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+  evisa: 'bg-blue-50 text-blue-700 ring-blue-200',
+  e_visa: 'bg-blue-50 text-blue-700 ring-blue-200',
+  on_arrival: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+  visa_on_arrival: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+  visa_required: 'bg-red-50 text-red-700 ring-red-200',
+};
+
+const airportsByCode = new Map(
+  airports.map((airport) => [airport.code, airport.country]),
+);
 
 function formatDate(date: string | null) {
   if (!date) return 'Flexible';
@@ -30,6 +46,14 @@ function getTransitAirport(tags: string[]) {
   );
 
   return transitTag?.split(':')[1]?.trim().toUpperCase() ?? null;
+}
+
+function formatTransitAirport(airportCode: string | null) {
+  if (!airportCode) return null;
+
+  const country = airportsByCode.get(airportCode);
+
+  return country ? `${airportCode} (${country})` : airportCode;
 }
 
 export async function generateMetadata({
@@ -59,6 +83,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
   }
 
   const transitAirport = getTransitAirport(deal.tags);
+  const formattedTransitAirport = formatTransitAirport(transitAirport);
   const airlineName =
     deal.airlineDetails?.name ?? deal.airline ?? 'Non renseignee';
 
@@ -149,22 +174,22 @@ export default async function DealDetailPage({ params }: DealPageProps) {
               </div>
               <div>
                 <dt className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                  Tarif
+                  Dernier prix repere
                 </dt>
                 <dd className="mt-1 font-semibold">
-                  {deal.fare?.fareName ?? 'Non renseigne'}
+                  {deal.priceMad.toLocaleString('fr-MA')} MAD
                 </dd>
               </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                  Escales
-                </dt>
-                <dd className="mt-1 font-semibold">
-                  {transitAirport
-                    ? `Transit via ${transitAirport}`
-                    : 'Selon offre partenaire'}
-                </dd>
-              </div>
+              {formattedTransitAirport && (
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                    Escale
+                  </dt>
+                  <dd className="mt-1 font-semibold">
+                    {formattedTransitAirport}
+                  </dd>
+                </div>
+              )}
             </dl>
           </section>
 
@@ -187,7 +212,14 @@ export default async function DealDetailPage({ params }: DealPageProps) {
               Pour les passeports marocains, cette destination est indiquee
               comme :
             </p>
-            <p className="mt-4 inline-flex rounded-full bg-accent/15 px-4 py-2 text-sm font-bold text-accent-foreground ring-1 ring-inset ring-accent/30">
+            <p
+              className={cn(
+                'mt-4 inline-flex rounded-full px-4 py-2 text-sm font-bold ring-1 ring-inset',
+                deal.visaType
+                  ? visaBadgeStyles[deal.visaType]
+                  : 'bg-amber-50 text-amber-700 ring-amber-200',
+              )}
+            >
               {deal.visaType ? visaLabels[deal.visaType] : 'A verifier'}
             </p>
           </section>
