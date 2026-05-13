@@ -240,7 +240,10 @@ async function updateDeal(formData: FormData) {
 
   try {
     const id = getDealId(formData);
-    const payload = getDealPayload(formData);
+    const payload = {
+      ...getDealPayload(formData),
+      last_checked_at: new Date().toISOString(),
+    };
     const supabase = createAdminSupabaseClient();
     const { error } = await supabase.from('deals').update(payload).eq('id', id);
 
