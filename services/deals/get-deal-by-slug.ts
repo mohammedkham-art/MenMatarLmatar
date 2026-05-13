@@ -1,5 +1,5 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
-import type { Deal, DealVisaType } from '@/services/deals/get-deals';
+import type { Deal } from '@/services/deals/get-deals';
 import { getDeals } from '@/services/deals/get-deals';
 import { hasAdminSupabaseEnv } from '@/lib/validators/env';
 import { getVisaTypeForCountry } from '@/services/visa/visa-rules';
@@ -13,10 +13,6 @@ type DealRow = {
   from_city: string;
   to_city: string;
   country_code: string;
-  countries?:
-    | { visa_type: DealVisaType | null }
-    | { visa_type: DealVisaType | null }[]
-    | null;
   price_mad: number;
   airline: string | null;
   airline_id: string | null;
@@ -53,17 +49,6 @@ type DealRow = {
   updated_at: string;
 };
 
-function getRelatedVisaType(
-  countryCode: string,
-  country: DealRow['countries'],
-) {
-  if (!country) return getVisaTypeForCountry(countryCode, null);
-  if (Array.isArray(country)) {
-    return getVisaTypeForCountry(countryCode, country[0]?.visa_type ?? null);
-  }
-  return getVisaTypeForCountry(countryCode, country.visa_type);
-}
-
 function mapDeal(row: DealRow): Deal {
   return {
     id: row.id,
@@ -74,7 +59,7 @@ function mapDeal(row: DealRow): Deal {
     fromCity: row.from_city,
     toCity: row.to_city,
     countryCode: row.country_code,
-    visaType: getRelatedVisaType(row.country_code, row.countries),
+    visaType: getVisaTypeForCountry(row.country_code, null),
     priceMad: row.price_mad,
     airline: row.airline,
     airlineId: row.airline_id,
@@ -127,7 +112,7 @@ export async function getDealBySlug(slug: string): Promise<Deal | null> {
   const { data, error } = await supabase
     .from('deals')
     .select(
-      'id, title, slug, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type), price_mad, airline, airline_id, fare_id, airlines(id, name, code, logo_url), airline_fares(id, airline_id, fare_name, personal_item, personal_item_dimensions, cabin_allowed, cabin_weight_kg, cabin_dimensions, checked_allowed, checked_weight_kg, checked_count), departure_date, return_date, booking_url, tags, is_active, is_featured, is_test, score, last_checked_at, created_at, updated_at',
+      'id, title, slug, from_airport, to_airport, from_city, to_city, country_code, price_mad, airline, airline_id, fare_id, airlines(id, name, code, logo_url), airline_fares(id, airline_id, fare_name, personal_item, personal_item_dimensions, cabin_allowed, cabin_weight_kg, cabin_dimensions, checked_allowed, checked_weight_kg, checked_count), departure_date, return_date, booking_url, tags, is_active, is_featured, is_test, score, last_checked_at, created_at, updated_at',
     )
     .eq('slug', slug)
     .eq('is_active', true)
