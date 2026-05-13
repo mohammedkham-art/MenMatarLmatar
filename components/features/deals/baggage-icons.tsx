@@ -107,16 +107,16 @@ function getBaggageStates(fare: AirlineFare | null): BaggageState[] {
   if (!fare) {
     return [
       {
-        count: 1,
+        count: 0,
         details: 'A verifier avec la compagnie',
-        included: true,
+        included: false,
         key: 'personal',
         label: 'Effet personnel',
       },
       {
-        count: 1,
+        count: 0,
         details: 'A verifier avec la compagnie',
-        included: true,
+        included: false,
         key: 'cabin',
         label: 'Cabine',
       },

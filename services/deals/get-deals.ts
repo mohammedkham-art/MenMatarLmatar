@@ -94,7 +94,7 @@ type CountryVisaRow = {
 };
 
 const dealSelectWithBaggage =
-  'id, title, slug, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type), price_mad, airline, airline_id, fare_id, airlines(id, name, code, logo_url), airline_fares(id, airline_id, fare_name, personal_item, personal_item_dimensions, cabin_allowed, cabin_weight_kg, cabin_dimensions, checked_allowed, checked_weight_kg, checked_count), departure_date, return_date, booking_url, tags, is_active, is_featured, is_test, score, last_checked_at, created_at, updated_at';
+  'id, title, slug, from_airport, to_airport, from_city, to_city, country_code, price_mad, airline, airline_id, fare_id, airlines(id, name, code, logo_url), airline_fares(id, airline_id, fare_name, personal_item, personal_item_dimensions, cabin_allowed, cabin_weight_kg, cabin_dimensions, checked_allowed, checked_weight_kg, checked_count), departure_date, return_date, booking_url, tags, is_active, is_featured, is_test, score, last_checked_at, created_at, updated_at';
 
 const dealSelectWithVisa =
   'id, title, slug, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type), price_mad, airline, airline_id, fare_id, departure_date, return_date, booking_url, tags, is_active, is_featured, is_test, score, last_checked_at, created_at, updated_at';
@@ -334,9 +334,19 @@ export async function getDeals(): Promise<Deal[]> {
     .returns<DealRow[]>();
 
   if (!primaryResult.error) {
+    const visaTypesByCountryCode = await getVisaTypesByCountryCode(
+      primaryResult.data.map((deal) => deal.country_code),
+    );
+
     return sortDeals(
       primaryResult.data.map((deal) =>
-        mapDealRow(deal, getRelatedVisaType(deal.country_code, deal.countries)),
+        mapDealRow(
+          deal,
+          getDealVisaType(
+            deal.country_code,
+            visaTypesByCountryCode.get(deal.country_code) ?? null,
+          ),
+        ),
       ),
     );
   }
