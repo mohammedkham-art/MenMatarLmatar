@@ -5,7 +5,7 @@ import {
   adminSessionCookieName,
   verifyAdminSessionToken,
 } from '@/lib/auth/admin-session';
-import { clientEnv } from '@/lib/validators/env';
+import { getClientEnv } from '@/lib/validators/env';
 
 type CookieToSet = {
   name: string;
@@ -53,6 +53,7 @@ export async function middleware(request: NextRequest) {
     response.headers.set('Cache-Control', 'no-store');
   }
 
+  const clientEnv = getClientEnv();
   const supabase = createServerClient(
     clientEnv.NEXT_PUBLIC_SUPABASE_URL,
     clientEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
