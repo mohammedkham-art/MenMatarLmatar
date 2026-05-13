@@ -14,6 +14,12 @@ const adminSections = [
     href: '/admin/deals',
     cta: 'Gérer les offres',
   },
+  {
+    title: 'Compagnies',
+    description: 'Compagnies aeriennes, tarifs et bagages inclus.',
+    href: '/admin/airlines',
+    cta: 'Gerer les compagnies',
+  },
 ];
 
 export default async function AdminPage() {
@@ -37,7 +43,7 @@ export default async function AdminPage() {
         <AdminHeaderActions />
       </header>
 
-      <section className="mt-10 grid gap-5 md:grid-cols-2">
+      <section className="mt-10 grid gap-5 md:grid-cols-3">
         {adminSections.map((section) => (
           <a
             key={section.href}

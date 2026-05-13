@@ -32,6 +32,75 @@ model Trip {
   @@map("trips")
 }
 
+model Airline {
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  code      String        @unique
+  logoUrl   String?       @map("logo_url")
+  fares     AirlineFare[]
+  deals     Deal[]
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  @@map("airlines")
+}
+
+model AirlineFare {
+  id                     String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  airlineId              String   @map("airline_id") @db.Uuid
+  fareName               String   @map("fare_name")
+  personalItem           Boolean  @default(true) @map("personal_item")
+  personalItemDimensions String?  @map("personal_item_dimensions")
+  cabinAllowed           Boolean  @default(false) @map("cabin_allowed")
+  cabinWeightKg          Int?     @map("cabin_weight_kg")
+  cabinDimensions        String?  @map("cabin_dimensions")
+  checkedAllowed         Boolean  @default(false) @map("checked_allowed")
+  checkedWeightKg        Int?     @map("checked_weight_kg")
+  checkedCount           Int      @default(1) @map("checked_count")
+  airline                Airline  @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+  deals                  Deal[]
+  createdAt              DateTime @default(now()) @map("created_at")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+
+  @@unique([airlineId, fareName])
+  @@index([airlineId])
+  @@map("airline_fares")
+}
+
+model Deal {
+  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title         String
+  slug          String       @unique
+  fromAirport   String       @map("from_airport")
+  toAirport     String       @map("to_airport")
+  fromCity      String       @map("from_city")
+  toCity        String       @map("to_city")
+  countryCode   String       @map("country_code")
+  priceMad      Int          @map("price_mad")
+  airlineName   String?      @map("airline")
+  airlineId     String?      @map("airline_id") @db.Uuid
+  fareId        String?      @map("fare_id") @db.Uuid
+  departureDate DateTime?    @map("departure_date") @db.Date
+  returnDate    DateTime?    @map("return_date") @db.Date
+  bookingUrl    String       @map("booking_url")
+  tags          String[]     @default([])
+  isActive      Boolean      @default(true) @map("is_active")
+  isFeatured    Boolean      @default(false) @map("is_featured")
+  isTest        Boolean      @default(false) @map("is_test")
+  score         Int          @default(50)
+  lastCheckedAt DateTime?    @map("last_checked_at")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  airline       Airline?     @relation(fields: [airlineId], references: [id], onDelete: SetNull)
+  fare          AirlineFare? @relation(fields: [fareId], references: [id], onDelete: SetNull)
+
+  @@index([countryCode])
+  @@index([airlineId])
+  @@index([fareId])
+  @@index([isActive, departureDate])
+  @@map("deals")
+}
+
 enum TripStatus {
   DRAFT
   PLANNED

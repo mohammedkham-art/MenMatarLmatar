@@ -1,3 +1,7 @@
+import Link from 'next/link';
+
+import { BaggageIcons } from '@/components/features/deals/baggage-icons';
+import { PriceFreshnessBadge } from '@/components/features/deals/price-freshness-badge';
 import type { Deal, DealVisaType } from '@/services/deals/get-deals';
 import { visaLabels } from '@/services/visa/visa-rules';
 
@@ -10,8 +14,6 @@ const dateFormatter = new Intl.DateTimeFormat('fr-FR', {
   month: 'short',
   year: 'numeric',
 });
-
-const recentPriceMaxAgeHours = 144;
 
 const visaBadgeStyles: Record<DealVisaType, string> = {
   visa_free: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
@@ -32,32 +34,6 @@ function formatDate(date: string) {
   return dateFormatter.format(parsedDate);
 }
 
-function getFreshness(deal: Deal) {
-  const checkedAt = new Date(deal.lastCheckedAt ?? deal.createdAt);
-  const diffHours = Math.floor(
-    (Date.now() - checkedAt.getTime()) / (1000 * 60 * 60),
-  );
-
-  if (Number.isNaN(diffHours) || diffHours > recentPriceMaxAgeHours) {
-    return {
-      label: 'À vérifier',
-      className: 'text-orange-700',
-    };
-  }
-
-  if (diffHours <= recentPriceMaxAgeHours) {
-    return {
-      label: 'Prix repéré récemment',
-      className: 'text-emerald-700',
-    };
-  }
-
-  return {
-    label: 'À vérifier',
-    className: 'text-orange-700',
-  };
-}
-
 function getTransitAirport(tags: string[]) {
   const transitTag = tags.find((tag) =>
     tag.toLowerCase().startsWith('transit:'),
@@ -76,13 +52,15 @@ export function DealCard({ deal }: DealCardProps) {
     : null;
   const returnDate = deal.returnDate ? formatDate(deal.returnDate) : null;
   const formattedPrice = deal.priceMad.toLocaleString('fr-MA');
-  const freshness = getFreshness(deal);
   const visibleVisaType = deal.visaType;
   const transitAirport = getTransitAirport(deal.tags);
   const visibleTags = getVisibleTags(deal.tags);
 
   return (
-    <article className="flex h-full flex-col rounded-xl border bg-background p-5 shadow-sm transition hover:border-primary/30 hover:shadow-md">
+    <Link
+      href={`/deals/${deal.slug}`}
+      className="group flex h-full flex-col rounded-xl border bg-background p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           {deal.isFeatured && (
@@ -90,9 +68,13 @@ export function DealCard({ deal }: DealCardProps) {
               Meilleure offre
             </span>
           )}
-          <p className={`mb-2 text-xs font-semibold ${freshness.className}`}>
-            {freshness.label}
-          </p>
+          <div className="mb-2">
+            <PriceFreshnessBadge
+              checkedAt={deal.lastCheckedAt}
+              compact
+              createdAt={deal.createdAt}
+            />
+          </div>
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
               {deal.countryCode}
@@ -105,18 +87,18 @@ export function DealCard({ deal }: DealCardProps) {
               </span>
             )}
           </div>
-          <h2 className="mt-2 text-xl font-semibold leading-7">
-            {deal.fromCity} → {deal.toCity}
+          <h2 className="mt-2 text-xl font-semibold leading-7 transition group-hover:text-primary">
+            {deal.fromCity} - {deal.toCity}
           </h2>
           <p className="mt-1 text-sm font-medium leading-6 text-muted-foreground">
             {deal.toCity}
-            {visibleVisaType ? ` • ${visaLabels[visibleVisaType]}` : ''}
+            {visibleVisaType ? ` - ${visaLabels[visibleVisaType]}` : ''}
           </p>
         </div>
 
         <div className="shrink-0 whitespace-nowrap rounded-xl bg-muted px-4 py-3 text-right">
           <p className="text-sm font-medium text-muted-foreground">
-            À partir de
+            A partir de
           </p>
           <p className="mt-1 text-xl font-bold text-primary">
             {formattedPrice} MAD
@@ -127,7 +109,7 @@ export function DealCard({ deal }: DealCardProps) {
       <div className="mt-5 rounded-xl bg-muted p-4">
         <div className="flex flex-wrap items-center gap-2">
           <p className="text-sm font-semibold">
-            {deal.fromAirport} → {deal.toAirport}
+            {deal.fromAirport} - {deal.toAirport}
           </p>
           {transitAirport && (
             <span className="inline-flex items-center rounded-full bg-accent/15 px-2.5 py-1 text-[11px] font-bold text-accent-foreground ring-1 ring-inset ring-accent/30 dark:bg-accent/25 dark:text-accent dark:ring-accent/50">
@@ -136,20 +118,20 @@ export function DealCard({ deal }: DealCardProps) {
           )}
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
-          {deal.fromCity} → {deal.toCity}
+          {deal.fromCity} - {deal.toCity}
         </p>
       </div>
 
       <div className="mt-5 space-y-2 text-sm text-muted-foreground">
-        {deal.airline && (
+        {(deal.airlineDetails?.name ?? deal.airline) && (
           <p>
             <span className="font-semibold text-foreground">Compagnie :</span>{' '}
-            {deal.airline}
+            {deal.airlineDetails?.name ?? deal.airline}
           </p>
         )}
         {departureDate && (
           <p>
-            <span className="font-semibold text-foreground">Départ :</span>{' '}
+            <span className="font-semibold text-foreground">Depart :</span>{' '}
             {departureDate}
           </p>
         )}
@@ -159,6 +141,10 @@ export function DealCard({ deal }: DealCardProps) {
             {returnDate}
           </p>
         )}
+      </div>
+
+      <div className="mt-5">
+        <BaggageIcons compact fare={deal.fare} />
       </div>
 
       {visibleTags.length > 0 && (
@@ -174,14 +160,9 @@ export function DealCard({ deal }: DealCardProps) {
         </div>
       )}
 
-      <a
-        href={deal.bookingUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
-      >
-        Voir l’offre ↗
-      </a>
-    </article>
+      <span className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition group-hover:opacity-90">
+        Voir le detail
+      </span>
+    </Link>
   );
 }

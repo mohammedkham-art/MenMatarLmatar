@@ -2,8 +2,17 @@ import { z } from 'zod';
 
 export const createDealSchema = z.object({
   title: z.string().min(2).max(120),
-  fromAirport: z.string().min(3).max(3).transform((value) => value.toUpperCase()),
-  toAirport: z.string().min(3).max(3).transform((value) => value.toUpperCase()),
+  slug: z.string().max(120).optional(),
+  fromAirport: z
+    .string()
+    .min(3)
+    .max(3)
+    .transform((value) => value.toUpperCase()),
+  toAirport: z
+    .string()
+    .min(3)
+    .max(3)
+    .transform((value) => value.toUpperCase()),
   fromCity: z.string().min(2).max(80),
   toCity: z.string().min(2).max(80),
   countryCode: z
@@ -13,6 +22,8 @@ export const createDealSchema = z.object({
     .transform((value) => value.toUpperCase()),
   priceMad: z.coerce.number().int().positive(),
   airline: z.string().max(80).optional(),
+  airlineId: z.string().uuid().optional(),
+  fareId: z.string().uuid().optional(),
   departureDate: z.string().optional(),
   returnDate: z.string().optional(),
   bookingUrl: z.string().url(),
