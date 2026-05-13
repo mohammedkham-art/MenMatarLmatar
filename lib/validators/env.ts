@@ -30,6 +30,16 @@ export function getClientEnv() {
   });
 }
 
+export function getOptionalClientEnv() {
+  const result = clientEnvSchema.safeParse({
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  });
+
+  return result.success ? result.data : null;
+}
+
 export function getServerEnv() {
   return serverEnvSchema.parse(process.env);
 }
