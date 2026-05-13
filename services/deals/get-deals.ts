@@ -126,15 +126,19 @@ async function getProductionDealsFallback(): Promise<Deal[]> {
   }
 
   const payload = (await response.json()) as { deals?: PublicDeal[] };
-  return (payload.deals ?? []).map((deal) => ({
-    ...deal,
-    slug: deal.slug ?? `${buildDealSlug(deal.title, 'deal')}-${deal.id.slice(0, 8)}`,
-    airlineId: deal.airlineId ?? null,
-    fareId: deal.fareId ?? null,
-    airlineDetails: deal.airlineDetails ?? null,
-    fare: deal.fare ?? null,
-    isTest: deal.isTest ?? false,
-  }));
+  return sortDeals(
+    (payload.deals ?? []).map((deal) => ({
+      ...deal,
+      slug:
+        deal.slug ??
+        `${buildDealSlug(deal.title, 'deal')}-${deal.id.slice(0, 8)}`,
+      airlineId: deal.airlineId ?? null,
+      fareId: deal.fareId ?? null,
+      airlineDetails: deal.airlineDetails ?? null,
+      fare: deal.fare ?? null,
+      isTest: deal.isTest ?? false,
+    })),
+  );
 }
 
 function formatDateOnly(date: Date) {
@@ -242,18 +246,48 @@ function mapDealRow(deal: DealRow, visaType: DealVisaType | null): Deal {
   };
 }
 
-function shuffleDeals(deals: Deal[]) {
-  const shuffledDeals = [...deals];
+function getTime(date: string | null | undefined) {
+  if (!date) return 0;
+  const timestamp = new Date(date).getTime();
 
-  for (let index = shuffledDeals.length - 1; index > 0; index -= 1) {
-    const randomIndex = Math.floor(Math.random() * (index + 1));
-    [shuffledDeals[index], shuffledDeals[randomIndex]] = [
-      shuffledDeals[randomIndex],
-      shuffledDeals[index],
-    ];
-  }
+  return Number.isNaN(timestamp) ? 0 : timestamp;
+}
 
-  return shuffledDeals;
+function sortDeals(deals: Deal[]) {
+  return [...deals].sort((a, b) => {
+    if (a.isFeatured !== b.isFeatured) {
+      return a.isFeatured ? -1 : 1;
+    }
+
+    const freshnessDiff = getTime(b.lastCheckedAt) - getTime(a.lastCheckedAt);
+
+    if (freshnessDiff !== 0) {
+      return freshnessDiff;
+    }
+
+    const aHasScore = a.score > 0;
+    const bHasScore = b.score > 0;
+
+    if (aHasScore && bHasScore && a.score !== b.score) {
+      return b.score - a.score;
+    }
+
+    if (aHasScore !== bHasScore) {
+      return aHasScore ? -1 : 1;
+    }
+
+    if (a.priceMad !== b.priceMad) {
+      return a.priceMad - b.priceMad;
+    }
+
+    const createdDiff = getTime(b.createdAt) - getTime(a.createdAt);
+
+    if (createdDiff !== 0) {
+      return createdDiff;
+    }
+
+    return a.id.localeCompare(b.id);
+  });
 }
 
 async function getVisaTypesByCountryCode(
@@ -293,13 +327,14 @@ export async function getDeals(): Promise<Deal[]> {
     .eq('is_active', true)
     .gt('departure_date', publicDepartureCutoffDate)
     .order('is_featured', { ascending: false })
-    .order('score', { ascending: false })
     .order('last_checked_at', { ascending: false, nullsFirst: false })
+    .order('score', { ascending: false })
+    .order('price_mad', { ascending: true })
     .order('created_at', { ascending: false })
     .returns<DealRow[]>();
 
   if (!primaryResult.error) {
-    return shuffleDeals(
+    return sortDeals(
       primaryResult.data.map((deal) =>
         mapDealRow(deal, getRelatedVisaType(deal.country_code, deal.countries)),
       ),
@@ -312,13 +347,14 @@ export async function getDeals(): Promise<Deal[]> {
     .eq('is_active', true)
     .gt('departure_date', publicDepartureCutoffDate)
     .order('is_featured', { ascending: false })
-    .order('score', { ascending: false })
     .order('last_checked_at', { ascending: false, nullsFirst: false })
+    .order('score', { ascending: false })
+    .order('price_mad', { ascending: true })
     .order('created_at', { ascending: false })
     .returns<DealRow[]>();
 
   if (!relationFallbackResult.error) {
-    return shuffleDeals(
+    return sortDeals(
       relationFallbackResult.data.map((deal) =>
         mapDealRow(deal, getRelatedVisaType(deal.country_code, deal.countries)),
       ),
@@ -331,8 +367,9 @@ export async function getDeals(): Promise<Deal[]> {
     .eq('is_active', true)
     .gt('departure_date', publicDepartureCutoffDate)
     .order('is_featured', { ascending: false })
-    .order('score', { ascending: false })
     .order('last_checked_at', { ascending: false, nullsFirst: false })
+    .order('score', { ascending: false })
+    .order('price_mad', { ascending: true })
     .order('created_at', { ascending: false })
     .returns<DealRow[]>();
 
@@ -344,7 +381,7 @@ export async function getDeals(): Promise<Deal[]> {
     fallbackResult.data.map((deal) => deal.country_code),
   );
 
-  return shuffleDeals(
+  return sortDeals(
     fallbackResult.data.map((deal) =>
       mapDealRow(
         deal,
