@@ -1,5 +1,5 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
-import type { Deal } from '@/services/deals/get-deals';
+import type { Deal, DealVisaType } from '@/services/deals/get-deals';
 import { getDeals } from '@/services/deals/get-deals';
 import { hasAdminSupabaseEnv } from '@/lib/validators/env';
 import { getVisaTypeForCountry } from '@/services/visa/visa-rules';
@@ -49,7 +49,29 @@ type DealRow = {
   updated_at: string;
 };
 
-function mapDeal(row: DealRow): Deal {
+type CountryVisaRow = {
+  visa_type: DealVisaType | null;
+};
+
+async function getVisaTypeByCountryCode(
+  countryCode: string,
+): Promise<DealVisaType | null> {
+  const supabase = createAdminSupabaseClient();
+  const { data, error } = await supabase
+    .from('countries')
+    .select('visa_type')
+    .eq('code', countryCode)
+    .maybeSingle()
+    .returns<CountryVisaRow | null>();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return getVisaTypeForCountry(countryCode, data?.visa_type ?? null);
+}
+
+function mapDeal(row: DealRow, visaType: DealVisaType | null): Deal {
   return {
     id: row.id,
     title: row.title,
@@ -59,7 +81,7 @@ function mapDeal(row: DealRow): Deal {
     fromCity: row.from_city,
     toCity: row.to_city,
     countryCode: row.country_code,
-    visaType: getVisaTypeForCountry(row.country_code, null),
+    visaType,
     priceMad: row.price_mad,
     airline: row.airline,
     airlineId: row.airline_id,
@@ -123,5 +145,11 @@ export async function getDealBySlug(slug: string): Promise<Deal | null> {
     throw new Error(error.message);
   }
 
-  return data ? mapDeal(data) : null;
+  if (!data) {
+    return null;
+  }
+
+  const visaType = await getVisaTypeByCountryCode(data.country_code);
+
+  return mapDeal(data, visaType);
 }
