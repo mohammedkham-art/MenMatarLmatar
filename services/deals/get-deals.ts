@@ -1,4 +1,5 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
+import { hasAdminSupabaseEnv } from '@/lib/validators/env';
 import type { Airline, AirlineFare } from '@/services/airlines/types';
 import {
   getVisaTypeForCountry,
@@ -100,6 +101,41 @@ const dealSelectWithVisa =
 
 const legacyDealSelect =
   'id, title, from_airport, to_airport, from_city, to_city, country_code, price_mad, airline, departure_date, return_date, booking_url, tags, is_active, is_featured, score, last_checked_at, created_at, updated_at';
+
+const productionDealsApiUrl = 'https://menmatarlmatar.ma/api/mobile/deals';
+
+type PublicDeal = Omit<
+  Deal,
+  'airlineDetails' | 'airlineId' | 'fare' | 'fareId' | 'isTest' | 'slug'
+> & {
+  airlineDetails?: Deal['airlineDetails'];
+  airlineId?: Deal['airlineId'];
+  fare?: Deal['fare'];
+  fareId?: Deal['fareId'];
+  isTest?: Deal['isTest'];
+  slug?: Deal['slug'];
+};
+
+async function getProductionDealsFallback(): Promise<Deal[]> {
+  const response = await fetch(productionDealsApiUrl, {
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    throw new Error('Impossible de charger les deals de production.');
+  }
+
+  const payload = (await response.json()) as { deals?: PublicDeal[] };
+  return (payload.deals ?? []).map((deal) => ({
+    ...deal,
+    slug: deal.slug ?? `${buildDealSlug(deal.title, 'deal')}-${deal.id.slice(0, 8)}`,
+    airlineId: deal.airlineId ?? null,
+    fareId: deal.fareId ?? null,
+    airlineDetails: deal.airlineDetails ?? null,
+    fare: deal.fare ?? null,
+    isTest: deal.isTest ?? false,
+  }));
+}
 
 function formatDateOnly(date: Date) {
   return date.toISOString().slice(0, 10);
@@ -244,6 +280,10 @@ async function getVisaTypesByCountryCode(
 }
 
 export async function getDeals(): Promise<Deal[]> {
+  if (!hasAdminSupabaseEnv()) {
+    return getProductionDealsFallback();
+  }
+
   const supabase = createAdminSupabaseClient();
   const publicDepartureCutoffDate = getPublicDepartureCutoffDate();
 

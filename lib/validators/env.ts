@@ -50,3 +50,10 @@ export function getAdminSupabaseEnv() {
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
   });
 }
+
+export function hasAdminSupabaseEnv() {
+  return adminSupabaseEnvSchema.safeParse({
+    SUPABASE_URL: process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+  }).success;
+}

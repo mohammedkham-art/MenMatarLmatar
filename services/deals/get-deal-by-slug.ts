@@ -1,5 +1,7 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import type { Deal, DealVisaType } from '@/services/deals/get-deals';
+import { getDeals } from '@/services/deals/get-deals';
+import { hasAdminSupabaseEnv } from '@/lib/validators/env';
 import { getVisaTypeForCountry } from '@/services/visa/visa-rules';
 
 type DealRow = {
@@ -115,6 +117,12 @@ function mapDeal(row: DealRow): Deal {
 }
 
 export async function getDealBySlug(slug: string): Promise<Deal | null> {
+  if (!hasAdminSupabaseEnv()) {
+    const deals = await getDeals();
+
+    return deals.find((deal) => deal.slug === slug) ?? null;
+  }
+
   const supabase = createAdminSupabaseClient();
   const { data, error } = await supabase
     .from('deals')
