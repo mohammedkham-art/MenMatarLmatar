@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 
 import type { Airline } from '@/services/airlines/types';
 
@@ -8,38 +8,61 @@ type AirlineFareSelectProps = {
   airlines: Airline[];
   defaultAirlineId?: string | null;
   defaultFareId?: string | null;
+  defaultAirlineName?: string | null;
 };
 
 export function AirlineFareSelect({
   airlines,
   defaultAirlineId,
   defaultFareId,
+  defaultAirlineName,
 }: AirlineFareSelectProps) {
-  const [airlineId, setAirlineId] = useState(defaultAirlineId ?? '');
+  const inputId = useId();
+  const initialAirlineId =
+    defaultAirlineId ??
+    airlines.find(
+      (airline) =>
+        defaultAirlineName &&
+        airline.name.toLowerCase() === defaultAirlineName.toLowerCase(),
+    )?.id ??
+    '';
+  const [airlineId, setAirlineId] = useState(initialAirlineId);
   const selectedAirline = useMemo(
     () => airlines.find((airline) => airline.id === airlineId),
     [airlineId, airlines],
   );
+  const selectedFare = useMemo(() => {
+    if (!selectedAirline) {
+      return null;
+    }
+
+    return (
+      selectedAirline.fares.find((fare) => fare.id === defaultFareId) ??
+      selectedAirline.fares[0] ??
+      null
+    );
+  }, [defaultFareId, selectedAirline]);
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="grid gap-3">
       <input
-        name="airlineName"
+        name="airline"
         type="hidden"
-        value={selectedAirline?.name ?? ''}
+        value={selectedAirline?.name ?? defaultAirlineName ?? ''}
       />
+      <input name="fareId" type="hidden" value={selectedFare?.id ?? ''} />
       <div>
         <label
           className="text-xs font-semibold uppercase tracking-widest text-muted-foreground"
-          htmlFor={`airlineId-${defaultAirlineId ?? 'new'}`}
+          htmlFor={`${inputId}-airlineId`}
         >
           Compagnie
         </label>
         <select
           className="mt-2 h-12 w-full rounded-xl border bg-background px-4 text-sm outline-none transition focus:border-primary"
-          defaultValue={defaultAirlineId ?? ''}
-          id={`airlineId-${defaultAirlineId ?? 'new'}`}
+          id={`${inputId}-airlineId`}
           name="airlineId"
+          value={airlineId}
           onChange={(event) => setAirlineId(event.target.value)}
         >
           <option value="">Choisir une compagnie</option>
@@ -51,28 +74,14 @@ export function AirlineFareSelect({
         </select>
       </div>
 
-      <div>
-        <label
-          className="text-xs font-semibold uppercase tracking-widest text-muted-foreground"
-          htmlFor={`fareId-${defaultFareId ?? 'new'}`}
-        >
-          Tarif
-        </label>
-        <select
-          className="mt-2 h-12 w-full rounded-xl border bg-background px-4 text-sm outline-none transition focus:border-primary disabled:opacity-60"
-          defaultValue={defaultFareId ?? ''}
-          disabled={!selectedAirline}
-          id={`fareId-${defaultFareId ?? 'new'}`}
-          name="fareId"
-        >
-          <option value="">Choisir un tarif</option>
-          {selectedAirline?.fares.map((fare) => (
-            <option key={fare.id} value={fare.id}>
-              {fare.fareName}
-            </option>
-          ))}
-        </select>
-      </div>
+      {selectedFare && (
+        <p className="rounded-xl border bg-muted px-4 py-3 text-sm text-muted-foreground">
+          Tarif bagages applique :{' '}
+          <span className="font-semibold text-foreground">
+            {selectedFare.fareName}
+          </span>
+        </p>
+      )}
     </div>
   );
 }

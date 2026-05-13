@@ -163,12 +163,6 @@ function getDealPayload(formData: FormData): DealMutationPayload {
       .filter(Boolean) ?? [];
   const transitTag = getTransitTag(formData);
   const payloadTags = transitTag ? [...tags, transitTag] : tags;
-  const selectedAirlineName = formData.get('airlineName');
-  const airlineName =
-    input.airline ||
-    (typeof selectedAirlineName === 'string' && selectedAirlineName
-      ? selectedAirlineName
-      : null);
 
   return {
     title: input.title,
@@ -182,7 +176,7 @@ function getDealPayload(formData: FormData): DealMutationPayload {
     to_city: input.toCity,
     country_code: input.countryCode,
     price_mad: input.priceMad,
-    airline: airlineName,
+    airline: input.airline || null,
     airline_id: input.airlineId || null,
     fare_id: input.fareId || null,
     departure_date: input.departureDate || null,
@@ -687,6 +681,7 @@ function DealForm({
           airlines={airlines}
           defaultAirlineId={deal?.airlineId}
           defaultFareId={deal?.fareId}
+          defaultAirlineName={deal?.airline}
         />
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -713,12 +708,6 @@ function DealForm({
             placeholder="1790"
             type="number"
             defaultValue={deal?.priceMad}
-          />
-          <AdminInput
-            name="airline"
-            label="Compagnie"
-            placeholder="Turkish Airlines"
-            defaultValue={deal?.airline ?? ''}
           />
         </div>
 
