@@ -84,32 +84,6 @@ function getTransitAirport(tags: string[]) {
   return transitTag?.split(':')[1]?.trim().toUpperCase() ?? null;
 }
 
-function getBaggageLabel(deal: Deal) {
-  if (!deal.fare) {
-    return 'Bagages a verifier';
-  }
-
-  const personal = deal.fare.personalItem
-    ? `1 effet perso${
-        deal.fare.personalItemDimensions
-          ? ` (${deal.fare.personalItemDimensions})`
-          : ''
-      }`
-    : '0 effet perso';
-  const cabin = deal.fare.cabinAllowed
-    ? `1 cabine${
-        deal.fare.cabinWeightKg ? ` ${deal.fare.cabinWeightKg}kg` : ''
-      }`
-    : '0 cabine';
-  const checked = deal.fare.checkedAllowed
-    ? `${deal.fare.checkedCount} soute${
-        deal.fare.checkedWeightKg ? ` ${deal.fare.checkedWeightKg}kg` : ''
-      }`
-    : '0 soute';
-
-  return `${personal}  |  ${cabin}  |  ${checked}`;
-}
-
 function getPriceFontSize(price: number) {
   return formatPrice(price).length > 7 ? 126 : 148;
 }
@@ -191,11 +165,203 @@ function InfoCard({
   );
 }
 
+function StoryBagIcon({ type }: { type: 'personal' | 'cabin' | 'checked' }) {
+  const body =
+    type === 'personal' ? (
+      <path
+        d="M8 8V6a4 4 0 0 1 8 0v2M5 9h14l1 10H4L5 9ZM9 12h6"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+    ) : type === 'cabin' ? (
+      <>
+        <path
+          d="M9 7V5a3 3 0 0 1 6 0v2"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeWidth="2"
+        />
+        <rect
+          height="12"
+          rx="2"
+          width="10"
+          x="7"
+          y="7"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        />
+        <path
+          d="M10 20v1M14 20v1"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeWidth="2"
+        />
+      </>
+    ) : (
+      <>
+        <path
+          d="M8 6V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeWidth="2"
+        />
+        <rect
+          height="13"
+          rx="2"
+          width="14"
+          x="5"
+          y="6"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        />
+        <path
+          d="M9 10v5M15 10v5"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeWidth="2"
+        />
+      </>
+    );
+
+  return (
+    <svg
+      aria-hidden="true"
+      height="42"
+      style={{ display: 'flex' }}
+      viewBox="0 0 24 24"
+      width="42"
+    >
+      {body}
+    </svg>
+  );
+}
+
+function BaggageItem({
+  count,
+  detail,
+  included,
+  type,
+}: {
+  count: number;
+  detail: string;
+  included: boolean;
+  type: 'personal' | 'cabin' | 'checked';
+}) {
+  return (
+    <div
+      style={{
+        alignItems: 'center',
+        color: included ? colors.ink : colors.muted,
+        display: 'flex',
+        gap: 10,
+      }}
+    >
+      <span style={{ display: 'flex', fontSize: 32, fontWeight: 1000 }}>
+        {count}
+      </span>
+      <StoryBagIcon type={type} />
+      <span
+        style={{
+          display: 'flex',
+          fontSize: 24,
+          fontWeight: 900,
+          marginLeft: 4,
+          textDecoration: included ? 'none' : 'line-through',
+        }}
+      >
+        {detail}
+      </span>
+    </div>
+  );
+}
+
+function BaggageCard({ deal }: { deal: Deal }) {
+  const fare = deal.fare;
+
+  return (
+    <div
+      style={{
+        background: colors.beige,
+        borderRadius: 26,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 16,
+        minHeight: 150,
+        padding: '26px 30px',
+        width: '100%',
+      }}
+    >
+      <div
+        style={{
+          color: colors.muted,
+          display: 'flex',
+          fontSize: 21,
+          fontWeight: 900,
+          letterSpacing: 4,
+          textTransform: 'uppercase',
+        }}
+      >
+        Bagages
+      </div>
+      {fare ? (
+        <div
+          style={{
+            alignItems: 'center',
+            display: 'flex',
+            gap: 28,
+            justifyContent: 'space-between',
+            width: '100%',
+          }}
+        >
+          <BaggageItem
+            count={fare.personalItem ? 1 : 0}
+            detail={fare.personalItemDimensions ?? 'Perso'}
+            included={fare.personalItem}
+            type="personal"
+          />
+          <BaggageItem
+            count={fare.cabinAllowed ? 1 : 0}
+            detail={fare.cabinWeightKg ? `${fare.cabinWeightKg}kg` : 'Cabine'}
+            included={fare.cabinAllowed}
+            type="cabin"
+          />
+          <BaggageItem
+            count={fare.checkedAllowed ? fare.checkedCount : 0}
+            detail={
+              fare.checkedWeightKg ? `${fare.checkedWeightKg}kg` : 'Soute'
+            }
+            included={fare.checkedAllowed}
+            type="checked"
+          />
+        </div>
+      ) : (
+        <div
+          style={{
+            color: colors.muted,
+            display: 'flex',
+            fontSize: 30,
+            fontWeight: 900,
+          }}
+        >
+          Bagages a verifier
+        </div>
+      )}
+    </div>
+  );
+}
+
 function StoryVisual({ deal }: { deal: Deal }) {
   const transitAirport = getTransitAirport(deal.tags);
   const priceFontSize = getPriceFontSize(deal.priceMad);
   const airlineName =
-    deal.airline ?? deal.airlineDetails?.name ?? 'A verifier';
+    deal.airlineDetails?.name ?? deal.airline ?? 'A verifier';
 
   return (
     <div style={rootStyle}>
@@ -231,8 +397,8 @@ function StoryVisual({ deal }: { deal: Deal }) {
               L MATAR
             </div>
           </div>
-          <Pill style={{ background: colors.orangeSoft, color: colors.green }}>
-            Deal voyage
+          <Pill style={getVisaStyle(deal.visaType)}>
+            {getVisaLabel(deal.visaType)}
           </Pill>
         </div>
 
@@ -351,21 +517,7 @@ function StoryVisual({ deal }: { deal: Deal }) {
             label={transitAirport ? 'Escale' : 'Vol'}
             value={transitAirport ? `Transit via ${transitAirport}` : 'Direct ou selon disponibilite'}
           />
-          <InfoCard label="Bagages" value={getBaggageLabel(deal)} />
-        </div>
-
-        <div
-          style={{
-            alignItems: 'center',
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginTop: 34,
-            width: '100%',
-          }}
-        >
-          <Pill style={getVisaStyle(deal.visaType)}>
-            {getVisaLabel(deal.visaType)}
-          </Pill>
+          <BaggageCard deal={deal} />
         </div>
       </div>
     </div>
