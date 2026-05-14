@@ -165,59 +165,23 @@ function InfoCard({
   );
 }
 
-function StoryBagIcon({ type }: { type: 'personal' | 'cabin' | 'checked' }) {
+function StoryBagIcon({ label }: { label: string }) {
   return (
     <div
       style={{
         alignItems: 'center',
+        border: `3px solid ${colors.green}`,
+        borderRadius: 12,
+        color: colors.green,
         display: 'flex',
-        flexDirection: 'column',
-        height: 44,
+        fontSize: 18,
+        fontWeight: 1000,
+        height: 42,
         justifyContent: 'center',
         width: 42,
       }}
     >
-      <div
-        style={{
-          border: '3px solid currentColor',
-          borderBottom: 0,
-          borderRadius: '8px 8px 0 0',
-          display: 'flex',
-          height: type === 'personal' ? 9 : 11,
-          width: type === 'checked' ? 18 : 14,
-        }}
-      />
-      <div
-        style={{
-          border: '3px solid currentColor',
-          borderRadius: type === 'personal' ? 7 : 5,
-          display: 'flex',
-          height: type === 'personal' ? 23 : type === 'cabin' ? 29 : 25,
-          width: type === 'personal' ? 34 : type === 'cabin' ? 24 : 34,
-        }}
-      />
-      {type === 'cabin' && (
-        <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
-          <div
-            style={{
-              background: 'currentColor',
-              borderRadius: 999,
-              display: 'flex',
-              height: 4,
-              width: 4,
-            }}
-          />
-          <div
-            style={{
-              background: 'currentColor',
-              borderRadius: 999,
-              display: 'flex',
-              height: 4,
-              width: 4,
-            }}
-          />
-        </div>
-      )}
+      {label}
     </div>
   );
 }
@@ -226,12 +190,12 @@ function BaggageItem({
   count,
   detail,
   included,
-  type,
+  label,
 }: {
   count: number;
   detail: string;
   included: boolean;
-  type: 'personal' | 'cabin' | 'checked';
+  label: string;
 }) {
   return (
     <div
@@ -245,7 +209,7 @@ function BaggageItem({
       <span style={{ display: 'flex', fontSize: 32, fontWeight: 1000 }}>
         {count}
       </span>
-      <StoryBagIcon type={type} />
+      <StoryBagIcon label={label} />
       <span
         style={{
           display: 'flex',
@@ -303,13 +267,13 @@ function BaggageCard({ deal }: { deal: Deal }) {
             count={fare.personalItem ? 1 : 0}
             detail={fare.personalItemDimensions ?? 'Perso'}
             included={fare.personalItem}
-            type="personal"
+            label="P"
           />
           <BaggageItem
             count={fare.cabinAllowed ? 1 : 0}
             detail={fare.cabinWeightKg ? `${fare.cabinWeightKg}kg` : 'Cabine'}
             included={fare.cabinAllowed}
-            type="cabin"
+            label="C"
           />
           <BaggageItem
             count={fare.checkedAllowed ? fare.checkedCount : 0}
@@ -317,7 +281,7 @@ function BaggageCard({ deal }: { deal: Deal }) {
               fare.checkedWeightKg ? `${fare.checkedWeightKg}kg` : 'Soute'
             }
             included={fare.checkedAllowed}
-            type="checked"
+            label="S"
           />
         </div>
       ) : (
