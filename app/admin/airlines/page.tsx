@@ -125,28 +125,6 @@ async function saveFare(formData: FormData) {
   redirectToAirlines({ status: 'saved' });
 }
 
-async function deleteFare(formData: FormData) {
-  'use server';
-
-  await requireAdminSession();
-
-  try {
-    const id = getString(formData, 'id');
-    const supabase = createAdminSupabaseClient();
-    const { error } = await supabase
-      .from('airline_fares')
-      .delete()
-      .eq('id', id);
-
-    if (error) throw new Error(error.message);
-    revalidateAirlinePaths();
-  } catch (error) {
-    redirectToAirlines({ error: getActionError(error) });
-  }
-
-  redirectToAirlines({ status: 'deleted' });
-}
-
 export default async function AdminAirlinesPage({
   searchParams,
 }: AdminAirlinesPageProps) {
@@ -237,15 +215,22 @@ function AirlinePanel({ airline }: { airline: Airline }) {
       </details>
 
       <div className="mt-5 grid gap-4">
-        {airline.fares.map((fare) => (
+        {airline.fares.length > 0 ? (
+          airline.fares.map((fare) => (
+            <FareForm
+              key={fare.id}
+              action={saveFare}
+              airlineId={airline.id}
+              fare={fare}
+            />
+          ))
+        ) : (
           <FareForm
-            key={fare.id}
             action={saveFare}
             airlineId={airline.id}
-            fare={fare}
+            title="Tarif de base"
           />
-        ))}
-        <FareForm action={saveFare} airlineId={airline.id} />
+        )}
       </div>
     </article>
   );
@@ -289,16 +274,21 @@ function FareForm({
   action,
   airlineId,
   fare,
+  title,
 }: {
   action: (formData: FormData) => Promise<void>;
   airlineId: string;
   fare?: AirlineFare;
+  title?: string;
 }) {
   return (
     <div className="rounded-xl border bg-muted p-4">
       <form action={action} className="grid gap-3">
         <input name="airlineId" type="hidden" value={airlineId} />
         {fare && <input name="id" type="hidden" value={fare.id} />}
+        <h3 className="text-sm font-bold text-primary">
+          {title ?? 'Tarif de base'}
+        </h3>
         <AdminInput
           name="fareName"
           label="Tarif"
@@ -357,18 +347,10 @@ function FareForm({
         </div>
         <div className="flex flex-wrap gap-2">
           <button className="h-10 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground">
-            {fare ? 'Enregistrer tarif' : 'Ajouter tarif'}
+            Enregistrer tarif
           </button>
         </div>
       </form>
-      {fare && (
-        <form action={deleteFare} className="mt-2">
-          <input name="id" type="hidden" value={fare.id} />
-          <button className="h-9 rounded-lg border border-red-200 bg-red-50 px-3 text-xs font-bold text-red-700">
-            Supprimer tarif
-          </button>
-        </form>
-      )}
     </div>
   );
 }
