@@ -85,12 +85,12 @@ function getTransitAirport(tags: string[]) {
 }
 
 function getPriceFontSize(price: number) {
-  return formatPrice(price).length > 7 ? 126 : 148;
+  return formatPrice(price).length > 7 ? 126 : 146;
 }
 
 const rootStyle: CSSProperties = {
   alignItems: 'center',
-  background: colors.background,
+  background: colors.beige,
   display: 'flex',
   fontFamily:
     'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
@@ -112,13 +112,15 @@ function Pill({
         alignItems: 'center',
         background: style.background,
         borderRadius: 999,
+        boxShadow: `0 12px 0 rgba(7, 84, 55, 0.12)`,
         color: style.color,
         display: 'flex',
-        fontSize: 30,
-        fontWeight: 900,
-        height: 68,
+        fontSize: 34,
+        fontWeight: 1000,
+        height: 84,
         justifyContent: 'center',
-        padding: '0 30px',
+        padding: '0 34px',
+        textTransform: 'uppercase',
       }}
     >
       {children}
@@ -140,9 +142,9 @@ function InfoCard({
         borderRadius: 26,
         display: 'flex',
         flexDirection: 'column',
-        gap: 12,
-        minHeight: 128,
-        padding: '26px 30px',
+        gap: 8,
+        minHeight: 116,
+        padding: '20px 34px',
         width: '100%',
       }}
     >
@@ -151,14 +153,14 @@ function InfoCard({
           color: colors.muted,
           display: 'flex',
           fontSize: 21,
-          fontWeight: 900,
+          fontWeight: 1000,
           letterSpacing: 4,
           textTransform: 'uppercase',
         }}
       >
         {label}
       </div>
-      <div style={{ color: colors.ink, display: 'flex', fontSize: 34, fontWeight: 900 }}>
+      <div style={{ color: colors.ink, display: 'flex', fontSize: 40, fontWeight: 1000 }}>
         {value}
       </div>
     </div>
@@ -203,15 +205,16 @@ function BaggageItem({
         gap: 10,
       }}
     >
-      <span style={{ display: 'flex', fontSize: 32, fontWeight: 1000 }}>
+      <span style={{ display: 'flex', fontSize: 42, fontWeight: 1000 }}>
         {count}
       </span>
       <StoryBagIcon icon={icon} />
       <span
         style={{
           display: 'flex',
-          fontSize: 24,
-          fontWeight: 900,
+          fontSize: 22,
+          fontWeight: 1000,
+          lineHeight: 1.1,
           marginLeft: 4,
           textDecoration: included ? 'none' : 'line-through',
         }}
@@ -232,9 +235,9 @@ function BaggageCard({ deal }: { deal: Deal }) {
         borderRadius: 26,
         display: 'flex',
         flexDirection: 'column',
-        gap: 16,
-        minHeight: 150,
-        padding: '26px 30px',
+        gap: 12,
+        minHeight: 166,
+        padding: '20px 34px',
         width: '100%',
       }}
     >
@@ -243,7 +246,7 @@ function BaggageCard({ deal }: { deal: Deal }) {
           color: colors.muted,
           display: 'flex',
           fontSize: 21,
-          fontWeight: 900,
+          fontWeight: 1000,
           letterSpacing: 4,
           textTransform: 'uppercase',
         }}
@@ -255,7 +258,7 @@ function BaggageCard({ deal }: { deal: Deal }) {
           style={{
             alignItems: 'center',
             display: 'flex',
-            gap: 28,
+            gap: 18,
             justifyContent: 'space-between',
             width: '100%',
           }}
@@ -310,15 +313,15 @@ function StoryVisual({ deal }: { deal: Deal }) {
           background: colors.card,
           border: `3px solid ${colors.green}`,
           borderRadius: 46,
-          boxShadow: `14px 16px 0 ${colors.shadow}`,
+          boxShadow: `17px 23px 0 ${colors.shadow}`,
           color: colors.ink,
           display: 'flex',
           flexDirection: 'column',
-          height: 1740,
+          height: 1785,
           overflow: 'hidden',
-          padding: 54,
+          padding: 34,
           position: 'relative',
-          width: 936,
+          width: 970,
         }}
       >
         <div
@@ -326,16 +329,31 @@ function StoryVisual({ deal }: { deal: Deal }) {
             alignItems: 'center',
             display: 'flex',
             justifyContent: 'space-between',
+            minHeight: 175,
             width: '100%',
           }}
         >
-          <img
-            alt="Men Matar L Matar"
-            height={110}
-            src="https://menmatarlmatar.ma/images/logo.png"
-            style={{ objectFit: 'contain' }}
-            width={310}
-          />
+          <div
+            style={{
+              alignItems: 'center',
+              background: '#fffaf1',
+              border: '4px solid rgba(7, 84, 55, 0.15)',
+              borderRadius: 45,
+              boxShadow: `0 16px 0 rgba(7, 84, 55, 0.12)`,
+              display: 'flex',
+              height: 164,
+              justifyContent: 'center',
+              width: 164,
+            }}
+          >
+            <img
+              alt="Men Matar L Matar"
+              height={140}
+              src="https://menmatarlmatar.ma/images/favicon-96x96.png"
+              style={{ objectFit: 'contain' }}
+              width={140}
+            />
+          </div>
           <Pill style={getVisaStyle(deal.visaType)}>
             {getVisaLabel(deal.visaType)}
           </Pill>
@@ -345,22 +363,23 @@ function StoryVisual({ deal }: { deal: Deal }) {
           style={{
             alignItems: 'center',
             background: colors.green,
-            borderRadius: 34,
+            borderRadius: 62,
             color: '#ffffff',
             display: 'flex',
             flexDirection: 'column',
-            marginTop: 48,
-            padding: '46px 36px',
+            marginTop: 18,
+            padding: '36px 40px 40px',
             width: '100%',
           }}
         >
           <div
             style={{
               display: 'flex',
-              fontSize: 58,
+              fontSize: 72,
               fontWeight: 1000,
-              lineHeight: 1.1,
+              lineHeight: 1,
               textAlign: 'center',
+              textTransform: 'uppercase',
             }}
           >
             {deal.fromCity} - {deal.toCity}
@@ -369,17 +388,17 @@ function StoryVisual({ deal }: { deal: Deal }) {
             style={{
               alignItems: 'center',
               display: 'flex',
-              gap: 34,
-              marginTop: 32,
+              gap: 36,
+              marginTop: 28,
             }}
           >
-            <div style={{ display: 'flex', fontSize: 78, fontWeight: 1000 }}>
+            <div style={{ display: 'flex', fontSize: 108, fontWeight: 1000, lineHeight: 1 }}>
               {deal.fromAirport}
             </div>
-            <div style={{ color: colors.orange, display: 'flex', fontSize: 58, fontWeight: 1000 }}>
+            <div style={{ color: colors.orange, display: 'flex', fontSize: 78, fontWeight: 1000 }}>
               ↔
             </div>
-            <div style={{ display: 'flex', fontSize: 78, fontWeight: 1000 }}>
+            <div style={{ display: 'flex', fontSize: 108, fontWeight: 1000, lineHeight: 1 }}>
               {deal.toAirport}
             </div>
           </div>
@@ -389,12 +408,13 @@ function StoryVisual({ deal }: { deal: Deal }) {
           style={{
             alignItems: 'center',
             background: colors.orangeSoft,
-            border: `3px solid ${colors.orange}`,
-            borderRadius: 34,
+            border: `8px solid ${colors.orange}`,
+            borderRadius: 62,
+            boxShadow: `0 17px 0 rgba(245, 159, 38, 0.2)`,
             display: 'flex',
             flexDirection: 'column',
-            marginTop: 34,
-            padding: '34px 24px',
+            marginTop: 30,
+            padding: '26px 28px 34px',
             width: '100%',
           }}
         >
@@ -402,8 +422,9 @@ function StoryVisual({ deal }: { deal: Deal }) {
             style={{
               color: colors.muted,
               display: 'flex',
-              fontSize: 34,
-              fontWeight: 900,
+              fontSize: 40,
+              fontWeight: 1000,
+              textTransform: 'uppercase',
             }}
           >
             A partir de
@@ -413,14 +434,14 @@ function StoryVisual({ deal }: { deal: Deal }) {
               alignItems: 'baseline',
               color: colors.greenText,
               display: 'flex',
-              gap: 24,
+              gap: 26,
               marginTop: 8,
             }}
           >
             <span style={{ display: 'flex', fontSize: priceFontSize, fontWeight: 1000, lineHeight: 1 }}>
               {formatPrice(deal.priceMad)}
             </span>
-            <span style={{ display: 'flex', fontSize: 48, fontWeight: 1000 }}>
+            <span style={{ display: 'flex', fontSize: 52, fontWeight: 1000 }}>
               MAD
             </span>
           </div>
@@ -430,8 +451,8 @@ function StoryVisual({ deal }: { deal: Deal }) {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 18,
-            marginTop: 34,
+            gap: 14,
+            marginTop: 30,
             width: '100%',
           }}
         >
@@ -443,8 +464,8 @@ function StoryVisual({ deal }: { deal: Deal }) {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 18,
-            marginTop: 24,
+            gap: 14,
+            marginTop: 14,
             width: '100%',
           }}
         >

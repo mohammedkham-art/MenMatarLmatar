@@ -10,7 +10,7 @@ type InstagramVisualsPageProps = {
   }>;
 };
 
-const instagramVisualVersion = 'story-single-v6';
+const instagramVisualVersion = 'story-single-v7';
 
 export default async function InstagramVisualsPage({
   params,
