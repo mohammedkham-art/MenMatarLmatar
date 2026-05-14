@@ -16,11 +16,11 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 const imageSize = {
-  height: 1350,
+  height: 1920,
   width: 1080,
 };
 
-const validSlides = new Set<InstagramSlide>(['outbound', 'return', 'cta']);
+const validSlides = new Set<InstagramSlide>(['story']);
 
 type RouteContext = {
   params: Promise<{
@@ -54,14 +54,13 @@ export async function GET(request: NextRequest, context: RouteContext) {
   }
 
   return new ImageResponse(
-    getInstagramSlideElement(deal, slide as InstagramSlide),
+    getInstagramSlideElement(deal),
     {
       ...imageSize,
       headers: {
         'Cache-Control': 'no-store, max-age=0',
         'Content-Disposition': `inline; filename="${getInstagramSlideFilename(
           deal,
-          slide as InstagramSlide,
         )}"`,
       },
     },
