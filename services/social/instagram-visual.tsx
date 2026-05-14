@@ -475,7 +475,7 @@ function StoryVisual({ deal }: { deal: Deal }) {
           />
           <InfoCard
             label={transitAirport ? 'Escale' : 'Vol'}
-            value={transitAirport ? `Transit via ${transitAirport}` : 'Direct ou selon disponibilite'}
+            value={transitAirport ? `Transit via ${transitAirport}` : 'VOL DIRECT'}
           />
           <BaggageCard deal={deal} />
         </div>
