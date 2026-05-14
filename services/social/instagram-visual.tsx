@@ -182,6 +182,8 @@ function InfoCard({
 function StoryVisual({ deal }: { deal: Deal }) {
   const transitAirport = getTransitAirport(deal.tags);
   const priceFontSize = getPriceFontSize(deal.priceMad);
+  const airlineName =
+    deal.airline ?? deal.airlineDetails?.name ?? 'A verifier';
 
   return (
     <div style={rootStyle}>
@@ -310,6 +312,7 @@ function StoryVisual({ deal }: { deal: Deal }) {
         <div
           style={{
             display: 'flex',
+            flexDirection: 'column',
             gap: 18,
             marginTop: 34,
             width: '100%',
@@ -330,7 +333,7 @@ function StoryVisual({ deal }: { deal: Deal }) {
         >
           <InfoCard
             label="Compagnie"
-            value={deal.airlineDetails?.name ?? deal.airline ?? 'A verifier'}
+            value={airlineName}
           />
           <InfoCard
             label={transitAirport ? 'Escale' : 'Vol'}
@@ -351,27 +354,6 @@ function StoryVisual({ deal }: { deal: Deal }) {
           <Pill style={getVisaStyle(deal.visaType)}>
             {getVisaLabel(deal.visaType)}
           </Pill>
-          <Pill style={{ background: colors.greenSoft, color: colors.green }}>
-            Prix a verifier
-          </Pill>
-        </div>
-
-        <div
-          style={{
-            alignItems: 'center',
-            borderTop: `2px solid ${colors.line}`,
-            color: colors.muted,
-            display: 'flex',
-            fontSize: 28,
-            fontWeight: 800,
-            justifyContent: 'space-between',
-            marginTop: 'auto',
-            paddingTop: 32,
-            width: '100%',
-          }}
-        >
-          <span>menmatarlmatar.ma</span>
-          <span>Les prix peuvent fluctuer</span>
         </div>
       </div>
     </div>
