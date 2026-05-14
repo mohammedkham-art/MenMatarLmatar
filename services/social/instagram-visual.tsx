@@ -89,10 +89,22 @@ function getBaggageLabel(deal: Deal) {
     return 'Bagages a verifier';
   }
 
-  const personal = deal.fare.personalItem ? '1 effet perso' : '0 effet perso';
-  const cabin = deal.fare.cabinAllowed ? '1 cabine' : '0 cabine';
+  const personal = deal.fare.personalItem
+    ? `1 effet perso${
+        deal.fare.personalItemDimensions
+          ? ` (${deal.fare.personalItemDimensions})`
+          : ''
+      }`
+    : '0 effet perso';
+  const cabin = deal.fare.cabinAllowed
+    ? `1 cabine${
+        deal.fare.cabinWeightKg ? ` ${deal.fare.cabinWeightKg}kg` : ''
+      }`
+    : '0 cabine';
   const checked = deal.fare.checkedAllowed
-    ? `${deal.fare.checkedCount} soute`
+    ? `${deal.fare.checkedCount} soute${
+        deal.fare.checkedWeightKg ? ` ${deal.fare.checkedWeightKg}kg` : ''
+      }`
     : '0 soute';
 
   return `${personal}  |  ${cabin}  |  ${checked}`;

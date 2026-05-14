@@ -3,10 +3,6 @@ import type { Deal, DealVisaType } from '@/services/deals/get-deals';
 import { buildDealSlug } from '@/services/deals/slug';
 import { getVisaTypeForCountry } from '@/services/visa/visa-rules';
 
-type DealCountryRow = {
-  visa_type: DealVisaType | null;
-};
-
 type AdminDealRow = {
   id: string;
   title: string;
@@ -16,7 +12,6 @@ type AdminDealRow = {
   from_city: string;
   to_city: string;
   country_code: string;
-  countries?: DealCountryRow | DealCountryRow[] | null;
   price_mad: number;
   airline: string | null;
   airline_id?: string | null;
@@ -60,21 +55,6 @@ type CountryVisaRow = {
 
 function getDealVisaType(countryCode: string, visaType: DealVisaType | null) {
   return getVisaTypeForCountry(countryCode, visaType);
-}
-
-function getRelatedVisaType(
-  countryCode: string,
-  country: AdminDealRow['countries'],
-) {
-  if (!country) {
-    return getDealVisaType(countryCode, null);
-  }
-
-  if (Array.isArray(country)) {
-    return getDealVisaType(countryCode, country[0]?.visa_type ?? null);
-  }
-
-  return getDealVisaType(countryCode, country.visa_type);
 }
 
 function mapAdminDealRow(
@@ -153,7 +133,7 @@ async function getVisaTypeByCountryCode(countryCode: string) {
 export async function getAdminDeal(dealId: string): Promise<Deal | null> {
   const supabase = createAdminSupabaseClient();
   const selectFields =
-    'id, title, slug, from_airport, to_airport, from_city, to_city, country_code, countries(visa_type), price_mad, airline, airline_id, fare_id, airlines(id, name, code, logo_url), airline_fares(id, airline_id, fare_name, personal_item, personal_item_dimensions, cabin_allowed, cabin_weight_kg, cabin_dimensions, checked_allowed, checked_weight_kg, checked_count), departure_date, return_date, booking_url, tags, is_active, is_featured, is_test, score, last_checked_at, created_at, updated_at';
+    'id, title, slug, from_airport, to_airport, from_city, to_city, country_code, price_mad, airline, airline_id, fare_id, airlines(id, name, code, logo_url), airline_fares(id, airline_id, fare_name, personal_item, personal_item_dimensions, cabin_allowed, cabin_weight_kg, cabin_dimensions, checked_allowed, checked_weight_kg, checked_count), departure_date, return_date, booking_url, tags, is_active, is_featured, is_test, score, last_checked_at, created_at, updated_at';
 
   const relationResult = await supabase
     .from('deals')
@@ -165,10 +145,7 @@ export async function getAdminDeal(dealId: string): Promise<Deal | null> {
   if (!relationResult.error && relationResult.data) {
     return mapAdminDealRow(
       relationResult.data,
-      getRelatedVisaType(
-        relationResult.data.country_code,
-        relationResult.data.countries,
-      ),
+      await getVisaTypeByCountryCode(relationResult.data.country_code),
     );
   }
 
