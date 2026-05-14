@@ -165,24 +165,21 @@ function InfoCard({
   );
 }
 
-function StoryBagIcon({ label }: { label: string }) {
+const baggageIconUrls = {
+  personal: 'https://menmatarlmatar.ma/images/baggage-personal.svg',
+  cabin: 'https://menmatarlmatar.ma/images/baggage-cabin.svg',
+  checked: 'https://menmatarlmatar.ma/images/baggage-checked.svg',
+};
+
+function StoryBagIcon({ icon }: { icon: 'personal' | 'cabin' | 'checked' }) {
   return (
-    <div
-      style={{
-        alignItems: 'center',
-        border: `3px solid ${colors.green}`,
-        borderRadius: 12,
-        color: colors.green,
-        display: 'flex',
-        fontSize: 18,
-        fontWeight: 1000,
-        height: 42,
-        justifyContent: 'center',
-        width: 42,
-      }}
-    >
-      {label}
-    </div>
+    <img
+      alt=""
+      height="42"
+      src={baggageIconUrls[icon]}
+      style={{ display: 'flex', objectFit: 'contain' }}
+      width="42"
+    />
   );
 }
 
@@ -190,12 +187,12 @@ function BaggageItem({
   count,
   detail,
   included,
-  label,
+  icon,
 }: {
   count: number;
   detail: string;
   included: boolean;
-  label: string;
+  icon: 'personal' | 'cabin' | 'checked';
 }) {
   return (
     <div
@@ -209,7 +206,7 @@ function BaggageItem({
       <span style={{ display: 'flex', fontSize: 32, fontWeight: 1000 }}>
         {count}
       </span>
-      <StoryBagIcon label={label} />
+      <StoryBagIcon icon={icon} />
       <span
         style={{
           display: 'flex',
@@ -265,23 +262,23 @@ function BaggageCard({ deal }: { deal: Deal }) {
         >
           <BaggageItem
             count={fare.personalItem ? 1 : 0}
-            detail={fare.personalItemDimensions ?? 'Perso'}
+            detail="Effet perso"
+            icon="personal"
             included={fare.personalItem}
-            label="P"
           />
           <BaggageItem
             count={fare.cabinAllowed ? 1 : 0}
-            detail={fare.cabinWeightKg ? `${fare.cabinWeightKg}kg` : 'Cabine'}
+            detail={fare.cabinWeightKg ? `Cabine ${fare.cabinWeightKg}kg` : 'Cabine'}
+            icon="cabin"
             included={fare.cabinAllowed}
-            label="C"
           />
           <BaggageItem
             count={fare.checkedAllowed ? fare.checkedCount : 0}
             detail={
-              fare.checkedWeightKg ? `${fare.checkedWeightKg}kg` : 'Soute'
+              fare.checkedWeightKg ? `Soute ${fare.checkedWeightKg}kg` : 'Soute'
             }
+            icon="checked"
             included={fare.checkedAllowed}
-            label="S"
           />
         </div>
       ) : (
@@ -332,14 +329,13 @@ function StoryVisual({ deal }: { deal: Deal }) {
             width: '100%',
           }}
         >
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ color: colors.green, display: 'flex', fontSize: 34, fontWeight: 1000 }}>
-              MEN MATAR
-            </div>
-            <div style={{ color: colors.orange, display: 'flex', fontSize: 34, fontWeight: 1000 }}>
-              L MATAR
-            </div>
-          </div>
+          <img
+            alt="Men Matar L Matar"
+            height={110}
+            src="https://menmatarlmatar.ma/images/logo.png"
+            style={{ objectFit: 'contain' }}
+            width={310}
+          />
           <Pill style={getVisaStyle(deal.visaType)}>
             {getVisaLabel(deal.visaType)}
           </Pill>
