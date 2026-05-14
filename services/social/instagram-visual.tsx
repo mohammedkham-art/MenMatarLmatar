@@ -166,80 +166,59 @@ function InfoCard({
 }
 
 function StoryBagIcon({ type }: { type: 'personal' | 'cabin' | 'checked' }) {
-  const body =
-    type === 'personal' ? (
-      <path
-        d="M8 8V6a4 4 0 0 1 8 0v2M5 9h14l1 10H4L5 9ZM9 12h6"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-      />
-    ) : type === 'cabin' ? (
-      <>
-        <path
-          d="M9 7V5a3 3 0 0 1 6 0v2"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeWidth="2"
-        />
-        <rect
-          height="12"
-          rx="2"
-          width="10"
-          x="7"
-          y="7"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <path
-          d="M10 20v1M14 20v1"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeWidth="2"
-        />
-      </>
-    ) : (
-      <>
-        <path
-          d="M8 6V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeWidth="2"
-        />
-        <rect
-          height="13"
-          rx="2"
-          width="14"
-          x="5"
-          y="6"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <path
-          d="M9 10v5M15 10v5"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeWidth="2"
-        />
-      </>
-    );
-
   return (
-    <svg
-      aria-hidden="true"
-      height="42"
-      style={{ display: 'flex' }}
-      viewBox="0 0 24 24"
-      width="42"
+    <div
+      style={{
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        height: 44,
+        justifyContent: 'center',
+        width: 42,
+      }}
     >
-      {body}
-    </svg>
+      <div
+        style={{
+          border: '3px solid currentColor',
+          borderBottom: 0,
+          borderRadius: '8px 8px 0 0',
+          display: 'flex',
+          height: type === 'personal' ? 9 : 11,
+          width: type === 'checked' ? 18 : 14,
+        }}
+      />
+      <div
+        style={{
+          border: '3px solid currentColor',
+          borderRadius: type === 'personal' ? 7 : 5,
+          display: 'flex',
+          height: type === 'personal' ? 23 : type === 'cabin' ? 29 : 25,
+          width: type === 'personal' ? 34 : type === 'cabin' ? 24 : 34,
+        }}
+      />
+      {type === 'cabin' && (
+        <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
+          <div
+            style={{
+              background: 'currentColor',
+              borderRadius: 999,
+              display: 'flex',
+              height: 4,
+              width: 4,
+            }}
+          />
+          <div
+            style={{
+              background: 'currentColor',
+              borderRadius: 999,
+              display: 'flex',
+              height: 4,
+              width: 4,
+            }}
+          />
+        </div>
+      )}
+    </div>
   );
 }
 
