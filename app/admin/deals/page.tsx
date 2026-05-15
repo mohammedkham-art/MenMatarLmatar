@@ -657,9 +657,10 @@ function DealForm({
 
         <AdminInput
           name="slug"
-          label="Slug"
+          label="Slug automatique"
           placeholder="casa-istanbul-pegasus"
           defaultValue={deal?.slug}
+          readOnly
         />
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -881,6 +882,7 @@ type AdminInputProps = {
   name: string;
   label: string;
   placeholder?: string;
+  readOnly?: boolean;
   type?: string;
   defaultValue?: number | string;
 };
@@ -889,6 +891,7 @@ function AdminInput({
   name,
   label,
   placeholder,
+  readOnly = false,
   type = 'text',
   defaultValue,
 }: AdminInputProps) {
@@ -906,7 +909,8 @@ function AdminInput({
         type={type}
         placeholder={placeholder}
         defaultValue={defaultValue}
-        className="mt-2 h-12 w-full rounded-xl border bg-background px-4 text-sm outline-none transition placeholder:text-muted-foreground focus:border-primary"
+        readOnly={readOnly}
+        className="mt-2 h-12 w-full rounded-xl border bg-background px-4 text-sm outline-none transition placeholder:text-muted-foreground focus:border-primary read-only:cursor-not-allowed read-only:bg-muted read-only:text-muted-foreground"
         required={
           name !== 'airline' &&
           name !== 'slug' &&

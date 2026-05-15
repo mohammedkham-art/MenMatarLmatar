@@ -15,14 +15,14 @@ export function getPriceFreshness(
 
   if (Number.isNaN(diffMinutes) || diffMinutes > 60 * 24 * 7) {
     return {
-      label: 'A verifier',
+      label: 'À vérifier',
       className: 'bg-red-50 text-red-700 ring-red-200',
     };
   }
 
   if (diffMinutes < 60) {
     return {
-      label: `Prix repere il y a ${Math.max(diffMinutes, 1)} min`,
+      label: `Prix repéré il y a ${Math.max(diffMinutes, 1)} min`,
       className: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
     };
   }
@@ -30,14 +30,14 @@ export function getPriceFreshness(
   const diffHours = Math.floor(diffMinutes / 60);
   if (diffHours < 24) {
     return {
-      label: `Prix repere il y a ${diffHours}h`,
+      label: `Prix repéré il y a ${diffHours}h`,
       className: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
     };
   }
 
   const diffDays = Math.floor(diffHours / 24);
   return {
-    label: `Prix repere il y a ${diffDays} jours`,
+    label: `Prix repéré il y a ${diffDays} jours`,
     className: 'bg-amber-50 text-amber-700 ring-amber-200',
   };
 }
