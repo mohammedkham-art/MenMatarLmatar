@@ -41,6 +41,7 @@ type AdminDealRow = {
   tags: string[] | null;
   is_active: boolean;
   is_featured: boolean;
+  is_flash?: boolean | null;
   is_test?: boolean | null;
   score: number | null;
   last_checked_at?: string | null;
@@ -78,7 +79,7 @@ export async function getAdminDeals(): Promise<Deal[]> {
   const { data, error } = await supabase
     .from('deals')
     .select(
-      'id, title, slug, from_airport, to_airport, from_city, to_city, country_code, price_mad, airline, airline_id, fare_id, airlines(id, name, code, logo_url), airline_fares(id, airline_id, fare_name, personal_item, personal_item_dimensions, cabin_allowed, cabin_weight_kg, cabin_dimensions, checked_allowed, checked_weight_kg, checked_count), departure_date, return_date, booking_url, tags, is_active, is_featured, is_test, score, last_checked_at, created_at, updated_at',
+      'id, title, slug, from_airport, to_airport, from_city, to_city, country_code, price_mad, airline, airline_id, fare_id, airlines(id, name, code, logo_url), airline_fares(id, airline_id, fare_name, personal_item, personal_item_dimensions, cabin_allowed, cabin_weight_kg, cabin_dimensions, checked_allowed, checked_weight_kg, checked_count), departure_date, return_date, booking_url, tags, is_active, is_featured, is_flash, is_test, score, last_checked_at, created_at, updated_at',
     )
     .order('is_featured', { ascending: false })
     .order('score', { ascending: false })
@@ -142,6 +143,7 @@ export async function getAdminDeals(): Promise<Deal[]> {
     tags: deal.tags ?? [],
     isActive: deal.is_active,
     isFeatured: deal.is_featured,
+    isFlash: deal.is_flash ?? false,
     isTest: deal.is_test ?? false,
     score: deal.score ?? 0,
     lastCheckedAt: deal.last_checked_at ?? deal.created_at,

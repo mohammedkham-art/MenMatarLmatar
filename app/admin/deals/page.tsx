@@ -1,5 +1,6 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { after } from 'next/server';
 
 import { AirlineFareSelect } from '@/app/admin/deals/airline-fare-select';
 import { DealsFilterBar } from '@/app/admin/deals/deals-filter-bar';
@@ -13,9 +14,11 @@ import { getAirlines } from '@/services/airlines/get-airlines';
 import type { Airline } from '@/services/airlines/types';
 import type { Country } from '@/services/countries/get-countries';
 import { getCountries } from '@/services/countries/get-countries';
+import { getAdminDeal } from '@/services/deals/get-admin-deal';
 import { getAdminDeals } from '@/services/deals/get-admin-deals';
 import type { Deal } from '@/services/deals/get-deals';
 import { buildDealSlug, slugifyDealTitle } from '@/services/deals/slug';
+import { dispatchDealNotification } from '@/services/notifications/dispatch';
 
 type DealMutationPayload = {
   title: string;
@@ -35,6 +38,7 @@ type DealMutationPayload = {
   tags: string[];
   is_active: boolean;
   is_featured: boolean;
+  is_flash: boolean;
   score: number;
   last_checked_at?: string;
 };
@@ -117,6 +121,7 @@ function getDealInput(formData: FormData) {
     tags: selectedTags.length > 0 ? selectedTags.join(',') : undefined,
     isActive: formData.get('isActive') === 'on',
     isFeatured: formData.get('isFeatured') === 'on',
+    isFlash: formData.get('isFlash') === 'on',
     score: formData.get('score'),
   };
 
@@ -185,6 +190,7 @@ function getDealPayload(formData: FormData): DealMutationPayload {
     tags: payloadTags,
     is_active: input.isActive,
     is_featured: input.isFeatured,
+    is_flash: input.isFlash,
     score: input.score,
   };
 }
@@ -213,13 +219,33 @@ async function createDeal(formData: FormData) {
   try {
     const payload = getDealPayload(formData);
     const supabase = createAdminSupabaseClient();
-    const { error } = await supabase.from('deals').insert(payload);
+    const { data: inserted, error } = await supabase
+      .from('deals')
+      .insert(payload)
+      .select('id')
+      .single();
 
     if (error) {
       throw new Error(error.message);
     }
 
     revalidateDealPaths();
+
+    if (payload.is_active && inserted?.id) {
+      const dealId = inserted.id as string;
+
+      after(async () => {
+        try {
+          const deal = await getAdminDeal(dealId);
+
+          if (deal?.isActive) {
+            await dispatchDealNotification(deal);
+          }
+        } catch {
+          console.error('[deal-notify] create dispatch failed');
+        }
+      });
+    }
   } catch (error) {
     redirectWithError(error);
   }
@@ -246,6 +272,20 @@ async function updateDeal(formData: FormData) {
     }
 
     revalidateDealPaths();
+
+    if (payload.is_active) {
+      after(async () => {
+        try {
+          const deal = await getAdminDeal(id);
+
+          if (deal?.isActive) {
+            await dispatchDealNotification(deal);
+          }
+        } catch {
+          console.error('[deal-notify] update dispatch failed');
+        }
+      });
+    }
   } catch (error) {
     redirectWithError(error);
   }
@@ -762,6 +802,14 @@ function DealForm({
                 defaultChecked={deal?.isFeatured ?? false}
               />
               Meilleure offre
+            </label>
+            <label className="flex items-center gap-3 text-sm font-semibold">
+              <input
+                name="isFlash"
+                type="checkbox"
+                defaultChecked={deal?.isFlash ?? false}
+              />
+              Deal éclair ⚡
             </label>
           </div>
         </div>

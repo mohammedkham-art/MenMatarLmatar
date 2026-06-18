@@ -42,6 +42,7 @@ type DealRow = {
   tags: string[] | null;
   is_active: boolean;
   is_featured: boolean;
+  is_flash?: boolean | null;
   is_test: boolean | null;
   score: number | null;
   last_checked_at: string | null;
@@ -115,6 +116,7 @@ function mapDeal(row: DealRow, visaType: DealVisaType | null): Deal {
     tags: row.tags ?? [],
     isActive: row.is_active,
     isFeatured: row.is_featured,
+    isFlash: row.is_flash ?? false,
     isTest: row.is_test ?? false,
     score: row.score ?? 0,
     lastCheckedAt: row.last_checked_at ?? row.created_at,
@@ -134,7 +136,7 @@ export async function getDealBySlug(slug: string): Promise<Deal | null> {
   const { data, error } = await supabase
     .from('deals')
     .select(
-      'id, title, slug, from_airport, to_airport, from_city, to_city, country_code, price_mad, airline, airline_id, fare_id, airlines(id, name, code, logo_url), airline_fares(id, airline_id, fare_name, personal_item, personal_item_dimensions, cabin_allowed, cabin_weight_kg, cabin_dimensions, checked_allowed, checked_weight_kg, checked_count), departure_date, return_date, booking_url, tags, is_active, is_featured, is_test, score, last_checked_at, created_at, updated_at',
+      'id, title, slug, from_airport, to_airport, from_city, to_city, country_code, price_mad, airline, airline_id, fare_id, airlines(id, name, code, logo_url), airline_fares(id, airline_id, fare_name, personal_item, personal_item_dimensions, cabin_allowed, cabin_weight_kg, cabin_dimensions, checked_allowed, checked_weight_kg, checked_count), departure_date, return_date, booking_url, tags, is_active, is_featured, is_flash, is_test, score, last_checked_at, created_at, updated_at',
     )
     .eq('slug', slug)
     .eq('is_active', true)

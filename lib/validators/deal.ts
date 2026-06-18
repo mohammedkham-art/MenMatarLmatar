@@ -30,6 +30,7 @@ export const createDealSchema = z.object({
   tags: z.string().optional(),
   isActive: z.coerce.boolean().default(false),
   isFeatured: z.coerce.boolean().default(false),
+  isFlash: z.coerce.boolean().default(false),
   score: z.coerce.number().int().min(0).max(100).default(50),
 });
 
