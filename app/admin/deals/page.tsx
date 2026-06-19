@@ -239,7 +239,7 @@ async function createDeal(formData: FormData) {
           const deal = await getAdminDeal(dealId);
 
           if (deal?.isActive) {
-            await dispatchDealNotification(deal);
+            await dispatchDealNotification(deal, 'create');
           }
         } catch {
           console.error('[deal-notify] create dispatch failed');
@@ -279,7 +279,7 @@ async function updateDeal(formData: FormData) {
           const deal = await getAdminDeal(id);
 
           if (deal?.isActive) {
-            await dispatchDealNotification(deal);
+            await dispatchDealNotification(deal, 'update');
           }
         } catch {
           console.error('[deal-notify] update dispatch failed');

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preview — Header vert</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:       #0d4a2e;
+      --green-light: #1a6644;
+      --accent:      #e07b20;
+      --bg:          #f5f0e8;
+      --card:        #ffffff;
+      --border:      #ddd5c4;
+      --text:        #0d2b1f;
+      --muted:       #5a7a6e;
+      --muted-bg:    #f0ebe0;
+    }
+
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* ══════════════════════════════
+       HEADER VERT
+    ══════════════════════════════ */
+    header {
+      background: var(--green);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.6rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    /* Logo zone */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 0.75rem;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .logo-text { display: grid; gap: 1px; }
+    .brand-top {
+      font-size: 0.6rem;
+      font-weight: 900;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.65);
+      line-height: 1;
+    }
+    .brand-bottom {
+      font-size: 1.3rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      line-height: 1;
+    }
+    .brand-arabic {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: rgba(255,255,255,.5);
+      direction: rtl;
+    }
+
+    /* Nav links */
+    nav { display: flex; align-items: center; gap: 0.25rem; }
+    nav a {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: rgba(255,255,255,.75);
+      text-decoration: none;
+      padding: 0.45rem 0.85rem;
+      border-radius: 9999px;
+      transition: background .15s, color .15s;
+    }
+    nav a:hover {
+      background: rgba(255,255,255,.12);
+      color: #fff;
+    }
+    nav a.cta {
+      background: var(--accent);
+      color: #fff;
+      margin-left: 0.25rem;
+    }
+    nav a.cta:hover { opacity: .88; background: var(--accent); }
+
+    .theme-btn {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.8);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-left: 0.25rem;
+    }
+
+    /* ══════════════════════════════
+       HERO (inchangé)
+    ══════════════════════════════ */
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3.5rem 1.5rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    @media (max-width: 768px) { .hero { grid-template-columns: 1fr; } }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,255,255,.8);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      padding: 0.3rem 0.85rem;
+      font-size: 0.62rem;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 1.25rem;
+    }
+    .pill-dot {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(224,123,32,.18);
+    }
+
+    .hero h1 {
+      font-size: 2.6rem;
+      font-weight: 900;
+      line-height: 1.06;
+      letter-spacing: -0.02em;
+      max-width: 16ch;
+    }
+    .hero p {
+      margin-top: 1rem;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 40ch;
+    }
+    .hero-ctas { margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .btn-main {
+      display: inline-flex; align-items: center; height: 2.75rem;
+      background: var(--green); color: #fff;
+      border-radius: 0.75rem; padding: 0 1.25rem;
+      font-size: 0.85rem; font-weight: 800; text-decoration: none;
+    }
+    .btn-outline {
+      display: inline-flex; align-items: center; height: 2.75rem;
+      border: 1.5px solid var(--border); background: var(--card); color: var(--green);
+      border-radius: 0.75rem; padding: 0 1.25rem;
+      font-size: 0.85rem; font-weight: 800; text-decoration: none;
+    }
+
+    /* Carte hero droite */
+    .hero-card {
+      background: var(--green);
+      border-radius: 1.25rem;
+      padding: 1.5rem;
+      color: #f5f0e8;
+      box-shadow: 0 20px 60px rgba(13,74,46,.2);
+    }
+    .flight-label {
+      font-size: 0.58rem; font-weight: 900;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      opacity: .55; margin-bottom: 0.3rem;
+    }
+    .flight-title { font-size: 1.2rem; font-weight: 900; margin-bottom: 1rem; }
+    .flight-board {
+      background: rgba(0,0,0,.22);
+      border-radius: 0.75rem;
+      padding: 0.9rem;
+    }
+    .flight-row {
+      display: grid;
+      grid-template-columns: 3.5rem 1fr 1fr;
+      gap: 0.5rem;
+      background: rgba(255,255,255,.08);
+      border-radius: 0.5rem;
+      padding: 0.6rem 0.75rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.82rem;
+    }
+    .flight-row:last-child { margin-bottom: 0; }
+    .flight-code { font-weight: 900; color: var(--accent); }
+    .flight-city { font-weight: 800; }
+    .flight-visa { opacity: .72; }
+
+    .ia-strip {
+      margin-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,.12);
+      padding-top: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .ia-label { font-size: 0.58rem; font-weight: 900; letter-spacing: .2em; text-transform: uppercase; opacity: .55; }
+    .ia-value { font-size: 0.95rem; font-weight: 900; margin-top: 0.2rem; }
+    .ia-badge {
+      background: var(--accent);
+      color: #fff;
+      border-radius: 9999px;
+      padding: 0.2rem 0.75rem;
+      font-size: 0.65rem;
+      font-weight: 900;
+    }
+
+    /* ══════════════════════════════
+       STATS
+    ══════════════════════════════ */
+    .stats {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem 2.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .stat-card {
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      background: var(--card);
+      padding: 1rem 1.1rem;
+      text-decoration: none;
+      color: inherit;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+    .stat-value { font-size: 2rem; font-weight: 900; color: var(--green); }
+    .stat-label { font-size: 0.85rem; font-weight: 800; margin-top: 0.2rem; }
+    .stat-detail { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; display: flex; justify-content: space-between; }
+
+    /* ══════════════════════════════
+       DEALS
+    ══════════════════════════════ */
+    .deals-section {
+      background: rgba(0,0,0,.035);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .deals-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+    .section-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 1.25rem; }
+    .section-eyebrow { font-size: 0.62rem; font-weight: 900; letter-spacing: .2em; text-transform: uppercase; color: var(--green-light); margin-bottom: 0.3rem; }
+    .section-title { font-size: 1.6rem; font-weight: 900; }
+    .section-sub { font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem; }
+    .see-all { font-size: 0.8rem; font-weight: 800; color: var(--green); text-decoration: none; }
+
+    .deals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    @media (max-width: 768px) { .deals-grid { grid-template-columns: 1fr; } .stats { grid-template-columns: 1fr; } }
+
+    .deal-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      padding: 1.1rem;
+    }
+    .deal-fresh { font-size: 0.68rem; font-weight: 800; color: #059669; margin-bottom: 0.5rem; }
+    .deal-route { font-size: 1.05rem; font-weight: 900; margin: 0.3rem 0 0.2rem; }
+    .deal-airports { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.75rem; }
+    .deal-price { font-size: 1.05rem; font-weight: 900; color: var(--green); }
+    .deal-tag { display: inline-block; background: rgba(224,123,32,.12); color: #92400e; border-radius: 9999px; padding: 0.15rem 0.6rem; font-size: 0.65rem; font-weight: 800; margin-top: 0.5rem; }
+    .deal-btn {
+      display: block; margin-top: 0.9rem;
+      background: var(--green); color: #fff; text-align: center;
+      border-radius: 0.65rem; padding: 0.65rem;
+      font-size: 0.82rem; font-weight: 800; text-decoration: none;
+    }
+
+    /* ══════════════════════════════
+       FOOTER SIMPLE
+    ══════════════════════════════ */
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER VERT ── -->
+  <header>
+    <div class="header-inner">
+      <a class="logo" href="#">
+        <div class="logo-icon"><img src="public/images/logo-sticker.png" alt="" style="width:100%;height:100%;object-fit:contain;" /></div>
+        <div class="logo-text">
+          <span class="brand-top">Men Matar</span>
+          <span class="brand-bottom">L MATAR</span>
+          <span class="brand-arabic">نسافر بذكاء، ونعيش أحسن تجربة</span>
+        </div>
+      </a>
+      <nav>
+        <a href="#">Destinations</a>
+        <a href="#">Offres</a>
+        <a href="#" class="cta">Simulateur IA</a>
+        <button class="theme-btn" title="Thème">☀️</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── HERO ── -->
+  <section>
+    <div class="hero">
+      <div>
+        <div class="hero-pill">
+          <span class="pill-dot"></span>
+          Passeport marocain
+        </div>
+        <h1>Ton prochain départ commence par ce que ton passeport permet.</h1>
+        <p>Découvre où tu peux partir sans visa, compare les offres en MAD et lance une simulation IA avant de réserver.</p>
+        <div class="hero-ctas">
+          <a class="btn-main" href="#">Explorer les destinations</a>
+          <a class="btn-outline" href="#">Simuler mon voyage</a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <p class="flight-label">Flight board</p>
+        <p class="flight-title">Departures</p>
+        <div class="flight-board">
+          <div class="flight-row">
+            <span class="flight-code">IST</span>
+            <span class="flight-city">Istanbul</span>
+            <span class="flight-visa">Sans visa</span>
+          </div>
+          <div class="flight-row">
+            <span class="flight-code">BKK</span>
+            <span class="flight-city">Bangkok</span>
+            <span class="flight-visa">Sans visa</span>
+          </div>
+          <div class="flight-row">
+            <span class="flight-code">DXB</span>
+            <span class="flight-city">Dubaï</span>
+            <span class="flight-visa">eVisa</span>
+          </div>
+        </div>
+        <div class="ia-strip">
+          <div>
+            <p class="ia-label">IA voyage</p>
+            <p class="ia-value">3j · 2 000 MAD · Istanbul</p>
+          </div>
+          <span class="ia-badge">prêt</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STATS VISA ── -->
+  <div class="stats">
+    <a class="stat-card" href="#">
+      <p class="stat-value">+40</p>
+      <p class="stat-label">Sans visa</p>
+      <p class="stat-detail"><span>départs possibles</span><span>→</span></p>
+    </a>
+    <a class="stat-card" href="#">
+      <p class="stat-value">+40</p>
+      <p class="stat-label">eVisa</p>
+      <p class="stat-detail"><span>dossiers simples</span><span>→</span></p>
+    </a>
+    <a class="stat-card" href="#">
+      <p class="stat-value">14</p>
+      <p class="stat-label">Visa à l'arrivée</p>
+      <p class="stat-detail"><span>options flexibles</span><span>→</span></p>
+    </a>
+  </div>
+
+  <!-- ── DEALS ── -->
+  <section class="deals-section">
+    <div class="deals-inner">
+      <div class="section-head">
+        <div>
+          <p class="section-eyebrow">Bons plans</p>
+          <h2 class="section-title">Deals</h2>
+          <p class="section-sub">Les vols à surveiller avant de réserver.</p>
+        </div>
+        <a class="see-all" href="#">Voir toutes les offres →</a>
+      </div>
+      <div class="deals-grid">
+        <div class="deal-card">
+          <p class="deal-fresh">Prix repéré récemment</p>
+          <p class="deal-route">Casablanca → Istanbul</p>
+          <p class="deal-airports">CMN → IST · Pegasus</p>
+          <p class="deal-price">2 600 MAD</p>
+          <span class="deal-tag">Sans visa</span>
+          <a class="deal-btn" href="#">Voir l'offre ↗</a>
+        </div>
+        <div class="deal-card">
+          <p class="deal-fresh">Prix repéré récemment</p>
+          <p class="deal-route">Marrakech → Dubaï</p>
+          <p class="deal-airports">RAK → DXB · flydubai</p>
+          <p class="deal-price">3 100 MAD</p>
+          <span class="deal-tag">eVisa</span>
+          <a class="deal-btn" href="#">Voir l'offre ↗</a>
+        </div>
+        <div class="deal-card">
+          <p class="deal-fresh">Prix repéré récemment</p>
+          <p class="deal-route">Casablanca → Bangkok</p>
+          <p class="deal-airports">CMN → BKK · Turkish Airlines</p>
+          <p class="deal-price">4 200 MAD</p>
+          <span class="deal-tag">Sans visa</span>
+          <a class="deal-btn" href="#">Voir l'offre ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    © 2026 Men Matar L Matar · Bons plans voyage depuis le Maroc
+  </footer>
+
+</body>
+</html>

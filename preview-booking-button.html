@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preview — Bouton Booking</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+      background: #f5f0e8 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cpath d='M0 0h72v72H0z' fill='none'/%3E%3Cpath d='M72 0v72M0 0v72' stroke='%23d4c9b0' stroke-width='0.5' opacity='.5'/%3E%3Cpath d='M0 72h72M0 0h72' stroke='%23d4c9b0' stroke-width='0.5' opacity='.4'/%3E%3C/svg%3E");
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      gap: 2.5rem;
+      color: #0d2b1f;
+    }
+
+    h1 {
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #1a6644;
+      text-align: center;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 760px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #ddd5c4;
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+
+    .badge-featured {
+      display: inline-flex;
+      margin-bottom: 0.75rem;
+      background: rgba(237,137,21,.12);
+      color: #92400e;
+      border: 1px solid rgba(237,137,21,.3);
+      border-radius: 9999px;
+      padding: 0.2rem 0.75rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .freshness { font-size: 0.7rem; font-weight: 700; color: #059669; margin-bottom: 0.5rem; }
+
+    .country-code { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #5a7a6e; }
+
+    .visa-badge {
+      display: inline-flex;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      border-radius: 9999px;
+      padding: 0.15rem 0.6rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      margin-left: 0.4rem;
+    }
+
+    .city-title { font-size: 1.2rem; font-weight: 700; margin-top: 0.4rem; line-height: 1.3; }
+    .city-sub { font-size: 0.8rem; color: #5a7a6e; margin-top: 0.25rem; font-weight: 500; }
+
+    .price-box {
+      background: #f0ebe0;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      text-align: right;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .price-label { font-size: 0.7rem; color: #5a7a6e; font-weight: 500; }
+    .price-value { font-size: 1.15rem; font-weight: 800; color: #0d4a2e; margin-top: 0.2rem; }
+
+    .route-box {
+      background: #f0ebe0;
+      border-radius: 0.75rem;
+      padding: 0.9rem 1rem;
+      margin-top: 1rem;
+    }
+    .route-code { font-size: 0.85rem; font-weight: 700; }
+    .route-city { font-size: 0.8rem; color: #5a7a6e; margin-top: 0.2rem; }
+
+    .details { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.82rem; color: #5a7a6e; }
+    .details strong { color: #0d2b1f; font-weight: 700; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+    .tag {
+      background: rgba(237,137,21,.12);
+      color: #92400e;
+      border-radius: 9999px;
+      padding: 0.2rem 0.65rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    /* ── CTA buttons ── */
+    .ctas {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 1.25rem;
+    }
+
+    .btn-flight {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 2.75rem;
+      border-radius: 0.75rem;
+      background: #0d4a2e;
+      color: #f5f0e8;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: opacity .15s;
+      cursor: pointer;
+    }
+    .btn-flight:hover { opacity: .88; }
+
+    /* OPTION A — même hauteur, bleu Booking */
+    .btn-booking-a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      height: 2.75rem;
+      border-radius: 0.75rem;
+      background: #003580;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: opacity .15s;
+      cursor: pointer;
+    }
+    .btn-booking-a:hover { opacity: .88; }
+
+    /* OPTION B — outline sobre */
+    .btn-booking-b {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      height: 2.75rem;
+      border-radius: 0.75rem;
+      background: transparent;
+      border: 1.5px solid #003580;
+      color: #003580;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .15s, color .15s;
+      cursor: pointer;
+    }
+    .btn-booking-b:hover { background: #003580; color: #fff; }
+
+    /* OPTION C — petit lien discret sous le bouton vol */
+    .btn-booking-c {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      height: 2.2rem;
+      border-radius: 0.5rem;
+      background: #f0ebe0;
+      border: 1px solid #ddd5c4;
+      color: #0d2b1f;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .15s;
+      cursor: pointer;
+    }
+    .btn-booking-c:hover { background: #e5ddd0; }
+
+    .booking-icon { font-size: 1rem; }
+
+    .label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #1a6644;
+      margin-bottom: 0.6rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Prévisualisation — Bouton Booking</h1>
+
+  <div class="cards">
+
+    <!-- Option A : Bouton plein bleu Booking -->
+    <div>
+      <p class="label">Option A — Bouton plein (couleur Booking)</p>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <span class="badge-featured">Meilleure offre</span>
+            <p class="freshness">Prix repéré récemment</p>
+            <div style="display:flex;align-items:center;">
+              <span class="country-code">TR</span>
+              <span class="visa-badge">Sans visa</span>
+            </div>
+            <p class="city-title">Casablanca → Istanbul</p>
+            <p class="city-sub">Istanbul · Sans visa</p>
+          </div>
+          <div class="price-box">
+            <p class="price-label">À partir de</p>
+            <p class="price-value">2 600 MAD</p>
+          </div>
+        </div>
+        <div class="route-box">
+          <p class="route-code">CMN → SAW</p>
+          <p class="route-city">Casablanca → Istanbul</p>
+        </div>
+        <div class="details">
+          <p><strong>Compagnie :</strong> Pegasus</p>
+          <p><strong>Départ :</strong> 03 févr. 2027</p>
+          <p><strong>Retour :</strong> 11 févr. 2027</p>
+        </div>
+        <div class="tags">
+          <span class="tag">Sans visa</span>
+          <span class="tag">Bon prix</span>
+        </div>
+        <div class="ctas">
+          <a class="btn-flight">Voir l'offre ↗</a>
+          <a class="btn-booking-a">
+            <span class="booking-icon">🏨</span>
+            Trouver un hébergement à Istanbul
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option B : Bouton outline bleu -->
+    <div>
+      <p class="label">Option B — Outline sobre</p>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <span class="badge-featured">Meilleure offre</span>
+            <p class="freshness">Prix repéré récemment</p>
+            <div style="display:flex;align-items:center;">
+              <span class="country-code">TR</span>
+              <span class="visa-badge">Sans visa</span>
+            </div>
+            <p class="city-title">Casablanca → Istanbul</p>
+            <p class="city-sub">Istanbul · Sans visa</p>
+          </div>
+          <div class="price-box">
+            <p class="price-label">À partir de</p>
+            <p class="price-value">2 600 MAD</p>
+          </div>
+        </div>
+        <div class="route-box">
+          <p class="route-code">CMN → SAW</p>
+          <p class="route-city">Casablanca → Istanbul</p>
+        </div>
+        <div class="details">
+          <p><strong>Compagnie :</strong> Pegasus</p>
+          <p><strong>Départ :</strong> 03 févr. 2027</p>
+          <p><strong>Retour :</strong> 11 févr. 2027</p>
+        </div>
+        <div class="tags">
+          <span class="tag">Sans visa</span>
+          <span class="tag">Bon prix</span>
+        </div>
+        <div class="ctas">
+          <a class="btn-flight">Voir l'offre ↗</a>
+          <a class="btn-booking-b">
+            <span class="booking-icon">🏨</span>
+            Trouver un hébergement à Istanbul
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option C : Petit lien discret -->
+    <div>
+      <p class="label">Option C — Lien discret</p>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <span class="badge-featured">Meilleure offre</span>
+            <p class="freshness">Prix repéré récemment</p>
+            <div style="display:flex;align-items:center;">
+              <span class="country-code">TR</span>
+              <span class="visa-badge">Sans visa</span>
+            </div>
+            <p class="city-title">Casablanca → Istanbul</p>
+            <p class="city-sub">Istanbul · Sans visa</p>
+          </div>
+          <div class="price-box">
+            <p class="price-label">À partir de</p>
+            <p class="price-value">2 600 MAD</p>
+          </div>
+        </div>
+        <div class="route-box">
+          <p class="route-code">CMN → SAW</p>
+          <p class="route-city">Casablanca → Istanbul</p>
+        </div>
+        <div class="details">
+          <p><strong>Compagnie :</strong> Pegasus</p>
+          <p><strong>Départ :</strong> 03 févr. 2027</p>
+          <p><strong>Retour :</strong> 11 févr. 2027</p>
+        </div>
+        <div class="tags">
+          <span class="tag">Sans visa</span>
+          <span class="tag">Bon prix</span>
+        </div>
+        <div class="ctas">
+          <a class="btn-flight">Voir l'offre ↗</a>
+          <a class="btn-booking-c">
+            <span class="booking-icon">🏨</span>
+            Trouver un hébergement à Istanbul →
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

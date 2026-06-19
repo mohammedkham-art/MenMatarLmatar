@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preview — Hero + Simulateur</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #0d4a2e;
+      --green-light: #1a6644;
+      --green-muted: #2d7a54;
+      --accent: #e07b20;
+      --bg: #f5f0e8;
+      --bg-card: #ffffff;
+      --border: #ddd5c4;
+      --text: #0d2b1f;
+      --text-muted: #5a7a6e;
+      --muted-bg: #f0ebe0;
+    }
+
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      border-bottom: 1px solid var(--border);
+      background: rgba(245,240,232,0.92);
+      backdrop-filter: blur(8px);
+      padding: 0 1.5rem;
+      height: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .nav-logo { font-size: 0.75rem; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; color: var(--green); }
+    .nav-links { display: flex; gap: 1.5rem; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
+    .nav-links a { text-decoration: none; color: inherit; transition: color .15s; }
+    .nav-links a:hover { color: var(--green); }
+    .nav-links a.active { color: var(--green); }
+
+    /* ── LABELS ── */
+    .section-label {
+      text-align: center;
+      font-size: 0.65rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--green-light);
+      padding: 2rem 1rem 0.5rem;
+    }
+    .section-divider {
+      border: none;
+      border-top: 2px dashed var(--border);
+      margin: 3rem 1.5rem;
+    }
+
+    /* ═══════════════════════════════════════════════
+       OPTION A — Simulateur dans le hero (carte droite)
+    ═══════════════════════════════════════════════ */
+    .hero-a {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem 3.5rem;
+      align-items: center;
+    }
+    @media (max-width: 800px) { .hero-a { grid-template-columns: 1fr; } }
+
+    .hero-a-left .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      background: rgba(255,255,255,0.8);
+      padding: 0.3rem 0.85rem;
+      font-size: 0.62rem;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 1.25rem;
+    }
+    .pill-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(224,123,32,.18); }
+
+    .hero-a-left h1 {
+      font-size: 2.8rem;
+      font-weight: 900;
+      line-height: 1.06;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .hero-a-left p {
+      margin-top: 1rem;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+      max-width: 38ch;
+    }
+    .hero-a-left .ctas { margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; height: 2.75rem;
+      background: var(--green); color: #f5f0e8;
+      border-radius: 0.75rem; padding: 0 1.25rem;
+      font-size: 0.85rem; font-weight: 800; text-decoration: none;
+      transition: opacity .15s;
+    }
+    .btn-primary:hover { opacity: .88; }
+    .btn-secondary {
+      display: inline-flex; align-items: center; height: 2.75rem;
+      border: 1.5px solid var(--border); background: var(--bg-card); color: var(--green);
+      border-radius: 0.75rem; padding: 0 1.25rem;
+      font-size: 0.85rem; font-weight: 800; text-decoration: none;
+      transition: border-color .15s;
+    }
+    .btn-secondary:hover { border-color: var(--green-muted); }
+
+    /* Carte simulateur hero */
+    .sim-card {
+      background: var(--green);
+      border-radius: 1.25rem;
+      padding: 1.5rem;
+      color: #f5f0e8;
+      box-shadow: 0 20px 60px rgba(13,74,46,.22);
+      position: relative;
+      overflow: hidden;
+    }
+    .sim-card::before {
+      content: '';
+      position: absolute;
+      top: -4rem; right: -4rem;
+      width: 12rem; height: 12rem;
+      border-radius: 50%;
+      background: rgba(224,123,32,.2);
+      filter: blur(2rem);
+    }
+    .sim-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+    .sim-card-title { font-size: 0.6rem; font-weight: 900; letter-spacing: 0.2em; text-transform: uppercase; opacity: .55; }
+    .sim-card-subtitle { font-size: 1.2rem; font-weight: 900; margin-top: 0.2rem; }
+    .sim-badge { background: var(--accent); color: #fff; border-radius: 9999px; padding: 0.2rem 0.7rem; font-size: 0.65rem; font-weight: 900; }
+
+    .sim-form { display: grid; gap: 0.75rem; position: relative; }
+    .sim-select, .sim-input {
+      width: 100%; height: 2.75rem;
+      border-radius: 0.65rem;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.1);
+      color: #f5f0e8;
+      padding: 0 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      outline: none;
+    }
+    .sim-select option { background: var(--green); color: #f5f0e8; }
+    .sim-select::placeholder, .sim-input::placeholder { color: rgba(245,240,232,.45); }
+    .sim-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .sim-btn {
+      width: 100%; height: 2.75rem;
+      background: var(--accent);
+      color: #fff;
+      border: none; border-radius: 0.65rem;
+      font-size: 0.9rem; font-weight: 900;
+      cursor: pointer;
+      transition: opacity .15s;
+      margin-top: 0.25rem;
+    }
+    .sim-btn:hover { opacity: .88; }
+
+    .sim-samples {
+      margin-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,.12);
+      padding-top: 0.9rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.5rem;
+    }
+    .sim-sample {
+      background: rgba(255,255,255,.09);
+      border-radius: 0.5rem;
+      padding: 0.5rem 0.6rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      opacity: .85;
+      text-align: center;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .sim-sample:hover { background: rgba(255,255,255,.16); }
+    .sim-sample-city { font-size: 0.78rem; font-weight: 900; display: block; margin-bottom: 0.1rem; }
+
+
+    /* ═══════════════════════════════════════════════
+       OPTION B — Banner accrocheuse entre hero et deals
+    ═══════════════════════════════════════════════ */
+    .sim-banner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    .sim-banner-inner {
+      background: var(--green);
+      border-radius: 1.25rem;
+      padding: 2rem 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: center;
+      color: #f5f0e8;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(13,74,46,.18);
+    }
+    .sim-banner-inner::after {
+      content: '✈️';
+      position: absolute;
+      right: 12rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 5rem;
+      opacity: .06;
+    }
+    @media (max-width: 700px) { .sim-banner-inner { grid-template-columns: 1fr; } }
+    .sim-banner-label { font-size: 0.6rem; font-weight: 900; letter-spacing: 0.2em; text-transform: uppercase; opacity: .55; margin-bottom: 0.4rem; }
+    .sim-banner-title { font-size: 1.5rem; font-weight: 900; line-height: 1.2; }
+    .sim-banner-sub { font-size: 0.88rem; opacity: .72; margin-top: 0.4rem; }
+    .sim-banner-right { display: flex; flex-direction: column; gap: 0.6rem; align-items: flex-end; min-width: 14rem; }
+    .sim-banner-input {
+      width: 100%; height: 2.75rem;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 0.65rem;
+      color: #f5f0e8;
+      padding: 0 0.9rem;
+      font-size: 0.85rem; font-weight: 600;
+      outline: none;
+    }
+    .sim-banner-input::placeholder { color: rgba(245,240,232,.45); }
+    .sim-banner-btn {
+      width: 100%; height: 2.75rem;
+      background: var(--accent);
+      color: #fff; border: none;
+      border-radius: 0.65rem;
+      font-size: 0.88rem; font-weight: 900;
+      cursor: pointer; transition: opacity .15s;
+    }
+    .sim-banner-btn:hover { opacity: .88; }
+
+    /* ── Faux deals ── */
+    .deals-section {
+      max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem;
+    }
+    .deals-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 1.25rem; }
+    .deals-header h2 { font-size: 1.5rem; font-weight: 900; }
+    .deals-header a { font-size: 0.8rem; font-weight: 800; color: var(--green); text-decoration: none; }
+    .deals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    @media (max-width: 700px) { .deals-grid { grid-template-columns: 1fr; } }
+    .deal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      padding: 1.1rem;
+      font-size: 0.82rem;
+    }
+    .deal-route { font-size: 1rem; font-weight: 900; margin: 0.4rem 0 0.2rem; }
+    .deal-price { font-size: 1.05rem; font-weight: 900; color: var(--green); }
+    .deal-tag { display: inline-block; background: rgba(224,123,32,.12); color: #92400e; border-radius: 9999px; padding: 0.15rem 0.6rem; font-size: 0.65rem; font-weight: 800; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <span class="nav-logo">Men Matar L Matar</span>
+    <div class="nav-links">
+      <a href="#" class="active">Accueil</a>
+      <a href="#">Deals</a>
+      <a href="#">Simulateur IA</a>
+      <a href="#">Destinations</a>
+    </div>
+  </nav>
+
+
+  <!-- ════════════════════════════════════════
+       OPTION A
+       Simulateur intégré dans le hero (côté droit)
+  ════════════════════════════════════════ -->
+  <p class="section-label">Option A — Simulateur dans le hero (remplace la carte flight board)</p>
+
+  <div class="hero-a">
+    <div class="hero-a-left">
+      <div class="pill">
+        <span class="pill-dot"></span>
+        Passeport marocain
+      </div>
+      <h1>Ton prochain départ commence ici.</h1>
+      <p>Découvre où tu peux partir, compare les prix en MAD et simule ton voyage avec l'IA avant de réserver.</p>
+      <div class="ctas">
+        <a class="btn-primary" href="#">Explorer les destinations</a>
+        <a class="btn-secondary" href="#">Voir les deals →</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="sim-card">
+        <div class="sim-card-header">
+          <div>
+            <p class="sim-card-title">Simulateur IA</p>
+            <p class="sim-card-subtitle">Planifie ton voyage</p>
+          </div>
+          <span class="sim-badge">Nouveau ✨</span>
+        </div>
+
+        <div class="sim-form">
+          <select class="sim-select">
+            <option>🌍 Destination — Istanbul, Bangkok…</option>
+            <option>Istanbul, Turquie</option>
+            <option>Bangkok, Thaïlande</option>
+            <option>Tachkent, Ouzbékistan</option>
+            <option>Dubaï, Émirats arabes unis</option>
+          </select>
+          <div class="sim-row">
+            <input class="sim-input" type="number" placeholder="💰 Budget MAD (optionnel)" />
+            <input class="sim-input" type="number" placeholder="📅 Durée (jours)" />
+          </div>
+          <select class="sim-select">
+            <option>👤 Type de voyageur</option>
+            <option>Solo</option>
+            <option>Couple</option>
+            <option>Famille</option>
+            <option>Amis</option>
+          </select>
+          <button class="sim-btn">⚡ Lancer la simulation gratuite</button>
+        </div>
+
+        <div class="sim-samples">
+          <div class="sim-sample">
+            <span class="sim-sample-city">Istanbul</span>
+            3j · 2 000 MAD
+          </div>
+          <div class="sim-sample">
+            <span class="sim-sample-city">Bangkok</span>
+            7j · 6 500 MAD
+          </div>
+          <div class="sim-sample">
+            <span class="sim-sample-city">Tachkent</span>
+            5j · 3 800 MAD
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Faux deals sous le hero A -->
+  <div style="background: rgba(0,0,0,.04); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="deals-section">
+      <div class="deals-header">
+        <h2>Deals du moment 🔥</h2>
+        <a href="#">Voir toutes les offres →</a>
+      </div>
+      <div class="deals-grid">
+        <div class="deal-card">
+          <p style="font-size:.68rem;font-weight:800;color:#059669">Prix repéré récemment</p>
+          <p class="deal-route">Casablanca → Istanbul</p>
+          <p class="deal-price">2 600 MAD</p>
+          <span class="deal-tag">Sans visa</span>
+        </div>
+        <div class="deal-card">
+          <p style="font-size:.68rem;font-weight:800;color:#059669">Prix repéré récemment</p>
+          <p class="deal-route">Marrakech → Dubaï</p>
+          <p class="deal-price">3 100 MAD</p>
+          <span class="deal-tag">eVisa</span>
+        </div>
+        <div class="deal-card">
+          <p style="font-size:.68rem;font-weight:800;color:#059669">Prix repéré récemment</p>
+          <p class="deal-route">Casablanca → Bangkok</p>
+          <p class="deal-price">4 200 MAD</p>
+          <span class="deal-tag">Sans visa</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <hr class="section-divider" />
+
+
+  <!-- ════════════════════════════════════════
+       OPTION B
+       Hero classique + banner simulateur entre hero et deals
+  ════════════════════════════════════════ -->
+  <p class="section-label">Option B — Hero classique + bannière simulateur avant les deals</p>
+
+  <!-- Hero classique (comme maintenant) -->
+  <div class="hero-a" style="padding-bottom: 2rem;">
+    <div class="hero-a-left">
+      <div class="pill">
+        <span class="pill-dot"></span>
+        Passeport marocain
+      </div>
+      <h1>Ton prochain départ commence par ce que ton passeport permet.</h1>
+      <p>Découvre où tu peux partir sans visa, compare les offres en MAD et lance une simulation IA.</p>
+      <div class="ctas">
+        <a class="btn-primary" href="#">Explorer les destinations</a>
+        <a class="btn-secondary" href="#">Simuler mon voyage</a>
+      </div>
+    </div>
+    <!-- Carte flight board actuelle (simplifiée) -->
+    <div style="background:var(--green);border-radius:1.25rem;padding:1.5rem;color:#f5f0e8;box-shadow:0 20px 60px rgba(13,74,46,.22);">
+      <p style="font-size:.6rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;opacity:.55">Flight board</p>
+      <p style="font-size:1.2rem;font-weight:900;margin:.3rem 0 1rem">Departures</p>
+      <div style="background:rgba(0,0,0,.2);border-radius:.75rem;padding:.9rem;font-size:.85rem;display:grid;gap:.6rem;">
+        <div style="display:grid;grid-template-columns:3.5rem 1fr 1fr;gap:.5rem;padding:.6rem;background:rgba(255,255,255,.08);border-radius:.5rem;">
+          <span style="font-weight:900;color:var(--accent)">IST</span><span style="font-weight:800">Istanbul</span><span style="opacity:.75">Sans visa</span>
+        </div>
+        <div style="display:grid;grid-template-columns:3.5rem 1fr 1fr;gap:.5rem;padding:.6rem;background:rgba(255,255,255,.08);border-radius:.5rem;">
+          <span style="font-weight:900;color:var(--accent)">BKK</span><span style="font-weight:800">Bangkok</span><span style="opacity:.75">Sans visa</span>
+        </div>
+        <div style="display:grid;grid-template-columns:3.5rem 1fr 1fr;gap:.5rem;padding:.6rem;background:rgba(255,255,255,.08);border-radius:.5rem;">
+          <span style="font-weight:900;color:var(--accent)">DXB</span><span style="font-weight:800">Dubaï</span><span style="opacity:.75">eVisa</span>
+        </div>
+      </div>
+      <div style="margin-top:1rem;border-top:1px solid rgba(255,255,255,.12);padding-top:.9rem;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <p style="font-size:.6rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;opacity:.55">IA voyage</p>
+          <p style="font-size:.95rem;font-weight:900;margin-top:.2rem">7j · 6 500 MAD · Bangkok</p>
+        </div>
+        <span style="background:var(--accent);border-radius:9999px;padding:.2rem .7rem;font-size:.68rem;font-weight:900">prêt</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bannière simulateur -->
+  <div class="sim-banner" style="padding-bottom: 0;">
+    <div class="sim-banner-inner">
+      <div>
+        <p class="sim-banner-label">✨ Simulateur IA — Gratuit</p>
+        <p class="sim-banner-title">Tu pars avec combien ?<br>On te construit le voyage.</p>
+        <p class="sim-banner-sub">Budget · Itinéraire · Tips visa · En 30 secondes.</p>
+      </div>
+      <div class="sim-banner-right">
+        <select class="sim-banner-input" style="cursor:pointer">
+          <option>🌍 Choisis une destination…</option>
+          <option>Istanbul</option>
+          <option>Bangkok</option>
+          <option>Tachkent</option>
+        </select>
+        <button class="sim-banner-btn">⚡ Lancer la simulation →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Faux deals sous bannière B -->
+  <div style="background: rgba(0,0,0,.04); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-top: 2rem;">
+    <div class="deals-section">
+      <div class="deals-header">
+        <h2>Deals du moment 🔥</h2>
+        <a href="#">Voir toutes les offres →</a>
+      </div>
+      <div class="deals-grid">
+        <div class="deal-card">
+          <p style="font-size:.68rem;font-weight:800;color:#059669">Prix repéré récemment</p>
+          <p class="deal-route">Casablanca → Istanbul</p>
+          <p class="deal-price">2 600 MAD</p>
+          <span class="deal-tag">Sans visa</span>
+        </div>
+        <div class="deal-card">
+          <p style="font-size:.68rem;font-weight:800;color:#059669">Prix repéré récemment</p>
+          <p class="deal-route">Marrakech → Dubaï</p>
+          <p class="deal-price">3 100 MAD</p>
+          <span class="deal-tag">eVisa</span>
+        </div>
+        <div class="deal-card">
+          <p style="font-size:.68rem;font-weight:800;color:#059669">Prix repéré récemment</p>
+          <p class="deal-route">Casablanca → Bangkok</p>
+          <p class="deal-price">4 200 MAD</p>
+          <span class="deal-tag">Sans visa</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:3rem"></div>
+
+</body>
+</html>
