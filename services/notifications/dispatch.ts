@@ -42,6 +42,14 @@ function casablancaDate(value: string | Date): string {
   }).format(new Date(value));
 }
 
+function countryCodeToFlag(code: string): string {
+  return code
+    .toUpperCase()
+    .replace(/./g, (char) =>
+      String.fromCodePoint(127397 + char.charCodeAt(0)),
+    );
+}
+
 export function buildDealPushMessage(
   deal: Deal,
   category: NotificationCategory,
@@ -52,6 +60,7 @@ export function buildDealPushMessage(
   const route =
     origin && destination ? `${origin} → ${destination}` : deal.title;
   const price = deal.priceMad.toLocaleString('fr-MA');
+  const destFlag = deal.countryCode ? countryCodeToFlag(deal.countryCode) : '';
 
   const title =
     category === 'flash'
@@ -67,11 +76,10 @@ export function buildDealPushMessage(
     sound: 'default',
     priority: 'high',
     title,
-    body: `${route} à ${price} MAD`,
+    body: `🇲🇦 ${route} ${destFlag} à ${price} MAD`,
     data: { dealId: deal.id, slug: deal.slug, category },
   };
 }
-
 export async function dispatchDealNotification(
   deal: Deal,
   trigger: 'create' | 'update' = 'update',
