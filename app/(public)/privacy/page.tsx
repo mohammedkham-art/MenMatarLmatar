@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   },
 };
 
-const lastUpdated = '09 mai 2026';
+const lastUpdated = '19 juin 2026';
 const contactEmail = 'contact@menmatarlmatar.ma';
 const siteUrl = 'https://menmatarlmatar.ma';
 
@@ -75,6 +75,18 @@ export default function PrivacyPage() {
               nos serveurs après traitement.
             </p>
 
+            <h3 className="mt-5 font-black">Notifications mobiles</h3>
+            <p className="mt-2 text-muted-foreground">
+              Si vous utilisez l&apos;application mobile et activez les notifications,
+              nous collectons un <span className="font-semibold text-foreground">token push</span> —
+              un identifiant anonyme généré par Expo et Firebase Cloud Messaging (FCM).
+              Ce token est stocké dans notre base de données Supabase et est utilisé
+              uniquement pour vous envoyer des notifications de bons plans de vols.
+              Il n&apos;est associé à aucune donnée personnelle (ni nom, ni e-mail,
+              ni numéro de téléphone). Vous pouvez le supprimer à tout moment en
+              désactivant les notifications dans les paramètres de l&apos;application.
+            </p>
+
             <h3 className="mt-5 font-black">Données non collectées</h3>
             <ul className="mt-2 list-disc space-y-1 pl-5 text-muted-foreground">
               <li>Nom, prénom, e-mail (aucun compte requis)</li>
@@ -127,7 +139,11 @@ export default function PrivacyPage() {
                   </tr>
                   <tr>
                     <td className="px-4 py-3 font-semibold">Supabase</td>
-                    <td className="px-4 py-3 text-muted-foreground">Base de données (deals, destinations)</td>
+                    <td className="px-4 py-3 text-muted-foreground">Base de données (deals, destinations, tokens push)</td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-3 font-semibold">Expo (expo.dev)</td>
+                    <td className="px-4 py-3 text-muted-foreground">Envoi de notifications push mobiles</td>
                   </tr>
                 </tbody>
               </table>
