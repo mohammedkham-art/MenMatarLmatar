@@ -109,9 +109,13 @@ export function DealCard({ deal }: DealCardProps) {
             <p className="text-sm font-semibold">
               {deal.fromAirport} - {deal.toAirport}
             </p>
-            {transitAirport && (
+            {transitAirport ? (
               <span className="inline-flex items-center rounded-full bg-accent/15 px-2.5 py-1 text-[11px] font-bold text-accent-foreground ring-1 ring-inset ring-accent/30 dark:bg-accent/25 dark:text-accent dark:ring-accent/50">
                 Transit via {transitAirport}
+              </span>
+            ) : (
+              <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-bold text-primary ring-1 ring-inset ring-primary/20">
+                ✈️ Vol direct
               </span>
             )}
           </div>
