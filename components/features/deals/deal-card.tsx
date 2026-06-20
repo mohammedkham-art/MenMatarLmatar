@@ -5,6 +5,12 @@ import { PriceFreshnessBadge } from '@/components/features/deals/price-freshness
 import type { Deal, DealVisaType } from '@/services/deals/get-deals';
 import { visaLabels } from '@/services/visa/visa-rules';
 
+function countryCodeToFlag(code: string): string {
+  return code.toUpperCase().replace(/./g, (char) =>
+    String.fromCodePoint(127397 + char.charCodeAt(0))
+  );
+}
+
 type DealCardProps = {
   deal: Deal;
 };
@@ -74,9 +80,7 @@ export function DealCard({ deal }: DealCardProps) {
               />
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                {deal.countryCode}
-              </p>
+              <span className="text-xl">{countryCodeToFlag(deal.countryCode)}</span>
               {visibleVisaType && (
                 <span
                   className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${visaBadgeStyles[visibleVisaType]}`}
