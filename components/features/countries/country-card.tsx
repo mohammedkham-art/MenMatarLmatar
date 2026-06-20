@@ -2,6 +2,12 @@ import { cn } from '@/lib/utils/cn';
 import type { Country, VisaType } from '@/services/countries/get-countries';
 import { visaLabels } from '@/services/visa/visa-rules';
 
+function countryCodeToFlag(code: string): string {
+  return code.toUpperCase().replace(/./g, (char) =>
+    String.fromCodePoint(127397 + char.charCodeAt(0))
+  );
+}
+
 type CountryCardProps = {
   country: Country;
   variant?: 'default' | 'compact';
@@ -33,9 +39,7 @@ export function CountryCard({
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold">{country.name}</h2>
-            <span className="rounded-md bg-muted px-2 py-1 text-xs font-semibold uppercase text-muted-foreground">
-              {country.code}
-            </span>
+            <span className="text-xl">{countryCodeToFlag(country.code)}</span>
           </div>
           <p className="mt-1 text-sm text-muted-foreground">{country.region}</p>
         </div>
