@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib/supabase/admin';
+
+import { getAdminDeal } from '@/services/deals/get-admin-deal';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -10,23 +11,16 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const supabase = createAdminSupabaseClient();
+    const deal = await getAdminDeal(id);
 
-    const { data, error } = await supabase
-      .from('deals')
-      .select('*')
-      .eq('id', id)
-      .eq('is_active', true)
-      .single();
-
-    if (error || !data) {
+    if (!deal || !deal.isActive) {
       return NextResponse.json(
         { error: 'Deal introuvable.' },
         { status: 404 },
       );
     }
 
-    return NextResponse.json({ deal: data });
+    return NextResponse.json({ deal });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Erreur serveur.' },
