@@ -34,7 +34,7 @@ export default function ContactPage() {
           {sent ? (
             <div className="rounded-xl border border-green-200 bg-green-50 px-6 py-8 text-center dark:border-green-900 dark:bg-green-950">
               <p className="text-lg font-bold text-green-800 dark:text-green-200">
-                Votre messagerie va s'ouvrir 📨
+                Votre messagerie va s&apos;ouvrir 📨
               </p>
               <p className="mt-2 text-sm text-green-700 dark:text-green-300">
                 Envoyez le message pré-rempli depuis votre application email.
