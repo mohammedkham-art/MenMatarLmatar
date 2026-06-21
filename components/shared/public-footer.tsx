@@ -82,6 +82,12 @@ export function PublicFooter() {
             >
               Politique de confidentialité
             </Link>
+            <Link
+              href="/contact"
+              className="text-xs text-muted-foreground hover:text-primary hover:underline"
+            >
+              Contact
+            </Link>
           </div>
         </div>
       </div>
