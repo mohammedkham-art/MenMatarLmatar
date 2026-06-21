@@ -177,7 +177,10 @@ export default async function HomePage() {
           </div>
 
           <div className="grid w-full max-w-[26.5rem] gap-5 justify-self-center lg:justify-self-end xl:max-w-[29rem]">
-            <div className="relative min-h-[27rem] overflow-hidden rounded-2xl border bg-primary p-5 text-primary-foreground shadow-2xl shadow-primary/20 sm:p-6">
+            <Link
+              href="/simulator"
+              className="relative block min-h-[27rem] cursor-pointer overflow-hidden rounded-2xl border bg-primary p-5 text-primary-foreground shadow-2xl shadow-primary/20 transition hover:-translate-y-1 hover:shadow-[0_28px_60px_-12px_hsl(var(--primary)/0.35)] sm:p-6"
+            >
               <div className="absolute right-[-4rem] top-[-5rem] h-48 w-48 rounded-full bg-accent/25 blur-3xl" />
               <div className="bg-emerald-300/12 absolute bottom-[-5rem] left-[-4rem] h-56 w-56 rounded-full blur-3xl" />
 
@@ -240,15 +243,12 @@ export default async function HomePage() {
                       {currentSimulation.city}
                     </p>
                   </div>
-                  <Link
-                    href="/simulator"
-                    className="rounded-full bg-accent px-3 py-1 text-xs font-black text-accent-foreground transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/10"
-                  >
+                  <span className="rounded-full bg-accent px-3 py-1 text-xs font-black text-accent-foreground">
                     prêt
-                  </Link>
+                  </span>
                 </div>
               </div>
-            </div>
+            </Link>
 
             <div className="grid gap-3 sm:grid-cols-3">
               {visaStats.map((stat) => (
