@@ -55,6 +55,12 @@ export function PublicHeader() {
           >
             Simulateur IA
           </Link>
+          <Link
+            href="/contact"
+            className="rounded-full px-3 py-2 text-white transition hover:bg-white/10"
+          >
+            Contact
+          </Link>
           <ThemeToggle />
         </nav>
       </div>
