@@ -89,9 +89,19 @@ export async function generateMetadata({
       .filter(Boolean)
       .join('. ') + '.';
 
+  const ogTitle = `${deal.fromCity} → ${deal.toCity} · ${deal.priceMad.toLocaleString('fr-MA')} MAD`;
+
   return {
     title: `${deal.fromCity} - ${deal.toCity} des ${deal.priceMad.toLocaleString('fr-MA')} MAD | Men Matar Lmatar`,
     description,
+    openGraph: {
+      title: ogTitle,
+      description,
+    },
+    twitter: {
+      title: ogTitle,
+      description,
+    },
   };
 }
 
