@@ -28,7 +28,7 @@ export function getPriceFreshness(
   }
 
   const diffHours = Math.floor(diffMinutes / 60);
-  if (diffHours < 24) {
+  if (diffHours < 48) {
     return {
       label: `Prix repéré il y a ${diffHours}h`,
       className: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
