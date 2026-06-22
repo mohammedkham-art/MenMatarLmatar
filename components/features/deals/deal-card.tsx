@@ -48,8 +48,18 @@ function getTransitAirport(tags: string[]) {
   return transitTag?.split(':')[1]?.trim().toUpperCase() ?? null;
 }
 
+const PRIORITY_BADGES = [
+  'Offre éclair',
+  'Le meilleur prix',
+  'Bon prix',
+  'Bon deal',
+] as const;
+
 function getVisibleTags(tags: string[]) {
-  return tags.filter((tag) => !tag.toLowerCase().startsWith('transit:'));
+  const nonTransit = tags.filter((tag) => !tag.toLowerCase().startsWith('transit:'));
+  const topBadge = PRIORITY_BADGES.find((badge) => nonTransit.includes(badge)) ?? null;
+  const otherTags = nonTransit.filter((tag) => !(PRIORITY_BADGES as readonly string[]).includes(tag));
+  return topBadge ? [topBadge, ...otherTags] : otherTags;
 }
 
 export function DealCard({ deal }: DealCardProps) {
