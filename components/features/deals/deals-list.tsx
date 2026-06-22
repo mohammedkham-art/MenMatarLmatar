@@ -78,12 +78,10 @@ export function DealsList({ deals }: DealsListProps) {
 
   const [draftFrom, setDraftFrom] = useState<MonthValue | null>(null);
   const [draftTo, setDraftTo] = useState<MonthValue | null>(null);
-  const [activeFrom, setActiveFrom] = useState<MonthValue | null>(null);
-  const [activeTo, setActiveTo] = useState<MonthValue | null>(null);
 
   const panelRef = useRef<HTMLDivElement>(null);
   const months = useMemo(getRollingMonths, []);
-  const hasDateFilter = Boolean(activeFrom && activeTo);
+  const hasDateFilter = Boolean(draftFrom);
 
   useEffect(() => {
     if (!showDatePanel) return;
@@ -97,10 +95,6 @@ export function DealsList({ deals }: DealsListProps) {
   }, [showDatePanel]);
 
   function openPanel() {
-    if (!showDatePanel) {
-      setDraftFrom(activeFrom);
-      setDraftTo(activeTo);
-    }
     setShowDatePanel((v) => !v);
   }
 
@@ -119,6 +113,7 @@ export function DealsList({ deals }: DealsListProps) {
       } else {
         setDraftTo(m);
       }
+      setShowDatePanel(false);
     }
   }
 
@@ -136,27 +131,17 @@ export function DealsList({ deals }: DealsListProps) {
     return 'none';
   }
 
-  function applyDates() {
-    if (!draftFrom || !draftTo) return;
-    setActiveFrom(draftFrom);
-    setActiveTo(draftTo);
-    setShowDatePanel(false);
-  }
-
   function resetDates() {
     setDraftFrom(null);
     setDraftTo(null);
-    setActiveFrom(null);
-    setActiveTo(null);
     setShowDatePanel(false);
   }
 
-  const badgeLabel =
-    activeFrom && activeTo
-      ? toMonthKey(activeFrom) === toMonthKey(activeTo)
-        ? formatMonthLabel(activeFrom)
-        : `${formatMonthLabel(activeFrom)} → ${formatMonthLabel(activeTo)}`
-      : 'Période de voyage';
+  const badgeLabel = draftFrom
+    ? draftTo && toMonthKey(draftFrom) !== toMonthKey(draftTo)
+      ? `${formatMonthLabel(draftFrom)} → ${formatMonthLabel(draftTo)}`
+      : formatMonthLabel(draftFrom)
+    : 'Période de voyage';
 
   const panelHint = !draftFrom
     ? 'Clique pour choisir le mois de début'
@@ -181,16 +166,18 @@ export function DealsList({ deals }: DealsListProps) {
         break;
     }
 
-    if (activeFrom && activeTo) {
-      result = result.filter((deal) => dealInMonthRange(deal, activeFrom, activeTo));
+    if (draftFrom) {
+      const effectiveTo = draftTo ?? draftFrom;
+      result = result.filter((deal) => dealInMonthRange(deal, draftFrom, effectiveTo));
     }
 
     return result;
-  }, [activeFilter, activeFrom, activeTo, deals]);
+  }, [activeFilter, draftFrom, draftTo, deals]);
 
-  const emptyMessage = hasDateFilter
-    ? 'Aucun deal sur cette période — reviens bientôt, on en ajoute régulièrement.'
-    : 'Aucune offre ne correspond à ce filtre.';
+  const emptyMessage =
+    hasDateFilter
+      ? 'Aucun deal sur cette période — reviens bientôt, on en ajoute régulièrement.'
+      : 'Aucune offre ne correspond à ce filtre.';
 
   return (
     <section className="mt-10">
@@ -232,7 +219,7 @@ export function DealsList({ deals }: DealsListProps) {
         </div>
 
         {showDatePanel && (
-          <div className="absolute left-0 top-full z-20 mt-2 w-[calc(100vw-3rem)] max-w-md rounded-2xl border bg-background p-5 shadow-xl">
+          <div className="absolute left-0 top-full z-50 mt-2 w-[calc(100vw-3rem)] max-w-md rounded-2xl border bg-background p-5 shadow-xl">
             <p className="text-sm font-black">Période de voyage</p>
             <p className="mb-4 mt-1 text-xs text-muted-foreground">{panelHint}</p>
             <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-4">
@@ -258,14 +245,6 @@ export function DealsList({ deals }: DealsListProps) {
                 );
               })}
             </div>
-            <button
-              type="button"
-              onClick={applyDates}
-              disabled={!draftFrom || !draftTo}
-              className="mt-4 w-full rounded-full bg-primary px-4 py-2.5 text-sm font-black text-primary-foreground transition hover:opacity-90 disabled:opacity-40"
-            >
-              Appliquer
-            </button>
           </div>
         )}
       </div>
