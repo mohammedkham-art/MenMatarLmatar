@@ -24,7 +24,7 @@ const filters: Array<{ label: string; value: DealFilter }> = [
   { label: 'Tous', value: 'all' },
   { label: 'Sans visa', value: 'visa_free' },
   { label: 'eVisa', value: 'evisa' },
-  { label: 'Visa à l'arrivée', value: 'on_arrival' },
+  { label: "Visa à l'arrivée", value: 'on_arrival' },
   { label: 'Moins de 2000 MAD', value: 'under_2000_mad' },
   { label: 'Meilleures offres', value: 'featured' },
 ];
