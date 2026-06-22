@@ -265,6 +265,10 @@ async function updateDeal(formData: FormData) {
       last_checked_at: new Date().toISOString(),
     };
     const supabase = createAdminSupabaseClient();
+
+    // Snapshot avant modification pour comparer ce qui change réellement
+    const prevDeal = await getAdminDeal(id);
+
     const { error } = await supabase.from('deals').update(payload).eq('id', id);
 
     if (error) {
@@ -274,17 +278,24 @@ async function updateDeal(formData: FormData) {
     revalidateDealPaths();
 
     if (payload.is_active) {
-      after(async () => {
-        try {
-          const deal = await getAdminDeal(id);
+      const priceChanged = payload.price_mad !== prevDeal?.priceMad;
+      const flashActivated = payload.is_flash && !prevDeal?.isFlash;
 
-          if (deal?.isActive) {
-            await dispatchDealNotification(deal, 'update');
+      // Notification uniquement si le prix a changé ou si le tag éclair vient d'être activé.
+      // Un changement de tags éditoriaux (meilleure offre, etc.) ou de dates seul → silence.
+      if (priceChanged || flashActivated) {
+        after(async () => {
+          try {
+            const deal = await getAdminDeal(id);
+
+            if (deal?.isActive) {
+              await dispatchDealNotification(deal, 'update');
+            }
+          } catch {
+            console.error('[deal-notify] update dispatch failed');
           }
-        } catch {
-          console.error('[deal-notify] update dispatch failed');
-        }
-      });
+        });
+      }
     }
   } catch (error) {
     redirectWithError(error);

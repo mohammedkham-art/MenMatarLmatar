@@ -66,7 +66,7 @@ export function buildDealPushMessage(
     category === 'flash'
       ? '⚡ Deal éclair'
       : category === 'new_deal'
-        ? '🆕 Nouveau deal !'
+        ? '🆕 Nouvelle offre !'
         : category === 'update'
           ? '💰 Prix mis à jour'
           : '✈️ Bon plan voyage';
