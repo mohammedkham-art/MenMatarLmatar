@@ -12,7 +12,10 @@ export function GET(req: NextRequest) {
   const country = searchParams.get('country') ?? '';
   const airline = searchParams.get('airline') ?? '';
 
-  const visaLabel = country ? `${country} · ${visa}` : visa;
+  const countryLower = country.toLowerCase();
+  const flagUrl = countryLower
+    ? `https://flagcdn.com/32x24/${countryLower}.png`
+    : null;
 
   const formattedPrice = Number(rawPrice).toLocaleString('fr-MA');
 
@@ -58,7 +61,7 @@ export function GET(req: NextRequest) {
         </div>
 
         {/* Logo */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex' }}>
           <span
             style={{
               color: '#ffffff',
@@ -68,18 +71,6 @@ export function GET(req: NextRequest) {
             }}
           >
             MEN MATAR L MATAR
-          </span>
-          <span
-            dir="rtl"
-            style={{
-              color: 'rgba(255,255,255,0.75)',
-              direction: 'rtl',
-              unicodeBidi: 'embed',
-              fontSize: 18,
-              marginTop: 6,
-            }}
-          >
-            نسافر بذكاء
           </span>
         </div>
 
@@ -122,9 +113,15 @@ export function GET(req: NextRequest) {
             alignItems: 'flex-end',
           }}
         >
-          <span style={{ color: '#ffffff', fontSize: 24, fontWeight: 600 }}>
-            {visaLabel}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {flagUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={flagUrl} width={32} height={24} alt="" />
+            )}
+            <span style={{ color: '#ffffff', fontSize: 24, fontWeight: 600 }}>
+              {visa}
+            </span>
+          </div>
           <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 24, fontWeight: 600 }}>
             {airline}
           </span>
