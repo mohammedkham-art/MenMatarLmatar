@@ -89,27 +89,9 @@ export async function generateMetadata({
       .filter(Boolean)
       .join('. ') + '.';
 
-  const baseUrl = 'https://menmatarlmatar.ma';
-
-  const ogUrl = new URL('/api/og', baseUrl);
-  ogUrl.searchParams.set('from', deal.fromCity);
-  ogUrl.searchParams.set('to', deal.toCity);
-  ogUrl.searchParams.set('price', deal.priceMad.toString());
-  ogUrl.searchParams.set(
-    'visa',
-    deal.visaType ? visaLabels[deal.visaType] : '',
-  );
-  if (deal.countryCode) {
-    ogUrl.searchParams.set('country', deal.countryCode.toUpperCase());
-  }
-  ogUrl.searchParams.set('airline', airlineName ?? '');
-
   return {
     title: `${deal.fromCity} - ${deal.toCity} des ${deal.priceMad.toLocaleString('fr-MA')} MAD | Men Matar Lmatar`,
     description,
-    openGraph: {
-      images: [{ url: ogUrl.toString(), width: 1200, height: 630 }],
-    },
   };
 }
 
