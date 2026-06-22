@@ -1,4 +1,10 @@
+import type { Metadata } from 'next';
 import { CountriesList } from '@/components/features/countries/countries-list';
+
+export const metadata: Metadata = {
+  description:
+    "88 destinations accessibles avec le passeport marocain : sans visa, eVisa, visa à l'arrivée. Infos par pays.",
+};
 import { PublicFooter } from '@/components/shared/public-footer';
 import { PublicHeader } from '@/components/shared/public-header';
 import { fallbackCountries } from '@/services/countries/fallback-countries';

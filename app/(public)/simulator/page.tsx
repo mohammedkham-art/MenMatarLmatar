@@ -1,5 +1,11 @@
 export const dynamic = 'force-dynamic';
+import type { Metadata } from 'next';
 import { TripSimulator } from '@/components/features/simulator/trip-simulator';
+
+export const metadata: Metadata = {
+  description:
+    'Simule ton voyage en quelques secondes : budget en MAD, programme jour par jour, conseils pratiques. Passeport marocain.',
+};
 import { PublicFooter } from '@/components/shared/public-footer';
 import { PublicHeader } from '@/components/shared/public-header';
 import { fallbackDestinations } from '@/services/destinations/fallback-destinations';

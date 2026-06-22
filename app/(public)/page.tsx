@@ -1,5 +1,11 @@
 export const dynamic = 'force-dynamic';
+import type { Metadata } from 'next';
 import Image from 'next/image';
+
+export const metadata: Metadata = {
+  description:
+    'Bons plans vols depuis le Maroc, infos visa par destination et simulateur IA. Tout pour préparer ton départ.',
+};
 import Link from 'next/link';
 
 import { DealCard } from '@/components/features/deals/deal-card';

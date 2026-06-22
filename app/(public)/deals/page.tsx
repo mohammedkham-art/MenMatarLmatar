@@ -1,5 +1,11 @@
 export const dynamic = 'force-dynamic';
+import type { Metadata } from 'next';
 import { DealsList } from '@/components/features/deals/deals-list';
+
+export const metadata: Metadata = {
+  description:
+    'Sélection de vols pas chers depuis le Maroc, mis à jour régulièrement. Prix en MAD, conditions visa incluses.',
+};
 import { PublicFooter } from '@/components/shared/public-footer';
 import { PublicHeader } from '@/components/shared/public-header';
 import { getDeals } from '@/services/deals/get-deals';

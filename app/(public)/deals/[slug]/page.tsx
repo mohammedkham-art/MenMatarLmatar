@@ -77,7 +77,20 @@ export async function generateMetadata({
 
   return {
     title: `${deal.fromCity} - ${deal.toCity} des ${deal.priceMad.toLocaleString('fr-MA')} MAD | Men Matar Lmatar`,
-    description: `${deal.title} avec prix, bagages inclus et conditions visa pour les voyageurs marocains.`,
+    description: (() => {
+      const transitAirport = getTransitAirport(deal.tags);
+      const flightType = transitAirport ? 'avec escale' : 'direct';
+      const airline = deal.airlineDetails?.name ?? deal.airline;
+      const date = deal.departureDate ? formatDate(deal.departureDate) : null;
+      return [
+        `${deal.fromCity} - ${deal.toCity} à partir de ${deal.priceMad.toLocaleString('fr-MA')} MAD`,
+        airline ? `avec ${airline}` : null,
+        `Vol ${flightType}`,
+        date ? `départ ${date}` : null,
+      ]
+        .filter(Boolean)
+        .join('. ') + '.';
+    })(),
   };
 }
 
