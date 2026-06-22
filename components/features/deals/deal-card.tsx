@@ -57,9 +57,8 @@ const PRIORITY_BADGES = [
 
 function getVisibleTags(tags: string[]) {
   const nonTransit = tags.filter((tag) => !tag.toLowerCase().startsWith('transit:'));
-  const topBadge = PRIORITY_BADGES.find((badge) => nonTransit.includes(badge)) ?? null;
-  const otherTags = nonTransit.filter((tag) => !(PRIORITY_BADGES as readonly string[]).includes(tag));
-  return topBadge ? [topBadge, ...otherTags] : otherTags;
+  const topBadge = PRIORITY_BADGES.find((badge) => nonTransit.includes(badge));
+  return topBadge ? [topBadge] : [];
 }
 
 export function DealCard({ deal }: DealCardProps) {
