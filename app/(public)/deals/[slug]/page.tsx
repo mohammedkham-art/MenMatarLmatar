@@ -63,6 +63,12 @@ function getVisibleTags(tags: string[]) {
   return tags.filter((tag) => !tag.toLowerCase().startsWith('transit:'));
 }
 
+function countryCodeToFlag(code: string): string {
+  return code
+    .toUpperCase()
+    .replace(/./g, (char) => String.fromCodePoint(127397 + char.charCodeAt(0)));
+}
+
 export async function generateMetadata({
   params,
 }: DealPageProps): Promise<Metadata> {
@@ -75,22 +81,44 @@ export async function generateMetadata({
     };
   }
 
+  const transitAirport = getTransitAirport(deal.tags);
+  const flightType = transitAirport ? 'avec escale' : 'direct';
+  const airlineName = deal.airlineDetails?.name ?? deal.airline;
+  const date = deal.departureDate ? formatDate(deal.departureDate) : null;
+  const description =
+    [
+      `${deal.fromCity} - ${deal.toCity} à partir de ${deal.priceMad.toLocaleString('fr-MA')} MAD`,
+      airlineName ? `avec ${airlineName}` : null,
+      `Vol ${flightType}`,
+      date ? `départ ${date}` : null,
+    ]
+      .filter(Boolean)
+      .join('. ') + '.';
+
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'https://menmatarlmatar.ma';
+
+  const ogUrl = new URL('/api/og', baseUrl);
+  ogUrl.searchParams.set('from', deal.fromCity);
+  ogUrl.searchParams.set('to', deal.toCity);
+  ogUrl.searchParams.set('price', deal.priceMad.toString());
+  ogUrl.searchParams.set(
+    'visa',
+    deal.visaType ? visaLabels[deal.visaType] : '',
+  );
+  ogUrl.searchParams.set(
+    'flag',
+    deal.countryCode ? countryCodeToFlag(deal.countryCode) : '',
+  );
+  ogUrl.searchParams.set('airline', airlineName ?? '');
+
   return {
     title: `${deal.fromCity} - ${deal.toCity} des ${deal.priceMad.toLocaleString('fr-MA')} MAD | Men Matar Lmatar`,
-    description: (() => {
-      const transitAirport = getTransitAirport(deal.tags);
-      const flightType = transitAirport ? 'avec escale' : 'direct';
-      const airline = deal.airlineDetails?.name ?? deal.airline;
-      const date = deal.departureDate ? formatDate(deal.departureDate) : null;
-      return [
-        `${deal.fromCity} - ${deal.toCity} à partir de ${deal.priceMad.toLocaleString('fr-MA')} MAD`,
-        airline ? `avec ${airline}` : null,
-        `Vol ${flightType}`,
-        date ? `départ ${date}` : null,
-      ]
-        .filter(Boolean)
-        .join('. ') + '.';
-    })(),
+    description,
+    openGraph: {
+      images: [{ url: ogUrl.toString(), width: 1200, height: 630 }],
+    },
   };
 }
 
