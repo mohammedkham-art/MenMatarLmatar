@@ -89,9 +89,7 @@ export async function generateMetadata({
       .filter(Boolean)
       .join('. ') + '.';
 
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : 'https://menmatarlmatar.ma';
+  const baseUrl = 'https://menmatarlmatar.ma';
 
   const ogUrl = new URL('/api/og', baseUrl);
   ogUrl.searchParams.set('from', deal.fromCity);
