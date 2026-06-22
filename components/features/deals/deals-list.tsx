@@ -18,23 +18,39 @@ type DealFilter =
   | 'under_2000_mad'
   | 'featured';
 
+type MonthValue = { year: number; month: number }; // month 1-based
+
 const filters: Array<{ label: string; value: DealFilter }> = [
   { label: 'Tous', value: 'all' },
   { label: 'Sans visa', value: 'visa_free' },
   { label: 'eVisa', value: 'evisa' },
-  { label: 'Visa à l’arrivée', value: 'on_arrival' },
+  { label: 'Visa à l'arrivée', value: 'on_arrival' },
   { label: 'Moins de 2000 MAD', value: 'under_2000_mad' },
   { label: 'Meilleures offres', value: 'featured' },
 ];
 
-const shortDateFmt = new Intl.DateTimeFormat('fr-FR', {
-  day: '2-digit',
-  month: 'short',
-});
+function toMonthKey(m: MonthValue) {
+  return m.year * 100 + m.month;
+}
 
-function formatShortDate(dateStr: string) {
-  const d = new Date(dateStr);
-  return Number.isNaN(d.getTime()) ? dateStr : shortDateFmt.format(d);
+function formatMonthLabel(m: MonthValue) {
+  return new Intl.DateTimeFormat('fr-FR', { month: 'short', year: 'numeric' })
+    .format(new Date(m.year, m.month - 1, 1))
+    .replace('.', '');
+}
+
+function formatMonthName(m: MonthValue) {
+  return new Intl.DateTimeFormat('fr-FR', { month: 'short' })
+    .format(new Date(m.year, m.month - 1, 1))
+    .replace('.', '');
+}
+
+function getRollingMonths(): MonthValue[] {
+  const now = new Date();
+  return Array.from({ length: 12 }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+    return { year: d.getFullYear(), month: d.getMonth() + 1 };
+  });
 }
 
 function matchesVisaFilter(deal: Deal, activeFilter: DealFilter) {
@@ -49,27 +65,26 @@ function matchesVisaFilter(deal: Deal, activeFilter: DealFilter) {
   return deal.visaType === activeFilter;
 }
 
-function matchesDateRange(deal: Deal, from: string, to: string) {
+function dealInMonthRange(deal: Deal, from: MonthValue, to: MonthValue) {
   if (!deal.departureDate) return false;
-  const dep = new Date(deal.departureDate);
-  const fromDate = new Date(from);
-  const toDate = new Date(to);
-  toDate.setHours(23, 59, 59);
-  return dep >= fromDate && dep <= toDate;
+  const d = new Date(deal.departureDate);
+  const key = d.getFullYear() * 100 + (d.getMonth() + 1);
+  return key >= toMonthKey(from) && key <= toMonthKey(to);
 }
 
 export function DealsList({ deals }: DealsListProps) {
   const [activeFilter, setActiveFilter] = useState<DealFilter>('all');
   const [showDatePanel, setShowDatePanel] = useState(false);
-  const [dateFrom, setDateFrom] = useState('');
-  const [dateTo, setDateTo] = useState('');
-  const [activeDateFrom, setActiveDateFrom] = useState('');
-  const [activeDateTo, setActiveDateTo] = useState('');
+
+  const [draftFrom, setDraftFrom] = useState<MonthValue | null>(null);
+  const [draftTo, setDraftTo] = useState<MonthValue | null>(null);
+  const [activeFrom, setActiveFrom] = useState<MonthValue | null>(null);
+  const [activeTo, setActiveTo] = useState<MonthValue | null>(null);
+
   const panelRef = useRef<HTMLDivElement>(null);
+  const months = useMemo(getRollingMonths, []);
+  const hasDateFilter = Boolean(activeFrom && activeTo);
 
-  const hasDateFilter = Boolean(activeDateFrom && activeDateTo);
-
-  // Close panel on outside click
   useEffect(() => {
     if (!showDatePanel) return;
     function handleClick(e: MouseEvent) {
@@ -80,6 +95,74 @@ export function DealsList({ deals }: DealsListProps) {
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, [showDatePanel]);
+
+  function openPanel() {
+    if (!showDatePanel) {
+      setDraftFrom(activeFrom);
+      setDraftTo(activeTo);
+    }
+    setShowDatePanel((v) => !v);
+  }
+
+  function handleMonthClick(m: MonthValue) {
+    if (!draftFrom || (draftFrom && draftTo)) {
+      setDraftFrom(m);
+      setDraftTo(null);
+    } else {
+      const key = toMonthKey(m);
+      const fromKey = toMonthKey(draftFrom);
+      if (key === fromKey) {
+        setDraftTo(m);
+      } else if (key < fromKey) {
+        setDraftFrom(m);
+        setDraftTo(draftFrom);
+      } else {
+        setDraftTo(m);
+      }
+    }
+  }
+
+  function getMonthState(
+    m: MonthValue,
+  ): 'start' | 'end' | 'in-range' | 'none' {
+    if (!draftFrom) return 'none';
+    const key = toMonthKey(m);
+    const fromKey = toMonthKey(draftFrom);
+    const toKey = draftTo ? toMonthKey(draftTo) : fromKey;
+    if (key === fromKey && fromKey === toKey) return 'start';
+    if (key === fromKey) return 'start';
+    if (key === toKey) return 'end';
+    if (key > fromKey && key < toKey) return 'in-range';
+    return 'none';
+  }
+
+  function applyDates() {
+    if (!draftFrom || !draftTo) return;
+    setActiveFrom(draftFrom);
+    setActiveTo(draftTo);
+    setShowDatePanel(false);
+  }
+
+  function resetDates() {
+    setDraftFrom(null);
+    setDraftTo(null);
+    setActiveFrom(null);
+    setActiveTo(null);
+    setShowDatePanel(false);
+  }
+
+  const badgeLabel =
+    activeFrom && activeTo
+      ? toMonthKey(activeFrom) === toMonthKey(activeTo)
+        ? formatMonthLabel(activeFrom)
+        : `${formatMonthLabel(activeFrom)} → ${formatMonthLabel(activeTo)}`
+      : 'Période de voyage';
+
+  const panelHint = !draftFrom
+    ? 'Clique pour choisir le mois de début'
+    : !draftTo
+      ? 'Clique pour choisir le mois de fin'
+      : 'Clique un mois pour recommencer';
 
   const filteredDeals = useMemo(() => {
     let result = deals;
@@ -98,29 +181,12 @@ export function DealsList({ deals }: DealsListProps) {
         break;
     }
 
-    if (activeDateFrom && activeDateTo) {
-      result = result.filter((deal) =>
-        matchesDateRange(deal, activeDateFrom, activeDateTo),
-      );
+    if (activeFrom && activeTo) {
+      result = result.filter((deal) => dealInMonthRange(deal, activeFrom, activeTo));
     }
 
     return result;
-  }, [activeFilter, activeDateFrom, activeDateTo, deals]);
-
-  function applyDates() {
-    if (!dateFrom || !dateTo) return;
-    setActiveDateFrom(dateFrom);
-    setActiveDateTo(dateTo);
-    setShowDatePanel(false);
-  }
-
-  function resetDates() {
-    setDateFrom('');
-    setDateTo('');
-    setActiveDateFrom('');
-    setActiveDateTo('');
-    setShowDatePanel(false);
-  }
+  }, [activeFilter, activeFrom, activeTo, deals]);
 
   const emptyMessage = hasDateFilter
     ? 'Aucun deal sur cette période — reviens bientôt, on en ajoute régulièrement.'
@@ -150,12 +216,12 @@ export function DealsList({ deals }: DealsListProps) {
         })}
       </div>
 
-      {/* Filtre dates de congés */}
+      {/* Filtre période de voyage */}
       <div className="relative mt-4" ref={panelRef}>
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            onClick={() => setShowDatePanel((v) => !v)}
+            onClick={openPanel}
             className={cn(
               'inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition',
               hasDateFilter
@@ -174,9 +240,7 @@ export function DealsList({ deals }: DealsListProps) {
               <rect x="3" y="4" width="18" height="18" rx="2" />
               <path d="M16 2v4M8 2v4M3 10h18" />
             </svg>
-            {hasDateFilter
-              ? `${formatShortDate(activeDateFrom)} → ${formatShortDate(activeDateTo)}`
-              : 'Mes dates de congés'}
+            {badgeLabel}
           </button>
 
           {hasDateFilter && (
@@ -192,50 +256,36 @@ export function DealsList({ deals }: DealsListProps) {
         </div>
 
         {showDatePanel && (
-          <div className="absolute left-0 top-full z-20 mt-2 w-[calc(100vw-3rem)] max-w-sm rounded-2xl border bg-background p-5 shadow-xl">
-            <p className="mb-4 text-sm font-black">
-              Sélectionne ta période de congés
-            </p>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="grid gap-1.5">
-                <label
-                  className="text-xs font-bold text-muted-foreground"
-                  htmlFor="date-from"
-                >
-                  Du
-                </label>
-                <input
-                  id="date-from"
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => {
-                    setDateFrom(e.target.value);
-                    if (dateTo && e.target.value > dateTo) setDateTo('');
-                  }}
-                  className="rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none ring-primary transition focus:ring-2"
-                />
-              </div>
-              <div className="grid gap-1.5">
-                <label
-                  className="text-xs font-bold text-muted-foreground"
-                  htmlFor="date-to"
-                >
-                  Au
-                </label>
-                <input
-                  id="date-to"
-                  type="date"
-                  value={dateTo}
-                  min={dateFrom || undefined}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  className="rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none ring-primary transition focus:ring-2"
-                />
-              </div>
+          <div className="absolute left-0 top-full z-20 mt-2 w-[calc(100vw-3rem)] max-w-md rounded-2xl border bg-background p-5 shadow-xl">
+            <p className="text-sm font-black">Période de voyage</p>
+            <p className="mb-4 mt-1 text-xs text-muted-foreground">{panelHint}</p>
+            <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-4">
+              {months.map((m) => {
+                const state = getMonthState(m);
+                return (
+                  <button
+                    key={toMonthKey(m)}
+                    type="button"
+                    onClick={() => handleMonthClick(m)}
+                    className={cn(
+                      'rounded-xl px-2 py-2.5 text-center text-sm transition',
+                      state === 'start' || state === 'end'
+                        ? 'bg-primary font-black text-primary-foreground'
+                        : state === 'in-range'
+                          ? 'bg-primary/15 font-semibold text-primary'
+                          : 'font-semibold text-foreground hover:bg-muted',
+                    )}
+                  >
+                    <span className="block capitalize">{formatMonthName(m)}</span>
+                    <span className="block text-[11px] opacity-60">{m.year}</span>
+                  </button>
+                );
+              })}
             </div>
             <button
               type="button"
               onClick={applyDates}
-              disabled={!dateFrom || !dateTo}
+              disabled={!draftFrom || !draftTo}
               className="mt-4 w-full rounded-full bg-primary px-4 py-2.5 text-sm font-black text-primary-foreground transition hover:opacity-90 disabled:opacity-40"
             >
               Appliquer
