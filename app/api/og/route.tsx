@@ -9,13 +9,7 @@ export function GET(req: NextRequest) {
   const to = searchParams.get('to') ?? '';
   const rawPrice = searchParams.get('price') ?? '';
   const visa = searchParams.get('visa') ?? '';
-  const country = searchParams.get('country') ?? '';
   const airline = searchParams.get('airline') ?? '';
-
-  const countryLower = country.toLowerCase();
-  const flagUrl = countryLower
-    ? `https://flagcdn.com/32x24/${countryLower}.png`
-    : null;
 
   const formattedPrice = Number(rawPrice).toLocaleString('fr-MA');
 
@@ -113,15 +107,9 @@ export function GET(req: NextRequest) {
             alignItems: 'flex-end',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            {flagUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={flagUrl} width={32} height={24} alt="" />
-            )}
-            <span style={{ color: '#ffffff', fontSize: 24, fontWeight: 600 }}>
-              {visa}
-            </span>
-          </div>
+          <span style={{ color: '#ffffff', fontSize: 24, fontWeight: 600 }}>
+            {visa}
+          </span>
           <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 24, fontWeight: 600 }}>
             {airline}
           </span>
