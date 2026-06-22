@@ -63,12 +63,6 @@ function getVisibleTags(tags: string[]) {
   return tags.filter((tag) => !tag.toLowerCase().startsWith('transit:'));
 }
 
-function countryCodeToFlag(code: string): string {
-  return code
-    .toUpperCase()
-    .replace(/./g, (char) => String.fromCodePoint(127397 + char.charCodeAt(0)));
-}
-
 export async function generateMetadata({
   params,
 }: DealPageProps): Promise<Metadata> {
@@ -107,10 +101,9 @@ export async function generateMetadata({
     'visa',
     deal.visaType ? visaLabels[deal.visaType] : '',
   );
-  ogUrl.searchParams.set(
-    'flag',
-    deal.countryCode ? countryCodeToFlag(deal.countryCode) : '',
-  );
+  if (deal.countryCode) {
+    ogUrl.searchParams.set('country', deal.countryCode.toUpperCase());
+  }
   ogUrl.searchParams.set('airline', airlineName ?? '');
 
   return {

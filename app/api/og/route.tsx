@@ -9,8 +9,10 @@ export function GET(req: NextRequest) {
   const to = searchParams.get('to') ?? '';
   const rawPrice = searchParams.get('price') ?? '';
   const visa = searchParams.get('visa') ?? '';
-  const flag = searchParams.get('flag') ?? '';
+  const country = searchParams.get('country') ?? '';
   const airline = searchParams.get('airline') ?? '';
+
+  const visaLabel = country ? `${country} · ${visa}` : visa;
 
   const formattedPrice = Number(rawPrice).toLocaleString('fr-MA');
 
@@ -68,8 +70,11 @@ export function GET(req: NextRequest) {
             MEN MATAR L MATAR
           </span>
           <span
+            dir="rtl"
             style={{
               color: 'rgba(255,255,255,0.75)',
+              direction: 'rtl',
+              unicodeBidi: 'embed',
               fontSize: 18,
               marginTop: 6,
             }}
@@ -118,7 +123,7 @@ export function GET(req: NextRequest) {
           }}
         >
           <span style={{ color: '#ffffff', fontSize: 24, fontWeight: 600 }}>
-            {flag} {visa}
+            {visaLabel}
           </span>
           <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 24, fontWeight: 600 }}>
             {airline}
