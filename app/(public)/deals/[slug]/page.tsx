@@ -8,6 +8,7 @@ import { PublicHeader } from '@/components/shared/public-header';
 import { Button } from '@/components/ui/button';
 import airports from '@/data/airports.json';
 import { cn } from '@/lib/utils/cn';
+import { normalizeText } from '@/lib/normalize-text';
 import { getDealBySlug } from '@/services/deals/get-deal-by-slug';
 import type { DealVisaType } from '@/services/deals/get-deals';
 import { visaLabels } from '@/services/visa/visa-rules';
@@ -183,7 +184,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
             <div className="mt-6 grid grid-cols-2 gap-3 text-sm">
               <div className="rounded-xl bg-muted p-4">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-muted-foreground">
-                  Depart
+                  Départ
                 </p>
                 <p className="mt-2 font-black">
                   {formatDate(deal.departureDate)}
@@ -250,7 +251,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
               </div>
               <div className="rounded-xl bg-muted p-4">
                 <dt className="text-xs font-black uppercase tracking-[0.16em] text-muted-foreground">
-                  Depart
+                  Départ
                 </dt>
                 <dd className="mt-2 text-base font-black">
                   {formatDate(deal.departureDate)}
@@ -332,7 +333,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
                     key={tag}
                     className="rounded-full bg-accent/15 px-3 py-1 text-xs font-black text-accent-foreground ring-1 ring-inset ring-accent/25"
                   >
-                    {tag}
+                    {normalizeText(tag)}
                   </span>
                 ))}
               </div>
@@ -341,7 +342,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
 
           <section className="rounded-2xl border bg-muted p-5 shadow-sm sm:p-6">
             <h2 className="text-xl font-black tracking-tight">
-              Avant de reserver
+              Avant de réserver
             </h2>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">
               Verifie toujours les horaires, les bagages, les conditions visa et

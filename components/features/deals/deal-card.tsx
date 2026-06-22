@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import { BaggageIcons } from '@/components/features/deals/baggage-icons';
 import { PriceFreshnessBadge } from '@/components/features/deals/price-freshness-badge';
+import { normalizeText } from '@/lib/normalize-text';
 import type { Deal, DealVisaType } from '@/services/deals/get-deals';
 import { visaLabels } from '@/services/visa/visa-rules';
 
@@ -148,7 +149,7 @@ export function DealCard({ deal }: DealCardProps) {
           )}
           {departureDate && (
             <p>
-              <span className="font-semibold text-foreground">Depart :</span>{' '}
+              <span className="font-semibold text-foreground">Départ :</span>{' '}
               {departureDate}
             </p>
           )}
@@ -171,7 +172,7 @@ export function DealCard({ deal }: DealCardProps) {
                 key={tag}
                 className="rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent-foreground dark:bg-accent/25 dark:text-accent"
               >
-                {tag}
+                {normalizeText(tag)}
               </span>
             ))}
           </div>
