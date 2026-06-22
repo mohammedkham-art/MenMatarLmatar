@@ -97,8 +97,17 @@ export async function generateMetadata({
     openGraph: {
       title: ogTitle,
       description,
+      images: [
+        {
+          url: '/images/og-men-matar-lmatar.png',
+          width: 1200,
+          height: 630,
+          alt: 'Men Matar L Matar - bons plans voyage depuis le Maroc',
+        },
+      ],
     },
     twitter: {
+      card: 'summary_large_image',
       title: ogTitle,
       description,
     },
