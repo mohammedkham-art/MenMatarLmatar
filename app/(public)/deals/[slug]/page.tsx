@@ -131,6 +131,13 @@ export default async function DealDetailPage({ params }: DealPageProps) {
   const visaLabel = deal.visaType ? visaLabels[deal.visaType] : 'A verifier';
   const destinationCountry = airportsByCode.get(deal.toAirport) ?? '';
   const normalizedVisaType = normalizeVisaType(deal.visaType as DealVisaType);
+  const countryFlag = deal.countryCode
+    ? deal.countryCode
+        .toUpperCase()
+        .split('')
+        .map((c) => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65))
+        .join('')
+    : '';
 
   return (
     <main className="min-h-screen">
@@ -156,7 +163,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
               </h1>
               <span
                 className={cn(
-                  'inline-flex shrink-0 rounded-full px-4 py-2 text-sm font-black ring-1 ring-inset',
+                  'inline-flex shrink-0 -translate-y-2 rounded-full px-4 py-2 text-sm font-black ring-1 ring-inset',
                   deal.visaType
                     ? visaBadgeStyles[deal.visaType]
                     : 'bg-amber-50 text-amber-700 ring-amber-200',
@@ -192,6 +199,11 @@ export default async function DealDetailPage({ params }: DealPageProps) {
                   <p className="mt-1 text-sm font-semibold text-primary-foreground/75">
                     {deal.toCity}
                   </p>
+                  {destinationCountry && (
+                    <p className="mt-1 text-xs text-primary-foreground/60">
+                      {countryFlag} {destinationCountry}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
