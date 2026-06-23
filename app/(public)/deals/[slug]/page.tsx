@@ -131,13 +131,10 @@ export default async function DealDetailPage({ params }: DealPageProps) {
   const visaLabel = deal.visaType ? visaLabels[deal.visaType] : 'A verifier';
   const destinationCountry = airportsByCode.get(deal.toAirport) ?? '';
   const normalizedVisaType = normalizeVisaType(deal.visaType as DealVisaType);
-  const countryFlag = deal.countryCode
-    ? deal.countryCode
-        .toUpperCase()
-        .split('')
-        .map((c) => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65))
-        .join('')
-    : '';
+  const regionNames = new Intl.DisplayNames(['fr'], { type: 'region' });
+  const destinationCountryName = deal.countryCode
+    ? (regionNames.of(deal.countryCode.toUpperCase()) ?? destinationCountry)
+    : destinationCountry;
 
   return (
     <main className="min-h-screen">
@@ -157,25 +154,36 @@ export default async function DealDetailPage({ params }: DealPageProps) {
               Retour aux deals
             </a>
 
-            <div className="mt-6 flex flex-wrap items-baseline gap-4">
-              <h1 className="text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                {deal.fromCity} - {deal.toCity}
-              </h1>
-              <span
-                className={cn(
-                  'inline-flex shrink-0 -translate-y-2 rounded-full px-4 py-2 text-sm font-black ring-1 ring-inset',
-                  deal.visaType
-                    ? visaBadgeStyles[deal.visaType]
-                    : 'bg-amber-50 text-amber-700 ring-amber-200',
-                )}
-              >
-                {visaLabel}
+            <h1 className="mt-6 text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              {deal.fromCity} -{' '}
+              <span className="relative inline-block">
+                {deal.toCity}
+                <span
+                  className={cn(
+                    'absolute left-full top-1 ml-3 inline-flex shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium ring-1 ring-inset',
+                    deal.visaType
+                      ? visaBadgeStyles[deal.visaType]
+                      : 'bg-amber-50 text-amber-700 ring-amber-200',
+                  )}
+                >
+                  {visaLabel}
+                </span>
               </span>
-            </div>
+            </h1>
 
             <div className="mt-8 overflow-hidden rounded-2xl border bg-primary p-4 text-primary-foreground shadow-2xl shadow-primary/20 sm:p-5">
               <div className="grid items-center gap-4 sm:grid-cols-[1fr_auto_1fr]">
                 <div className="rounded-xl border border-white/15 bg-white/[0.08] p-4">
+                  <p className="mb-2 flex items-center gap-1.5 text-xs text-primary-foreground/70">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="https://flagcdn.com/20x15/ma.png"
+                      width={20}
+                      height={15}
+                      alt=""
+                    />
+                    Maroc
+                  </p>
                   <p className="text-3xl font-black">{deal.fromAirport}</p>
                   <p className="mt-1 text-sm font-semibold text-primary-foreground/75">
                     {deal.fromCity}
@@ -195,15 +203,22 @@ export default async function DealDetailPage({ params }: DealPageProps) {
                 </div>
 
                 <div className="rounded-xl border border-white/15 bg-white/[0.08] p-4">
+                  {deal.countryCode && (
+                    <p className="mb-2 flex items-center gap-1.5 text-xs text-primary-foreground/70">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`https://flagcdn.com/20x15/${deal.countryCode.toLowerCase()}.png`}
+                        width={20}
+                        height={15}
+                        alt=""
+                      />
+                      {destinationCountryName}
+                    </p>
+                  )}
                   <p className="text-3xl font-black">{deal.toAirport}</p>
                   <p className="mt-1 text-sm font-semibold text-primary-foreground/75">
                     {deal.toCity}
                   </p>
-                  {destinationCountry && (
-                    <p className="mt-1 text-xs text-primary-foreground/60">
-                      {countryFlag} {destinationCountry}
-                    </p>
-                  )}
                 </div>
               </div>
             </div>
