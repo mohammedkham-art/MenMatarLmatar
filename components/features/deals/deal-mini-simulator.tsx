@@ -87,6 +87,18 @@ export function DealMiniSimulator({
         Prépare ton séjour
       </p>
       <h2 className="mt-1 text-2xl font-bold text-white">à {toCity}</h2>
+      {countryCode && (
+        <p className="mt-1 flex items-center gap-1.5 text-xs text-white/70">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`https://flagcdn.com/20x15/${countryCode.toLowerCase()}.png`}
+            width={20}
+            height={15}
+            alt=""
+          />
+          {country || toCity}
+        </p>
+      )}
       <p className="mt-0.5 text-sm text-white">
         Programme personnalisé par IA
       </p>

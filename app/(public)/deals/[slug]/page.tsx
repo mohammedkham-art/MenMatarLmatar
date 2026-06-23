@@ -154,22 +154,21 @@ export default async function DealDetailPage({ params }: DealPageProps) {
               Retour aux deals
             </a>
 
-            <h1 className="mt-6 text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              {deal.fromCity} -{' '}
-              <span className="relative inline-block">
-                {deal.toCity}
-                <span
-                  className={cn(
-                    'absolute left-full top-1 ml-3 inline-flex shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium ring-1 ring-inset',
-                    deal.visaType
-                      ? visaBadgeStyles[deal.visaType]
-                      : 'bg-amber-50 text-amber-700 ring-amber-200',
-                  )}
-                >
-                  {visaLabel}
-                </span>
+            <div className="mt-6">
+              <span
+                className={cn(
+                  'inline-flex items-center whitespace-nowrap rounded-full px-3 py-1 text-sm font-medium ring-1 ring-inset',
+                  deal.visaType
+                    ? visaBadgeStyles[deal.visaType]
+                    : 'bg-amber-50 text-amber-700 ring-amber-200',
+                )}
+              >
+                {visaLabel}
               </span>
-            </h1>
+              <h1 className="mt-3 text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+                {deal.fromCity} - {deal.toCity}
+              </h1>
+            </div>
 
             <div className="mt-8 overflow-hidden rounded-2xl border bg-primary p-4 text-primary-foreground shadow-2xl shadow-primary/20 sm:p-5">
               <div className="grid items-center gap-4 sm:grid-cols-[1fr_auto_1fr]">
@@ -228,7 +227,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
           <DealMiniSimulator
             toCity={deal.toCity}
             fromCity={deal.fromCity}
-            country={destinationCountry}
+            country={destinationCountryName}
             countryCode={deal.countryCode}
             visaType={normalizedVisaType}
             dealId={deal.id}
