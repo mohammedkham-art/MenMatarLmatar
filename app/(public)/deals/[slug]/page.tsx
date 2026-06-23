@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 
 import { BaggageIcons } from '@/components/features/deals/baggage-icons';
 import { DealMiniSimulator } from '@/components/features/deals/deal-mini-simulator';
-import { PriceFreshnessBadge } from '@/components/features/deals/price-freshness-badge';
 import { PublicFooter } from '@/components/shared/public-footer';
 import { PublicHeader } from '@/components/shared/public-header';
 import { Button } from '@/components/ui/button';
@@ -151,14 +150,13 @@ export default async function DealDetailPage({ params }: DealPageProps) {
               Retour aux deals
             </a>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <PriceFreshnessBadge
-                checkedAt={deal.lastCheckedAt}
-                createdAt={deal.createdAt}
-              />
+            <div className="mt-6 flex flex-wrap items-baseline gap-4">
+              <h1 className="text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+                {deal.fromCity} - {deal.toCity}
+              </h1>
               <span
                 className={cn(
-                  'inline-flex rounded-full px-4 py-2 text-sm font-black ring-1 ring-inset',
+                  'inline-flex shrink-0 rounded-full px-4 py-2 text-sm font-black ring-1 ring-inset',
                   deal.visaType
                     ? visaBadgeStyles[deal.visaType]
                     : 'bg-amber-50 text-amber-700 ring-amber-200',
@@ -167,10 +165,6 @@ export default async function DealDetailPage({ params }: DealPageProps) {
                 {visaLabel}
               </span>
             </div>
-
-            <h1 className="mt-6 max-w-3xl text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              {deal.fromCity} - {deal.toCity}
-            </h1>
 
             <div className="mt-8 overflow-hidden rounded-2xl border bg-primary p-4 text-primary-foreground shadow-2xl shadow-primary/20 sm:p-5">
               <div className="grid items-center gap-4 sm:grid-cols-[1fr_auto_1fr]">
@@ -253,7 +247,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                Voir l&apos;offre
+                Voir l&apos;offre 🔥
               </a>
             </Button>
             <p className="text-xs font-medium text-muted-foreground">
