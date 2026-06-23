@@ -199,10 +199,7 @@ export function DealMiniSimulator({
 
           {/* Répartition budget */}
           <div>
-            <p
-              className="text-xs font-black uppercase tracking-[0.16em]"
-              style={{ color: '#4ade80' }}
-            >
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-white">
               Répartition budget
             </p>
             <dl className="mt-2 grid grid-cols-2 gap-2">
@@ -219,7 +216,7 @@ export function DealMiniSimulator({
                   className="rounded-xl p-3"
                   style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}
                 >
-                  <dt className="text-xs font-semibold" style={{ color: '#9ca3af' }}>
+                  <dt className="text-xs font-semibold text-white/60">
                     {label}
                   </dt>
                   <dd className="mt-1 text-sm font-black text-white">
@@ -232,10 +229,7 @@ export function DealMiniSimulator({
 
           {/* Programme jour par jour */}
           <div>
-            <p
-              className="text-xs font-black uppercase tracking-[0.16em]"
-              style={{ color: '#4ade80' }}
-            >
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-white">
               Programme jour par jour
             </p>
             <div className="mt-2 space-y-2">
@@ -245,13 +239,13 @@ export function DealMiniSimulator({
                   className="rounded-xl p-3 text-xs"
                   style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}
                 >
-                  <p className="font-black" style={{ color: '#4ade80' }}>
+                  <p className="font-black text-white">
                     Jour {day.day} — {day.title}
                   </p>
-                  <p className="mt-1 text-white/70">{day.morning}</p>
-                  <p className="mt-0.5 text-white/70">{day.afternoon}</p>
-                  <p className="mt-0.5 text-white/70">{day.evening}</p>
-                  <p className="mt-1.5 font-semibold" style={{ color: '#86efac' }}>
+                  <p className="mt-1 text-white/80">{day.morning}</p>
+                  <p className="mt-0.5 text-white/80">{day.afternoon}</p>
+                  <p className="mt-0.5 text-white/80">{day.evening}</p>
+                  <p className="mt-1.5 font-semibold text-white/80">
                     {day.budgetTip}
                   </p>
                 </div>
@@ -262,18 +256,13 @@ export function DealMiniSimulator({
           {/* Conseils transport */}
           {result.transportTips.length > 0 && (
             <div>
-              <p
-                className="text-xs font-black uppercase tracking-[0.16em]"
-                style={{ color: '#4ade80' }}
-              >
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-white">
                 Transport
               </p>
               <ul className="mt-2 space-y-1">
                 {result.transportTips.map((tip, i) => (
-                  <li key={i} className="flex gap-2 text-xs text-white/70">
-                    <span className="mt-0.5 shrink-0" style={{ color: '#4ade80' }}>
-                      →
-                    </span>
+                  <li key={i} className="flex gap-2 text-xs text-white/80">
+                    <span className="mt-0.5 shrink-0 text-white">→</span>
                     {tip}
                   </li>
                 ))}
