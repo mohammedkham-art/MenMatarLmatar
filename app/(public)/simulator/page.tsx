@@ -12,10 +12,23 @@ import { fallbackDestinations } from '@/services/destinations/fallback-destinati
 import { getDestinations } from '@/services/destinations/get-destinations';
 import { getSimulatorDestinations } from '@/services/destinations/simulator-extra-destinations';
 
-export default async function SimulatorPage() {
+type SimulatorPageProps = {
+  searchParams: Promise<{ destination?: string }>;
+};
+
+export default async function SimulatorPage({ searchParams }: SimulatorPageProps) {
   const destinations = getSimulatorDestinations(
     await getDestinations().catch(() => fallbackDestinations),
   );
+
+  const { destination } = await searchParams;
+  const normalizedQuery = destination?.trim().toLowerCase() ?? '';
+  const initialDestination =
+    normalizedQuery.length > 0
+      ? (destinations.find(
+          (d) => d.city.toLowerCase() === normalizedQuery,
+        ) ?? null)
+      : null;
 
   return (
     <main className="min-h-screen">
@@ -35,7 +48,7 @@ export default async function SimulatorPage() {
         </header>
 
         <div className="mt-10">
-          <TripSimulator destinations={destinations} />
+          <TripSimulator destinations={destinations} initialDestination={initialDestination} />
         </div>
       </div>
       <PublicFooter />

@@ -16,6 +16,7 @@ import { visaLabels } from '@/services/visa/visa-rules';
 
 type TripSimulatorProps = {
   destinations: Destination[];
+  initialDestination?: Destination | null;
 };
 
 type SimulatorApiResponse = {
@@ -97,10 +98,12 @@ async function requestTripSimulation(params: TripSimulationRequest) {
   return payload.plan;
 }
 
-export function TripSimulator({ destinations }: TripSimulatorProps) {
-  const [destinationQuery, setDestinationQuery] = useState('');
+export function TripSimulator({ destinations, initialDestination }: TripSimulatorProps) {
+  const [destinationQuery, setDestinationQuery] = useState(
+    initialDestination ? getDestinationLabel(initialDestination) : '',
+  );
   const [selectedDestination, setSelectedDestination] =
-    useState<Destination | null>(null);
+    useState<Destination | null>(initialDestination ?? null);
   const [isDestinationOpen, setIsDestinationOpen] = useState(false);
   const [arrivalDate, setArrivalDate] = useState('');
   const [days, setDays] = useState(3);
