@@ -144,7 +144,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
         <div className="absolute right-[-10rem] top-[-12rem] h-80 w-80 rounded-full bg-accent/15 blur-3xl" />
         <div className="absolute bottom-[-14rem] left-[-12rem] h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
 
-        <div className="relative mx-auto grid w-full max-w-6xl gap-8 px-6 py-5 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:py-8">
+        <div className="relative mx-auto grid w-full max-w-6xl gap-6 px-6 py-4 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:py-6">
           {/* Colonne gauche — inchangée */}
           <div className="min-w-0">
             <a
@@ -154,7 +154,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
               Retour aux deals
             </a>
 
-            <div className="mt-6">
+            <div className="mt-4">
               <span
                 className={cn(
                   'inline-flex items-center whitespace-nowrap rounded-full px-3 py-1 text-sm font-medium ring-1 ring-inset',
@@ -165,12 +165,12 @@ export default async function DealDetailPage({ params }: DealPageProps) {
               >
                 {visaLabel}
               </span>
-              <h1 className="mt-3 text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              <h1 className="mt-2 text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                 {deal.fromCity} - {deal.toCity}
               </h1>
             </div>
 
-            <div className="mt-8 overflow-hidden rounded-2xl border bg-primary p-4 text-primary-foreground shadow-2xl shadow-primary/20 sm:p-5">
+            <div className="mt-5 overflow-hidden rounded-2xl border bg-primary p-4 text-primary-foreground shadow-2xl shadow-primary/20 sm:p-5">
               <div className="grid items-center gap-4 sm:grid-cols-[1fr_auto_1fr]">
                 <div className="rounded-xl border border-white/15 bg-white/[0.08] p-4">
                   <p className="mb-2 flex items-center gap-1.5 text-xs text-primary-foreground/70">
