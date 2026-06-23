@@ -172,8 +172,8 @@ export default async function DealDetailPage({ params }: DealPageProps) {
 
             <div className="mt-5 overflow-hidden rounded-2xl border bg-primary p-4 text-primary-foreground shadow-2xl shadow-primary/20 sm:p-5">
               <div className="grid items-center gap-4 sm:grid-cols-[1fr_auto_1fr]">
-                <div className="rounded-xl border border-white/15 bg-white/[0.08] p-4">
-                  <p className="mb-2 flex items-center gap-1.5 text-xs text-primary-foreground/70">
+                <div className="rounded-xl border border-white/15 bg-white/[0.08] p-3">
+                  <p className="mb-1.5 flex items-center gap-1.5 text-xs text-primary-foreground/70">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src="https://flagcdn.com/20x15/ma.png"
@@ -183,7 +183,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
                     />
                     Maroc
                   </p>
-                  <p className="text-3xl font-black">{deal.fromAirport}</p>
+                  <p className="text-2xl font-black">{deal.fromAirport}</p>
                   <p className="mt-1 text-sm font-semibold text-primary-foreground/75">
                     {deal.fromCity}
                   </p>
@@ -191,19 +191,15 @@ export default async function DealDetailPage({ params }: DealPageProps) {
 
                 <div
                   aria-hidden="true"
-                  className="flex h-14 items-center justify-center sm:h-20"
+                  className="flex flex-col items-center justify-center gap-4"
                 >
-                  <div className="relative h-12 w-28 sm:h-16 sm:w-24">
-                    <span className="absolute left-1/2 top-1 h-8 w-20 -translate-x-1/2 rounded-t-full border-x-2 border-t-2 border-white/35 sm:h-10 sm:w-20" />
-                    <span className="absolute bottom-1 left-1/2 h-8 w-20 -translate-x-1/2 rounded-b-full border-x-2 border-b-2 border-white/35 sm:h-10 sm:w-20" />
-                    <span className="absolute right-2 top-7 h-2 w-2 rounded-full bg-accent shadow-[0_0_0_5px_rgba(255,255,255,0.08)] sm:right-1 sm:top-9" />
-                    <span className="absolute left-2 top-4 h-2 w-2 rounded-full bg-white/55 sm:left-1 sm:top-5" />
-                  </div>
+                  <span className="text-5xl font-black leading-none text-white">→</span>
+                  <span className="text-5xl font-black leading-none text-white/50">←</span>
                 </div>
 
-                <div className="rounded-xl border border-white/15 bg-white/[0.08] p-4">
+                <div className="rounded-xl border border-white/15 bg-white/[0.08] p-3">
                   {deal.countryCode && (
-                    <p className="mb-2 flex items-center gap-1.5 text-xs text-primary-foreground/70">
+                    <p className="mb-1.5 flex items-center gap-1.5 text-xs text-primary-foreground/70">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={`https://flagcdn.com/20x15/${deal.countryCode.toLowerCase()}.png`}
@@ -214,7 +210,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
                       {destinationCountryName}
                     </p>
                   )}
-                  <p className="text-3xl font-black">{deal.toAirport}</p>
+                  <p className="text-2xl font-black">{deal.toAirport}</p>
                   <p className="mt-1 text-sm font-semibold text-primary-foreground/75">
                     {deal.toCity}
                   </p>
