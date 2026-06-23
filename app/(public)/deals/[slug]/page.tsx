@@ -243,9 +243,16 @@ export default async function DealDetailPage({ params }: DealPageProps) {
             <p className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">
               À partir de
             </p>
-            <p className="mt-2 text-4xl font-black tracking-tight text-primary sm:text-5xl">
-              {formattedPrice} MAD
-            </p>
+            <div className="mt-2 flex items-center gap-3">
+              <p className="text-4xl font-black tracking-tight text-primary sm:text-5xl">
+                {formattedPrice} MAD
+              </p>
+              {!transitAirport && !deal.tags.includes('Escale') && (
+                <span className="inline-flex items-center whitespace-nowrap rounded-full bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-200">
+                  ✈️ Vol direct
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-sm sm:min-w-[240px]">
