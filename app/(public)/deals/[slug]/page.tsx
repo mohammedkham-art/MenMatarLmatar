@@ -308,7 +308,19 @@ export default async function DealDetailPage({ params }: DealPageProps) {
                 <dt className="text-xs font-black uppercase tracking-[0.16em] text-muted-foreground">
                   Compagnie
                 </dt>
-                <dd className="mt-2 text-base font-black">{airlineName}</dd>
+                <dd className="mt-3 flex items-center justify-between gap-4">
+                  <span className="text-lg font-black leading-tight">{airlineName}</span>
+                  {deal.airlineDetails?.logoUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={deal.airlineDetails.logoUrl}
+                      alt={airlineName}
+                      width={100}
+                      height={100}
+                      className="-mt-2 rounded-xl object-contain"
+                    />
+                  )}
+                </dd>
               </div>
               <div className="rounded-xl bg-muted p-4">
                 <dt className="text-xs font-black uppercase tracking-[0.16em] text-muted-foreground">
