@@ -177,12 +177,7 @@ export function DealMiniSimulator({
 
           {result.budgetWarning && (
             <p
-              className="rounded-xl px-3 py-2 text-xs font-semibold ring-1 ring-inset"
-              style={{
-                backgroundColor: 'rgba(251,191,36,0.1)',
-                color: '#fbbf24',
-                ringColor: 'rgba(251,191,36,0.3)',
-              }}
+              className="rounded-xl bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-400 ring-1 ring-inset ring-amber-500/30"
             >
               ⚠️ {result.budgetWarning}
             </p>
