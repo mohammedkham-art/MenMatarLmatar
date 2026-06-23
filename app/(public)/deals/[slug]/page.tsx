@@ -165,7 +165,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
               >
                 {visaLabel}
               </span>
-              <h1 className="mt-2 text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              <h1 className="mt-2 text-3xl font-black leading-[1.05] tracking-tight text-foreground sm:text-4xl lg:text-5xl">
                 {deal.fromCity} - {deal.toCity}
               </h1>
             </div>
