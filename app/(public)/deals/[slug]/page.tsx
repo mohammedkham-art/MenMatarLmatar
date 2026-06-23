@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { BaggageIcons } from '@/components/features/deals/baggage-icons';
+import { DealMiniSimulator } from '@/components/features/deals/deal-mini-simulator';
 import { PriceFreshnessBadge } from '@/components/features/deals/price-freshness-badge';
 import { PublicFooter } from '@/components/shared/public-footer';
 import { PublicHeader } from '@/components/shared/public-header';
@@ -11,7 +12,7 @@ import { cn } from '@/lib/utils/cn';
 import { normalizeText } from '@/lib/normalize-text';
 import { getDealBySlug } from '@/services/deals/get-deal-by-slug';
 import type { DealVisaType } from '@/services/deals/get-deals';
-import { visaLabels } from '@/services/visa/visa-rules';
+import { normalizeVisaType, visaLabels } from '@/services/visa/visa-rules';
 
 type DealPageProps = {
   params: Promise<{ slug: string }>;
@@ -129,6 +130,8 @@ export default async function DealDetailPage({ params }: DealPageProps) {
   const formattedPrice = deal.priceMad.toLocaleString('fr-MA');
   const visibleTags = getVisibleTags(deal.tags);
   const visaLabel = deal.visaType ? visaLabels[deal.visaType] : 'A verifier';
+  const destinationCountry = airportsByCode.get(deal.toAirport) ?? '';
+  const normalizedVisaType = normalizeVisaType(deal.visaType as DealVisaType);
 
   return (
     <main className="min-h-screen">
@@ -138,7 +141,8 @@ export default async function DealDetailPage({ params }: DealPageProps) {
         <div className="absolute right-[-10rem] top-[-12rem] h-80 w-80 rounded-full bg-accent/15 blur-3xl" />
         <div className="absolute bottom-[-14rem] left-[-12rem] h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
 
-        <div className="relative mx-auto grid w-full max-w-6xl gap-8 px-6 py-10 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-end lg:py-14">
+        <div className="relative mx-auto grid w-full max-w-6xl gap-8 px-6 py-5 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:py-8">
+          {/* Colonne gauche — inchangée */}
           <div className="min-w-0">
             <a
               href="/deals"
@@ -164,16 +168,9 @@ export default async function DealDetailPage({ params }: DealPageProps) {
               </span>
             </div>
 
-            <p className="mt-7 text-xs font-black uppercase tracking-[0.22em] text-primary/70">
-              Offre voyage depuis le Maroc
-            </p>
-            <h1 className="mt-3 max-w-3xl text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            <h1 className="mt-6 max-w-3xl text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
               {deal.fromCity} - {deal.toCity}
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
-              {deal.title} avec {airlineName}. Verifie les bagages, le visa et
-              le prix final avant de reserver.
-            </p>
 
             <div className="mt-8 overflow-hidden rounded-2xl border bg-primary p-4 text-primary-foreground shadow-2xl shadow-primary/20 sm:p-5">
               <div className="grid items-center gap-4 sm:grid-cols-[1fr_auto_1fr]">
@@ -206,34 +203,50 @@ export default async function DealDetailPage({ params }: DealPageProps) {
             </div>
           </div>
 
-          <aside className="rounded-2xl border bg-background p-5 shadow-xl shadow-primary/10 lg:p-6">
-            <p className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground">
-              A partir de
+          {/* Colonne droite — mini-simulateur */}
+          <DealMiniSimulator
+            toCity={deal.toCity}
+            fromCity={deal.fromCity}
+            country={destinationCountry}
+            countryCode={deal.countryCode}
+            visaType={normalizedVisaType}
+            dealId={deal.id}
+            departureDate={deal.departureDate}
+          />
+        </div>
+      </section>
+
+      {/* Ligne 2 : Prix + dates + bouton */}
+      <section className="border-b bg-muted/30">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-6 sm:flex-row sm:items-center sm:justify-between lg:py-8">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">
+              À partir de
             </p>
-            <p className="mt-3 text-4xl font-black tracking-tight text-primary sm:text-5xl">
+            <p className="mt-2 text-4xl font-black tracking-tight text-primary sm:text-5xl">
               {formattedPrice} MAD
             </p>
+          </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3 text-sm">
-              <div className="rounded-xl bg-muted p-4">
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-muted-foreground">
-                  Départ
-                </p>
-                <p className="mt-2 font-black">
-                  {formatDate(deal.departureDate)}
-                </p>
-              </div>
-              <div className="rounded-xl bg-muted p-4">
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-muted-foreground">
-                  Retour
-                </p>
-                <p className="mt-2 font-black">{formatDate(deal.returnDate)}</p>
-              </div>
+          <div className="grid grid-cols-2 gap-3 text-sm sm:min-w-[240px]">
+            <div className="rounded-xl bg-muted p-4">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-muted-foreground">
+                Départ
+              </p>
+              <p className="mt-2 font-black">{formatDate(deal.departureDate)}</p>
             </div>
+            <div className="rounded-xl bg-muted p-4">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-muted-foreground">
+                Retour
+              </p>
+              <p className="mt-2 font-black">{formatDate(deal.returnDate)}</p>
+            </div>
+          </div>
 
+          <div className="flex flex-col items-center gap-2">
             <Button
               asChild
-              className="mt-6 h-12 w-full rounded-xl text-base font-black"
+              className="h-12 w-full rounded-xl text-base font-black sm:w-auto sm:min-w-[180px]"
             >
               <a
                 href={deal.bookingUrl}
@@ -243,10 +256,10 @@ export default async function DealDetailPage({ params }: DealPageProps) {
                 Voir l&apos;offre
               </a>
             </Button>
-            <p className="mt-3 text-center text-xs font-medium text-muted-foreground">
+            <p className="text-xs font-medium text-muted-foreground">
               Les prix peuvent fluctuer.
             </p>
-          </aside>
+          </div>
         </div>
       </section>
 
