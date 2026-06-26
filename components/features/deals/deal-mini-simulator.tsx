@@ -86,10 +86,10 @@ export function DealMiniSimulator({
       <p className="text-xs font-black uppercase tracking-[0.22em] text-white">
         Prépare ton séjour
       </p>
-      <div className="mt-1 flex items-center gap-3">
-        <h2 className="text-2xl font-bold text-white">à {toCity}</h2>
+      <div className="mt-1">
+        <h2 className={`${toCity.length >= 8 ? 'text-xl' : 'text-2xl'} font-bold text-white`}>à {toCity}</h2>
         {countryCode && (
-          <span className="flex items-center gap-1.5 text-xs text-white/70">
+          <span className="mt-0.5 flex items-center gap-1.5 text-xs text-white/70">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`https://flagcdn.com/20x15/${countryCode.toLowerCase()}.png`}
