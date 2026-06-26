@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { BaggageIcons } from '@/components/features/deals/baggage-icons';
+import { CurrencyConverter } from '@/components/features/deals/currency-converter';
 import { DealMiniSimulator } from '@/components/features/deals/deal-mini-simulator';
+import { currencyMap } from '@/utils/currency-map';
 import { PublicFooter } from '@/components/shared/public-footer';
 import { PublicHeader } from '@/components/shared/public-header';
 import { Button } from '@/components/ui/button';
@@ -131,6 +133,9 @@ export default async function DealDetailPage({ params }: DealPageProps) {
   const visaLabel = deal.visaType ? visaLabels[deal.visaType] : 'A verifier';
   const destinationCountry = airportsByCode.get(deal.toAirport) ?? '';
   const normalizedVisaType = normalizeVisaType(deal.visaType as DealVisaType);
+  const currency = deal.countryCode
+    ? (currencyMap[deal.countryCode.toUpperCase()] ?? null)
+    : null;
   const regionNames = new Intl.DisplayNames(['fr'], { type: 'region' });
   const destinationCountryName = deal.countryCode
     ? (regionNames.of(deal.countryCode.toUpperCase()) ?? destinationCountry)
@@ -144,7 +149,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
         <div className="absolute right-[-10rem] top-[-12rem] h-80 w-80 rounded-full bg-accent/15 blur-3xl" />
         <div className="absolute bottom-[-14rem] left-[-12rem] h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
 
-        <div className="relative mx-auto grid w-full max-w-6xl gap-6 px-6 py-4 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:py-6">
+        <div className="relative mx-auto grid w-full max-w-6xl gap-6 px-6 py-4 lg:grid-cols-[minmax(0,1fr)_560px] lg:items-start lg:py-6">
           {/* Colonne gauche — inchangée */}
           <div className="min-w-0">
             <a
@@ -219,16 +224,24 @@ export default async function DealDetailPage({ params }: DealPageProps) {
             </div>
           </div>
 
-          {/* Colonne droite — mini-simulateur */}
-          <DealMiniSimulator
-            toCity={deal.toCity}
-            fromCity={deal.fromCity}
-            country={destinationCountryName}
-            countryCode={deal.countryCode}
-            visaType={normalizedVisaType}
-            dealId={deal.id}
-            departureDate={deal.departureDate}
-          />
+          {/* Colonne droite — convertisseur + simulateur */}
+          <div className="grid grid-cols-[55fr_45fr] gap-4">
+            {currency && (
+              <CurrencyConverter
+                currencyCode={currency.code}
+                currencyName={currency.name}
+              />
+            )}
+            <DealMiniSimulator
+              toCity={deal.toCity}
+              fromCity={deal.fromCity}
+              country={destinationCountryName}
+              countryCode={deal.countryCode}
+              visaType={normalizedVisaType}
+              dealId={deal.id}
+              departureDate={deal.departureDate}
+            />
+          </div>
         </div>
       </section>
 

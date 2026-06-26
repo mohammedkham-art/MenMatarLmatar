@@ -57,6 +57,7 @@ export default async function InstagramVisualsPage({
               1080x1920
             </span>
           </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt="Story Instagram du deal"
             className="mt-4 aspect-[9/16] w-full rounded-xl border bg-muted object-cover"
