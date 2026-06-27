@@ -225,7 +225,7 @@ export default async function DealDetailPage({ params }: DealPageProps) {
           </div>
 
           {/* Colonne droite — convertisseur + simulateur */}
-          <div className="grid grid-cols-[55fr_45fr] gap-4">
+          <div className="grid grid-cols-[40fr_60fr] gap-4">
             {currency && (
               <CurrencyConverter
                 currencyCode={currency.code}
