@@ -227,10 +227,12 @@ export default async function DealDetailPage({ params }: DealPageProps) {
           {/* Colonne droite — convertisseur + simulateur */}
           <div className="grid grid-cols-[40fr_60fr] gap-4">
             {currency && (
-              <CurrencyConverter
-                currencyCode={currency.code}
-                currencyName={currency.name}
-              />
+              <div className="self-start">
+                <CurrencyConverter
+                  currencyCode={currency.code}
+                  currencyName={currency.name}
+                />
+              </div>
             )}
             <DealMiniSimulator
               toCity={deal.toCity}
