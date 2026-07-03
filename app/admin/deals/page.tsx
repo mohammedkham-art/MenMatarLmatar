@@ -278,12 +278,16 @@ async function updateDeal(formData: FormData) {
     revalidateDealPaths();
 
     if (payload.is_active) {
-      const priceChanged = payload.price_mad !== prevDeal?.priceMad;
+      const prevPrice = prevDeal?.priceMad;
+      const priceDropped10pct =
+        typeof prevPrice === 'number' &&
+        payload.price_mad < prevPrice &&
+        ((prevPrice - payload.price_mad) / prevPrice) * 100 >= 10;
       const flashActivated = payload.is_flash && !prevDeal?.isFlash;
 
-      // Notification uniquement si le prix a changé ou si le tag éclair vient d'être activé.
-      // Un changement de tags éditoriaux (meilleure offre, etc.) ou de dates seul → silence.
-      if (priceChanged || flashActivated) {
+      // Notification prix uniquement si baisse d'au moins 10%.
+      // Flash et nouveau deal restent inchangés.
+      if (priceDropped10pct || flashActivated) {
         after(async () => {
           try {
             const deal = await getAdminDeal(id);
