@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 import type { Circuit, CircuitSegment } from '@/services/circuits/types';
@@ -74,12 +75,13 @@ export function CircuitCard({ circuit }: { circuit: Circuit }) {
           {circuit.destinations.map((dest, i) => (
             <div key={i} className="flex items-center gap-3">
               {dest.countryCode && (
-                <img
+                <Image
                   src={`https://flagcdn.com/20x15/${dest.countryCode.toLowerCase()}.png`}
                   width={20}
                   height={15}
                   alt=""
                   className="shrink-0"
+                  unoptimized
                 />
               )}
               <span className="text-sm font-semibold">

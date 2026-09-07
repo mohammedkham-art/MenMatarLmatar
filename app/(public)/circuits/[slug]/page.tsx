@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -95,12 +96,13 @@ function DestinationCard({ dest }: { dest: CircuitDestination }) {
     <div className="rounded-xl border bg-background p-4">
       <div className="flex items-center gap-3">
         {dest.countryCode && (
-          <img
+          <Image
             src={`https://flagcdn.com/20x15/${dest.countryCode.toLowerCase()}.png`}
             width={20}
             height={15}
             alt=""
             className="shrink-0"
+            unoptimized
           />
         )}
         <div className="flex-1">
@@ -304,7 +306,7 @@ export default async function CircuitDetailPage({ params }: PageProps) {
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">✓</span>
-                  {circuit.segments.length} vol{circuit.segments.length > 1 ? 's' : ''} dans l'itinéraire
+                  {circuit.segments.length} vol{circuit.segments.length > 1 ? 's' : ''} dans l&apos;itinéraire
                 </li>
                 {circuit.extraInfo.visasRequired.length > 0 && (
                   <li className="flex gap-2">
