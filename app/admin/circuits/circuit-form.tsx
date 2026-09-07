@@ -25,15 +25,13 @@ const emptySegment = (): CircuitSegment => ({
   stopoverTips: null,
 });
 
-const VISA_TYPES = ['Sans visa', 'eVisa', 'Visa à l\'arrivée', 'Visa ambassade'];
-
 const emptyDestination = (): CircuitDestination => ({
   city: '',
   country: '',
   countryCode: '',
   iata: '',
   tips: [],
-  visaType: 'Sans visa',
+  visaLabel: '',
 });
 
 function inputClass(extra = '') {
@@ -402,18 +400,6 @@ export function CircuitForm({ action, airlines, circuit, submitLabel, title }: P
                 />
               </div>
 
-              <div className="mt-3">
-                <label className={labelClass()}>Type de visa (passeport marocain)</label>
-                <select
-                  className={inputClass()}
-                  value={dest.visaType}
-                  onChange={(e) => updateDestination(i, 'visaType', e.target.value)}
-                >
-                  {VISA_TYPES.map((v) => (
-                    <option key={v} value={v}>{v}</option>
-                  ))}
-                </select>
-              </div>
             </div>
           ))}
         </div>

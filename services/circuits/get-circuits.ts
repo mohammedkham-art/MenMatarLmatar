@@ -5,6 +5,7 @@ import type {
   CircuitExtraInfo,
   CircuitSegment,
 } from '@/services/circuits/types';
+import { visaLabels, type VisaType } from '@/services/visa/visa-rules';
 
 type CircuitRow = {
   id: string;
@@ -25,6 +26,7 @@ type CircuitRow = {
 };
 
 export function mapCircuitRow(row: CircuitRow): Circuit {
+  const rawDests = (row.destinations as CircuitDestination[]) ?? [];
   return {
     id: row.id,
     slug: row.slug,
@@ -37,7 +39,7 @@ export function mapCircuitRow(row: CircuitRow): Circuit {
     bookingUrl: row.booking_url,
     storyUrl: row.story_url,
     segments: (row.segments as CircuitSegment[]) ?? [],
-    destinations: (row.destinations as CircuitDestination[]) ?? [],
+    destinations: rawDests.map((d) => ({ ...d, visaLabel: d.visaLabel ?? '' })),
     extraInfo: (row.extra_info as CircuitExtraInfo) ?? {
       visasRequired: [],
       terrestrialLegs: [],
@@ -46,6 +48,38 @@ export function mapCircuitRow(row: CircuitRow): Circuit {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
+}
+
+async function getVisaLabelMap(
+  countryCodes: (string | null | undefined)[],
+): Promise<Map<string, string>> {
+  const unique = [
+    ...new Set(countryCodes.filter((c): c is string => Boolean(c))),
+  ];
+  if (!unique.length) return new Map();
+  const supabase = createAdminSupabaseClient();
+  const { data } = await supabase
+    .from('countries')
+    .select('code, visa_type')
+    .in('code', unique);
+  return new Map(
+    (data ?? []).map((row) => [
+      row.code as string,
+      visaLabels[(row.visa_type as VisaType) ?? ''] ?? '—',
+    ]),
+  );
+}
+
+export async function enrichCircuitsWithVisaLabels(circuits: Circuit[]): Promise<Circuit[]> {
+  const codes = circuits.flatMap((c) => c.destinations.map((d) => d.countryCode));
+  const visaMap = await getVisaLabelMap(codes);
+  return circuits.map((c) => ({
+    ...c,
+    destinations: c.destinations.map((d) => ({
+      ...d,
+      visaLabel: d.countryCode ? (visaMap.get(d.countryCode) ?? '—') : '—',
+    })),
+  }));
 }
 
 export async function getCircuits(): Promise<Circuit[]> {
@@ -63,5 +97,6 @@ export async function getCircuits(): Promise<Circuit[]> {
     .returns<CircuitRow[]>();
 
   if (error) throw new Error(error.message);
-  return (data ?? []).map(mapCircuitRow);
+  const circuits = (data ?? []).map(mapCircuitRow);
+  return enrichCircuitsWithVisaLabels(circuits);
 }

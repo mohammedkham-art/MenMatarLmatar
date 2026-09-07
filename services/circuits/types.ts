@@ -16,7 +16,7 @@ export type CircuitDestination = {
   countryCode: string;
   iata: string;
   tips: string[];
-  visaType: string;
+  visaLabel: string;
 };
 
 export type CircuitExtraInfo = {

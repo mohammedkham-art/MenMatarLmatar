@@ -1,5 +1,5 @@
 import { createAdminSupabaseClient } from '@/lib/supabase/admin';
-import { mapCircuitRow } from '@/services/circuits/get-circuits';
+import { enrichCircuitsWithVisaLabels, mapCircuitRow } from '@/services/circuits/get-circuits';
 import type { Circuit } from '@/services/circuits/types';
 
 export async function getCircuitBySlug(slug: string): Promise<Circuit | null> {
@@ -18,5 +18,6 @@ export async function getCircuitBySlug(slug: string): Promise<Circuit | null> {
   if (!data) return null;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return mapCircuitRow(data as any);
+  const [enriched] = await enrichCircuitsWithVisaLabels([mapCircuitRow(data as any)]);
+  return enriched ?? null;
 }
