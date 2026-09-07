@@ -289,7 +289,7 @@ export default async function HomePage() {
                   Bons plans
                 </p>
                 <h2 className="mt-2 text-3xl font-black tracking-tight">
-                  Deals
+                  Vols
                 </h2>
                 <p className="mt-2 text-muted-foreground">
                   Les vols à surveiller avant de réserver.
@@ -299,7 +299,7 @@ export default async function HomePage() {
                 href="/deals"
                 className="text-sm font-black text-primary hover:underline"
               >
-                Voir toutes les offres →
+                Voir tous les vols →
               </Link>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

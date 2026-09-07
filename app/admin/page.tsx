@@ -9,16 +9,22 @@ const adminSections = [
     cta: 'Gérer les destinations',
   },
   {
-    title: 'Offres',
+    title: 'Vols',
     description: 'Deals de vols, prix MAD, liens de réservation et visibilité.',
     href: '/admin/deals',
-    cta: 'Gérer les offres',
+    cta: 'Gérer les vols',
   },
   {
     title: 'Compagnies',
     description: 'Compagnies aeriennes, tarifs et bagages inclus.',
     href: '/admin/airlines',
     cta: 'Gerer les compagnies',
+  },
+  {
+    title: 'Circuits',
+    description: 'Itinéraires multi-destinations, segments de vols et infos visa.',
+    href: '/admin/circuits',
+    cta: 'Gérer les circuits',
   },
 ];
 

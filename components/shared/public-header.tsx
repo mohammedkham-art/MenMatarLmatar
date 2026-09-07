@@ -1,9 +1,26 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { createAdminSupabaseClient } from '@/lib/supabase/admin';
 import { ThemeToggle } from '@/components/shared/theme-toggle';
 
-export function PublicHeader() {
+async function hasActiveCircuits(): Promise<boolean> {
+  try {
+    const supabase = createAdminSupabaseClient();
+    const today = new Date().toISOString().slice(0, 10);
+    const { count } = await supabase
+      .from('circuits')
+      .select('id', { count: 'exact', head: true })
+      .eq('is_active', true)
+      .or(`departure_date.gte.${today},departure_date.is.null`);
+    return (count ?? 0) > 0;
+  } catch {
+    return false;
+  }
+}
+
+export async function PublicHeader() {
+  const showCircuits = await hasActiveCircuits();
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-primary backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-3 md:gap-6">
@@ -47,8 +64,16 @@ export function PublicHeader() {
             href="/deals"
             className="rounded-full px-3 py-2 text-white transition hover:bg-white/10"
           >
-            Offres
+            Vols
           </Link>
+          {showCircuits && (
+            <Link
+              href="/circuits"
+              className="rounded-full px-3 py-2 text-white transition hover:bg-white/10"
+            >
+              Circuits
+            </Link>
+          )}
           <Link
             href="/simulator"
             className="rounded-full bg-accent px-4 py-2 text-white shadow-sm transition hover:-translate-y-0.5 hover:opacity-90 hover:shadow-md"
