@@ -449,6 +449,20 @@ export default async function AdminDealsPage({
     loadErrorMessage = getActionErrorMessage(error);
   }
 
+  // Auto-désactiver les deals dont la date de départ est passée
+  after(async () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const expiredIds = deals
+      .filter((d) => d.isActive && d.departureDate && d.departureDate < today)
+      .map((d) => d.id);
+    if (expiredIds.length === 0) return;
+    const supabase = createAdminSupabaseClient();
+    await supabase.from('deals').update({ is_active: false }).in('id', expiredIds);
+    revalidatePath('/admin/deals');
+    revalidatePath('/deals');
+    revalidatePath('/');
+  });
+
   const search = (params?.q ?? '').toLowerCase();
   const statut = params?.statut ?? 'all';
   const visa = params?.visa ?? 'all';
