@@ -10,6 +10,8 @@ export type CircuitSegment = {
   stopoverTips: string | null;
 };
 
+import type { StoredVisaType } from '@/services/visa/visa-rules';
+
 export type CircuitDestination = {
   city: string;
   country: string;
@@ -17,6 +19,7 @@ export type CircuitDestination = {
   iata: string;
   tips: string[];
   visaLabel: string;
+  visaType: StoredVisaType | null;
 };
 
 export type CircuitExtraInfo = {

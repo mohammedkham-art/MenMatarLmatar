@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import type { Circuit, CircuitSegment } from '@/services/circuits/types';
+import { defaultVisaBadgeStyle, visaBadgeStyles, type VisaType } from '@/services/visa/visa-rules';
 
 function iataChain(segments: CircuitSegment[]): string {
   if (!segments.length) return '';
@@ -91,10 +92,10 @@ export function CircuitCard({ circuit }: { circuit: Circuit }) {
                 )}
               </span>
               <span
-                className={`ml-auto shrink-0 rounded-full px-2 py-0.5 text-xs font-bold ${
-                  dest.visaLabel === 'Sans visa'
-                    ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
-                    : 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300'
+                className={`ml-auto shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ring-1 ring-inset ${
+                  dest.visaType
+                    ? visaBadgeStyles[dest.visaType as VisaType]
+                    : defaultVisaBadgeStyle
                 }`}
               >
                 {dest.visaLabel}

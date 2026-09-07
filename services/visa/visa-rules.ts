@@ -17,6 +17,17 @@ const visaTypeAliases: Partial<Record<VisaType, StoredVisaType>> = {
   visa_on_arrival: 'on_arrival',
 };
 
+export const visaBadgeStyles: Record<VisaType, string> = {
+  visa_free: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+  evisa: 'bg-blue-50 text-blue-700 ring-blue-200',
+  e_visa: 'bg-blue-50 text-blue-700 ring-blue-200',
+  on_arrival: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+  visa_on_arrival: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+  visa_required: 'bg-red-50 text-red-700 ring-red-200',
+};
+
+export const defaultVisaBadgeStyle = 'bg-muted text-muted-foreground ring-border';
+
 export const visaLabels: Record<VisaType, string> = {
   visa_free: 'Sans visa',
   evisa: 'eVisa',

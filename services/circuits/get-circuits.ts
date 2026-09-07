@@ -5,7 +5,7 @@ import type {
   CircuitExtraInfo,
   CircuitSegment,
 } from '@/services/circuits/types';
-import { visaLabels, type VisaType } from '@/services/visa/visa-rules';
+import { visaLabels, type StoredVisaType, type VisaType } from '@/services/visa/visa-rules';
 
 type CircuitRow = {
   id: string;
@@ -39,7 +39,7 @@ export function mapCircuitRow(row: CircuitRow): Circuit {
     bookingUrl: row.booking_url,
     storyUrl: row.story_url,
     segments: (row.segments as CircuitSegment[]) ?? [],
-    destinations: rawDests.map((d) => ({ ...d, visaLabel: d.visaLabel ?? '' })),
+    destinations: rawDests.map((d) => ({ ...d, visaLabel: d.visaLabel ?? '', visaType: d.visaType ?? null })),
     extraInfo: (row.extra_info as CircuitExtraInfo) ?? {
       visasRequired: [],
       terrestrialLegs: [],
@@ -50,9 +50,11 @@ export function mapCircuitRow(row: CircuitRow): Circuit {
   };
 }
 
-async function getVisaLabelMap(
+type VisaInfo = { label: string; type: StoredVisaType | null };
+
+async function getVisaInfoMap(
   countryCodes: (string | null | undefined)[],
-): Promise<Map<string, string>> {
+): Promise<Map<string, VisaInfo>> {
   const unique = [
     ...new Set(countryCodes.filter((c): c is string => Boolean(c))),
   ];
@@ -63,22 +65,25 @@ async function getVisaLabelMap(
     .select('code, visa_type')
     .in('code', unique);
   return new Map(
-    (data ?? []).map((row) => [
-      row.code as string,
-      visaLabels[(row.visa_type as VisaType) ?? ''] ?? '—',
-    ]),
+    (data ?? []).map((row) => {
+      const vt = row.visa_type as StoredVisaType | null;
+      return [
+        row.code as string,
+        { label: vt ? (visaLabels[vt as VisaType] ?? '—') : '—', type: vt },
+      ];
+    }),
   );
 }
 
 export async function enrichCircuitsWithVisaLabels(circuits: Circuit[]): Promise<Circuit[]> {
   const codes = circuits.flatMap((c) => c.destinations.map((d) => d.countryCode));
-  const visaMap = await getVisaLabelMap(codes);
+  const visaMap = await getVisaInfoMap(codes);
   return circuits.map((c) => ({
     ...c,
-    destinations: c.destinations.map((d) => ({
-      ...d,
-      visaLabel: d.countryCode ? (visaMap.get(d.countryCode) ?? '—') : '—',
-    })),
+    destinations: c.destinations.map((d) => {
+      const info = d.countryCode ? visaMap.get(d.countryCode) : undefined;
+      return { ...d, visaLabel: info?.label ?? '—', visaType: info?.type ?? null };
+    }),
   }));
 }
 

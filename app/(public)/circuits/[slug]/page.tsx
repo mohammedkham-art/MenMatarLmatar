@@ -3,6 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { defaultVisaBadgeStyle, visaBadgeStyles, type VisaType } from '@/services/visa/visa-rules';
+
 import { PublicFooter } from '@/components/shared/public-footer';
 import { PublicHeader } from '@/components/shared/public-header';
 import { getCircuitBySlug } from '@/services/circuits/get-circuit';
@@ -112,10 +114,10 @@ function DestinationCard({ dest }: { dest: CircuitDestination }) {
           )}
         </div>
         <span
-          className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${
-            dest.visaLabel === 'Sans visa'
-              ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
-              : 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300'
+          className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${
+            dest.visaType
+              ? visaBadgeStyles[dest.visaType as VisaType]
+              : defaultVisaBadgeStyle
           }`}
         >
           {dest.visaLabel}
