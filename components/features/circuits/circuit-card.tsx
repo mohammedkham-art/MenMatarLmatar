@@ -97,7 +97,7 @@ export function CircuitCard({ circuit }: { circuit: Circuit }) {
                     : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
                 }`}
               >
-                {dest.visaRequired ? 'Visa requis' : 'Sans visa'}
+                {dest.visaRequired ? 'eVisa' : 'Sans visa'}
               </span>
             </div>
           ))}
