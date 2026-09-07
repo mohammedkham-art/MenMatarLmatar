@@ -113,12 +113,12 @@ function DestinationCard({ dest }: { dest: CircuitDestination }) {
         </div>
         <span
           className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${
-            dest.visaRequired
-              ? 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300'
-              : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
+            dest.visaType === 'Sans visa'
+              ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
+              : 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300'
           }`}
         >
-          {dest.visaRequired ? 'eVisa' : 'Sans visa'}
+          {dest.visaType}
         </span>
       </div>
 

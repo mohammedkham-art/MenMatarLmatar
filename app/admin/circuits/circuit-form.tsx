@@ -25,13 +25,15 @@ const emptySegment = (): CircuitSegment => ({
   stopoverTips: null,
 });
 
+const VISA_TYPES = ['Sans visa', 'eVisa', 'Visa à l\'arrivée', 'Visa ambassade'];
+
 const emptyDestination = (): CircuitDestination => ({
   city: '',
   country: '',
   countryCode: '',
   iata: '',
   tips: [],
-  visaRequired: false,
+  visaType: 'Sans visa',
 });
 
 function inputClass(extra = '') {
@@ -401,15 +403,16 @@ export function CircuitForm({ action, airlines, circuit, submitLabel, title }: P
               </div>
 
               <div className="mt-3">
-                <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold">
-                  <input
-                    type="checkbox"
-                    checked={dest.visaRequired}
-                    onChange={(e) => updateDestination(i, 'visaRequired', e.target.checked)}
-                    className="h-4 w-4 rounded border"
-                  />
-                  Visa requis pour passeport marocain
-                </label>
+                <label className={labelClass()}>Type de visa (passeport marocain)</label>
+                <select
+                  className={inputClass()}
+                  value={dest.visaType}
+                  onChange={(e) => updateDestination(i, 'visaType', e.target.value)}
+                >
+                  {VISA_TYPES.map((v) => (
+                    <option key={v} value={v}>{v}</option>
+                  ))}
+                </select>
               </div>
             </div>
           ))}
