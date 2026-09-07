@@ -32,6 +32,7 @@ const emptyDestination = (): CircuitDestination => ({
   iata: '',
   tips: [],
   visaLabel: '',
+  visaType: null,
 });
 
 function inputClass(extra = '') {
