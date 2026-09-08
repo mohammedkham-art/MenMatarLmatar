@@ -310,12 +310,23 @@ export default async function CircuitDetailPage({ params }: PageProps) {
                   <span className="text-primary">✓</span>
                   {circuit.segments.length} vol{circuit.segments.length > 1 ? 's' : ''} dans l&apos;itinéraire
                 </li>
-                {circuit.extraInfo.visasRequired.length > 0 && (
-                  <li className="flex gap-2">
-                    <span className="text-amber-500">!</span>
-                    Visas requis — voir infos pratiques
-                  </li>
-                )}
+                {(() => {
+                  const nonFree = circuit.destinations.filter(
+                    (d) => d.visaType && d.visaType !== 'visa_free',
+                  );
+                  if (!nonFree.length) return null;
+                  const label = nonFree.every((d) => d.visaType === 'evisa')
+                    ? 'eVisa requis — voir infos pratiques'
+                    : nonFree.every((d) => d.visaType === 'on_arrival')
+                      ? 'Visa à l\'arrivée requis — voir infos pratiques'
+                      : 'Visas requis — voir infos pratiques';
+                  return (
+                    <li className="flex gap-2">
+                      <span className="text-amber-500">!</span>
+                      {label}
+                    </li>
+                  );
+                })()}
               </ul>
             </div>
           </aside>
