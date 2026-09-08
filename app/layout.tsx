@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next';
 import Script from 'next/script';
 
 import { ConsentManager } from '@/components/shared/consent-manager';
+import { DownloadAppPopup } from '@/components/shared/download-app-popup';
 import { QueryProvider } from '@/components/shared/query-provider';
 import { ThemeProvider } from '@/components/shared/theme-provider';
 import './globals.css';
@@ -77,6 +78,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         </ThemeProvider>
         <Analytics />
         <ConsentManager />
+        <DownloadAppPopup />
         <Script
           id="travelpayouts-tracker"
           src="https://tp-em.com/NTI4MzQz.js?t=528343"
