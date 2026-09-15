@@ -464,7 +464,16 @@ export default async function AdminDealsPage({
   });
 
   const today = new Date().toISOString().slice(0, 10);
-  const cutoffDate = new Date(Date.now() + 5 * 86400_000).toISOString().slice(0, 10);
+  const moroccoFormatter = new Intl.DateTimeFormat('en-US', {
+    day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Africa/Casablanca',
+  });
+  const moroccoNow = moroccoFormatter.formatToParts(new Date());
+  const moroccoYear = Number(moroccoNow.find((p) => p.type === 'year')?.value);
+  const moroccoMonth = Number(moroccoNow.find((p) => p.type === 'month')?.value);
+  const moroccoDay = Number(moroccoNow.find((p) => p.type === 'day')?.value);
+  const cutoffDate = new Date(Date.UTC(moroccoYear, moroccoMonth - 1, moroccoDay + 5))
+    .toISOString()
+    .slice(0, 10);
 
   const search = (params?.q ?? '').toLowerCase();
   const statut = params?.statut ?? 'all';
