@@ -489,7 +489,8 @@ export default async function AdminDealsPage({
     filteredDeals = filteredDeals.filter(
       (deal) =>
         !deal.isActive ||
-        (deal.departureDate != null && deal.departureDate <= cutoffDate),
+        deal.departureDate == null ||
+        deal.departureDate <= cutoffDate,
     );
   }
 
@@ -616,7 +617,9 @@ type AdminDealItemProps = {
 };
 
 function AdminDealItem({ airlines, countries, deal, today, cutoffDate }: AdminDealItemProps) {
-  const isExpired = deal.isActive && deal.departureDate != null && deal.departureDate <= cutoffDate;
+  const isExpired =
+    deal.isActive &&
+    (deal.departureDate == null || deal.departureDate <= cutoffDate);
   return (
     <article className="rounded-xl border bg-muted/50 p-4">
       <div className="flex flex-wrap items-start justify-between gap-4">
