@@ -463,6 +463,8 @@ export default async function AdminDealsPage({
     revalidatePath('/');
   });
 
+  const today = new Date().toISOString().slice(0, 10);
+
   const search = (params?.q ?? '').toLowerCase();
   const statut = params?.statut ?? 'all';
   const visa = params?.visa ?? 'all';
@@ -483,7 +485,9 @@ export default async function AdminDealsPage({
   if (statut === 'active') {
     filteredDeals = filteredDeals.filter((deal) => deal.isActive);
   } else if (statut === 'inactive') {
-    filteredDeals = filteredDeals.filter((deal) => !deal.isActive);
+    filteredDeals = filteredDeals.filter(
+      (deal) => !deal.isActive || (deal.departureDate != null && deal.departureDate < today),
+    );
   }
 
   if (visa !== 'all') {
@@ -581,6 +585,7 @@ export default async function AdminDealsPage({
                 airlines={airlines}
                 countries={countries}
                 deal={deal}
+                today={today}
               />
             ))}
 
@@ -602,9 +607,11 @@ type AdminDealItemProps = {
   airlines: Airline[];
   countries: Country[];
   deal: Deal;
+  today: string;
 };
 
-function AdminDealItem({ airlines, countries, deal }: AdminDealItemProps) {
+function AdminDealItem({ airlines, countries, deal, today }: AdminDealItemProps) {
+  const isExpired = deal.isActive && deal.departureDate != null && deal.departureDate < today;
   return (
     <article className="rounded-xl border bg-muted/50 p-4">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -625,6 +632,11 @@ function AdminDealItem({ airlines, countries, deal }: AdminDealItemProps) {
           <span className="rounded-full bg-background px-3 py-1">
             {deal.isActive ? 'Active' : 'Inactive'}
           </span>
+          {isExpired && (
+            <span className="rounded-full bg-orange-50 px-3 py-1 text-orange-700">
+              Expiré
+            </span>
+          )}
           {deal.isFeatured && (
             <span className="rounded-full bg-accent/20 px-3 py-1 text-accent-foreground">
               Featured
