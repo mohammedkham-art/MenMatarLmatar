@@ -8,6 +8,7 @@ import type { Deal } from '@/services/deals/get-deals';
 
 type DealsListProps = {
   deals: Deal[];
+  availableMonths: string[];
 };
 
 type DealFilter =
@@ -31,6 +32,10 @@ const filters: Array<{ label: string; value: DealFilter }> = [
 
 function toMonthKey(m: MonthValue) {
   return m.year * 100 + m.month;
+}
+
+function toMonthISOKey(m: MonthValue) {
+  return `${m.year}-${String(m.month).padStart(2, '0')}`;
 }
 
 function formatMonthLabel(m: MonthValue) {
@@ -65,14 +70,25 @@ function matchesVisaFilter(deal: Deal, activeFilter: DealFilter) {
   return deal.visaType === activeFilter;
 }
 
-function dealInMonthRange(deal: Deal, from: MonthValue, to: MonthValue) {
-  if (!deal.departureDate) return false;
-  const d = new Date(deal.departureDate);
+function dateInMonthRange(
+  dateStr: string | null,
+  from: MonthValue,
+  to: MonthValue,
+) {
+  if (!dateStr) return false;
+  const d = new Date(dateStr);
   const key = d.getFullYear() * 100 + (d.getMonth() + 1);
   return key >= toMonthKey(from) && key <= toMonthKey(to);
 }
 
-export function DealsList({ deals }: DealsListProps) {
+function dealInMonthRange(deal: Deal, from: MonthValue, to: MonthValue) {
+  return (
+    dateInMonthRange(deal.departureDate, from, to) ||
+    dateInMonthRange(deal.returnDate, from, to)
+  );
+}
+
+export function DealsList({ deals, availableMonths }: DealsListProps) {
   const [activeFilter, setActiveFilter] = useState<DealFilter>('all');
   const [showDatePanel, setShowDatePanel] = useState(false);
 
@@ -81,6 +97,10 @@ export function DealsList({ deals }: DealsListProps) {
 
   const panelRef = useRef<HTMLDivElement>(null);
   const months = useMemo(getRollingMonths, []);
+  const availableMonthsSet = useMemo(
+    () => new Set(availableMonths),
+    [availableMonths],
+  );
   const hasDateFilter = Boolean(draftFrom);
 
   useEffect(() => {
@@ -99,6 +119,10 @@ export function DealsList({ deals }: DealsListProps) {
   }
 
   function handleMonthClick(m: MonthValue) {
+    if (!availableMonthsSet.has(toMonthISOKey(m))) {
+      return;
+    }
+
     if (!draftFrom || (draftFrom && draftTo)) {
       setDraftFrom(m);
       setDraftTo(null);
@@ -225,18 +249,22 @@ export function DealsList({ deals }: DealsListProps) {
             <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-4">
               {months.map((m) => {
                 const state = getMonthState(m);
+                const isAvailable = availableMonthsSet.has(toMonthISOKey(m));
                 return (
                   <button
                     key={toMonthKey(m)}
                     type="button"
+                    disabled={!isAvailable}
                     onClick={() => handleMonthClick(m)}
                     className={cn(
                       'rounded-xl px-2 py-2.5 text-center text-sm transition',
-                      state === 'start' || state === 'end'
-                        ? 'bg-primary font-black text-primary-foreground'
-                        : state === 'in-range'
-                          ? 'bg-primary/15 font-semibold text-primary'
-                          : 'font-semibold text-foreground hover:bg-muted',
+                      !isAvailable
+                        ? 'cursor-not-allowed opacity-40'
+                        : state === 'start' || state === 'end'
+                          ? 'bg-primary font-black text-primary-foreground'
+                          : state === 'in-range'
+                            ? 'bg-primary/15 font-semibold text-primary'
+                            : 'font-bold text-foreground hover:bg-muted',
                     )}
                   >
                     <span className="block capitalize">{formatMonthName(m)}</span>

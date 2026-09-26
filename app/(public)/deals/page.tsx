@@ -8,10 +8,14 @@ export const metadata: Metadata = {
 };
 import { PublicFooter } from '@/components/shared/public-footer';
 import { PublicHeader } from '@/components/shared/public-header';
+import { getAvailableDealMonths } from '@/services/deals/get-available-deal-months';
 import { getDeals } from '@/services/deals/get-deals';
 
 export default async function DealsPage() {
-  const deals = await getDeals().catch(() => []);
+  const [deals, availableMonths] = await Promise.all([
+    getDeals().catch(() => []),
+    getAvailableDealMonths().catch(() => []),
+  ]);
 
   return (
     <main className="min-h-screen">
@@ -27,7 +31,7 @@ export default async function DealsPage() {
         </header>
 
         {deals.length > 0 ? (
-          <DealsList deals={deals} />
+          <DealsList deals={deals} availableMonths={availableMonths} />
         ) : (
           <div className="mt-10 rounded-xl border bg-background p-8 text-center text-muted-foreground">
             Aucune offre disponible pour le moment.
